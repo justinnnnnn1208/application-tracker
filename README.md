@@ -25,11 +25,11 @@ cd ../..
 python scripts/dev.py
 ```
 
-API listens on loopback port 8000, UI on loopback port 3000. Open the local UI in your browser. Unlock it with `APP_ACCESS_TOKEN` from your private `.env` file, opened locally in your editor. The token is held in memory and cleared on refresh/lock. Never share or commit `.env`. The launcher loads `.env` values literally, without shell interpolation; exported environment variables take precedence. Restart after changing configuration. API refuses to start without a 32-character token or applied migrations.
+API listens on loopback port 8000, UI on loopback port 3000. Open the local UI in your browser: it goes straight to the dashboard, including after refresh/restart. There is no unlock page or lock button. `APP_ACCESS_TOKEN` stays in the server's private `.env`; the Next.js proxy uses it for backend calls. The browser never receives or stores it. Never share or commit `.env`. The launcher loads `.env` values literally, without shell interpolation; exported environment variables take precedence. Restart after changing configuration. API refuses to start without a 32-character token or applied migrations.
 
 Do not expose either port to the internet. Keep local browser, access-token file, DB and backups private. SQLite and profile facts are not encrypted; OAuth token encryption will be implemented before OAuth storage is added.
 
-For separate processes, activate `apps/api/.venv`, export `APP_ACCESS_TOKEN` securely and run `uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log` from `apps/api`; run `npm run dev` from `apps/web`. The web server proxies only allowlisted API paths. It does not inject credentials: the browser must supply the token.
+For separate processes, activate `apps/api/.venv`, export the same `APP_ACCESS_TOKEN` securely to both server processes and run `uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log` from `apps/api`; run `npm run dev` from `apps/web`. Prefer the combined launcher, which loads the token automatically. The web server proxies only allowlisted API paths, accepts loopback Host values only, and requires matching Origin headers for writes. Requests marked cross-site are rejected. Direct backend calls still require a bearer token. Any user with access to the local website on this machine can use the dashboard; keep the machine account private and do not expose the ports.
 
 ## Checks
 

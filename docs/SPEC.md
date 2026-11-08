@@ -100,6 +100,7 @@ If a form asks something in this category that is not in my profile, status beco
 Existing tracker: https://docs.google.com/spreadsheets/d/1UCZX9aj7Ls_EIgY231bhufQ0kQKjU0wGz_PP0RHT2dk/edit
 
 - OAuth 2.0, `spreadsheets` scope, tokens encrypted at rest.
+- **Current rollout gate (owner update):** request only `https://www.googleapis.com/auth/spreadsheets.readonly` and use only the development copy. Write-back and the broader scope remain disabled until read-only import is tested and the owner explicitly approves enabling writes.
 - Map columns **by header name** through a configurable mapping (header row: TODO, to be supplied).
 - A row's job URL is its identity; store the row number alongside it.
 - **Never rewrite ranges.** Write single cells only, so formulas, formatting and notes stay intact.
@@ -154,6 +155,7 @@ Browser -> Next.js -> REST/JSON -> FastAPI -> DB (source of truth)
 - **Scheduling on a laptop:** scheduled jobs (discovery, Sheet sync, reminders) only run while the app is running. A missed run is expected, not an error. On startup the worker detects overdue scheduled tasks and runs them once to catch up, without duplicating work.
 - **PDF:** Jinja2 HTML rendered to PDF with Playwright.
 - **Laptop-only through Phases 1 to 5:** the whole app (web, API, worker) runs on my own laptop, bound to localhost with a simple access token. No deployment, hosting, Docker, multi-user auth, or Postgres work before Phase 6. Later hosting goes behind Tailscale or Cloudflare Access, never the open internet.
+- **Direct dashboard access (owner update):** the local website opens directly on the Dashboard, including after refresh/restart, with no unlock page or lock/sign-out buttons. The local server keeps the API token private and attaches it to backend calls; the browser never receives or stores it. The web proxy rejects non-loopback hosts and cross-origin access.
 - **Security:** Fernet-encrypt OAuth tokens (key in env), secrets out of git, private repo, minimal OAuth scopes, scheduled backup of the DB and storage folder.
 
 ### Portal adapters

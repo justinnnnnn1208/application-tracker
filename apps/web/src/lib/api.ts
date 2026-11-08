@@ -7,14 +7,14 @@ export type HistoryEvent = { id: string; from_status: string | null; to_status: 
 export const statuses: Status[] = ["DISCOVERED", "SHORTLISTED", "SKIPPED", "EXPIRED", "WITHDRAWN"];
 export const label = (value: string) => value.toLowerCase().replaceAll("_", " ").replace(/^./, x => x.toUpperCase());
 
-export async function api<T>(token: string, path: string, method = "GET", data?: unknown): Promise<T> {
+export async function api<T>(path: string, method = "GET", data?: unknown): Promise<T> {
   const response = await fetch(`/api/${path}`, {
-    method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    method, headers: { "Content-Type": "application/json" },
     body: data === undefined ? undefined : JSON.stringify(data), cache: "no-store",
   });
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(response.status === 401 ? "The access token is invalid. Lock the workspace and try again." :
+    throw new Error(response.status === 401 ? "The local API rejected the server credential. Restart the app using scripts/dev.py." :
       typeof error.detail === "string" ? error.detail : "Check the form fields and try again.");
   }
   return response.status === 204 ? undefined as T : response.json();

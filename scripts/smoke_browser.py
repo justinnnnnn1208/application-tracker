@@ -46,7 +46,7 @@ def main():
                 raise RuntimeError(f"Test port {port} is already in use; stop its service first") from exc
     with tempfile.TemporaryDirectory(prefix="tracker-browser-") as temp, (ROOT / ".local/browser-services.log").open("w") as log:
         token = secrets.token_urlsafe(48)
-        environment = {**os.environ, "APP_ACCESS_TOKEN": token, "DATABASE_URL": f"sqlite:///{temp}/test.db", "API_BASE_URL": "http://127.0.0.1:8001", "NEXT_TELEMETRY_DISABLED": "1"}
+        environment = {**os.environ, "APP_ACCESS_TOKEN": token, "DATABASE_URL": f"sqlite:///{temp}/test.db", "STORAGE_DIR": f"{temp}/storage", "API_BASE_URL": "http://127.0.0.1:8001", "NEXT_TELEMETRY_DISABLED": "1"}
         subprocess.run([str(API / ".venv/bin/alembic"), "upgrade", "head"], cwd=API, env=environment, check=True)
         processes = []
         try:
@@ -61,14 +61,28 @@ def main():
                 page = context.new_page()
                 errors = []
                 page.on("pageerror", lambda error: errors.append(str(error)))
+                browser_api_headers = []
+                page.on("request", lambda request: browser_api_headers.append(request.headers) if "/api/" in request.url else None)
                 page.goto("http://127.0.0.1:3001")
-                expect(page.get_by_role("heading", name="Welcome back.")).to_be_visible()
-                assert context.request.get("http://127.0.0.1:3001/api/profile").status == 401
-                rejected = context.request.post("http://127.0.0.1:3001/api/jobs", headers={"Authorization": f"Bearer {token}", "Origin": "https://untrusted.example.org"}, data={})
-                assert rejected.status == 403
-                page.get_by_label("Workspace access token").fill(token)
-                page.get_by_role("button", name="Unlock workspace").click()
-                expect(page.get_by_role("heading", name="Your next opportunity goes here.")).to_be_visible()
+                expect(page.get_by_role("button", name="Dashboard", exact=True)).to_have_attribute("aria-current", "page")
+                expect(page.get_by_role("heading", name="Paste a job URL", exact=True)).to_be_visible()
+                expect(page.get_by_label("Workspace access token")).to_have_count(0)
+                expect(page.get_by_role("button", name="Lock workspace", exact=True)).to_have_count(0)
+                assert context.request.get("http://127.0.0.1:3001/api/profile").status == 200
+                # Direct backend access is still authenticated.
+                assert context.request.get("http://127.0.0.1:8001/api/profile").status == 401
+                # The proxy may use its server credential only for local, same-origin traffic.
+                for headers in [
+                    {"Origin": "https://untrusted.example.org"},
+                    {"Origin": "http://127.0.0.1:3001", "Sec-Fetch-Site": "cross-site"},
+                    {"Host": "untrusted.example.org", "Origin": "http://untrusted.example.org"},
+                    {},
+                ]:
+                    assert context.request.post("http://127.0.0.1:3001/api/jobs", headers=headers, data={}).status == 403
+                assert context.request.get("http://127.0.0.1:3001/api/profile", headers={"Sec-Fetch-Site": "cross-site"}).status == 403
+                assert context.request.get("http://127.0.0.1:3001/api/profile", headers={"Host": "untrusted.example.org"}).status == 403
+                page.reload()
+                expect(page.get_by_role("heading", name="Paste a job URL", exact=True)).to_be_visible()
                 page.get_by_role("button", name="Add a job", exact=False).first.click()
                 page.get_by_label("Job URL").fill("https://example.org/fixture?utm_source=test")
                 page.get_by_label("Company", exact=False).fill("Fixture employer")
@@ -80,6 +94,7 @@ def main():
                 with page.expect_response(lambda response: response.url.endswith("/api/jobs") and response.request.method == "POST") as saved:
                     page.get_by_role("button", name="Save opportunity").click()
                 assert saved.value.status == 201, f"Job save failed: HTTP {saved.value.status}"
+                page.get_by_role("button", name="Jobs", exact=True).click()
                 page.screenshot(path=str(ROOT / ".local/browser-after-save.png"), full_page=True)
                 page.get_by_role("button", name="View Fixture graduate engineer at Fixture employer").click()
                 expect(page.get_by_role("heading", name="Fixture graduate engineer", exact=True)).to_be_visible()
@@ -89,7 +104,7 @@ def main():
                 page.get_by_label("Your notes").fill("Updated fixture note")
                 page.get_by_role("button", name="Save opportunity").click()
                 expect(page.get_by_text("Updated fixture note", exact=True)).to_be_visible()
-                page.get_by_role("button", name="Profile & facts", exact=True).click()
+                page.get_by_role("button", name="My Profile", exact=True).click()
                 page.get_by_label("Display name").fill("Fixture user")
                 page.get_by_role("button", name="Save profile").click()
                 expect(page.locator(".owner strong")).to_have_text("Fixture")
@@ -105,27 +120,44 @@ def main():
                 expect(page.get_by_text("Needs review", exact=True)).to_be_visible()
                 page.get_by_role("button", name="Deadlines", exact=True).click()
                 expect(page.get_by_text("Fixture graduate engineer", exact=True)).to_be_visible()
-                page.get_by_role("button", name="Overview", exact=True).click()
+                page.get_by_role("button", name="Jobs", exact=True).click()
                 expect(page.get_by_role("table").get_by_text("Shortlisted", exact=True)).to_be_visible()
                 page.screenshot(path=str(ROOT / ".local/browser-desktop.png"), full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})
-                expect(page.get_by_role("button", name="Lock workspace", exact=True)).to_be_visible()
+                expect(page.get_by_role("button", name="Lock workspace", exact=True)).to_have_count(0)
                 page.screenshot(path=str(ROOT / ".local/browser-mobile.png"), full_page=True)
                 overflow = page.evaluate("""() => ({width: innerWidth, documentWidth: document.documentElement.scrollWidth,
                     elements: [...document.querySelectorAll('body *')].map(e => ({tag: e.tagName, cls: e.className,
                       right: Math.round(e.getBoundingClientRect().right), width: Math.round(e.getBoundingClientRect().width)}))
                       .filter(e => e.right > innerWidth + 1)})""")
                 assert overflow["documentWidth"] <= overflow["width"], overflow
-                page.get_by_role("button", name="Lock workspace", exact=True).click()
-                expect(page.get_by_role("heading", name="Welcome back.")).to_be_visible()
-                page.get_by_label("Workspace access token").fill(token)
-                page.get_by_role("button", name="Unlock workspace").click()
-                expect(page.get_by_role("heading", name="Let’s make your next move, Fixture.")).to_be_visible()
                 page.reload()
-                expect(page.get_by_role("heading", name="Welcome back.")).to_be_visible()
+                expect(page.get_by_role("heading", name="Let’s make your next move, Fixture.")).to_be_visible()
+                expect(page.get_by_label("Workspace access token")).to_have_count(0)
+                assert token not in page.content()
+                assert browser_api_headers and all("authorization" not in headers for headers in browser_api_headers)
+                assert page.evaluate("localStorage.length === 0 && sessionStorage.length === 0")
+                assert context.cookies() == []
+                # Closing and reopening a browser context must also skip the unlock page.
+                context.close()
+                fresh = browser.new_context()
+                reopened = fresh.new_page()
+                reopened.goto("http://127.0.0.1:3001")
+                expect(reopened.get_by_role("heading", name="Let’s make your next move, Fixture.")).to_be_visible()
+                expect(reopened.get_by_label("Workspace access token")).to_have_count(0)
+                fresh.close()
+                # Restarting the local web server also needs no browser login.
+                os.killpg(processes[1].pid, signal.SIGTERM)
+                processes[1].wait(timeout=5)
+                processes[1] = subprocess.Popen(["node", str(ROOT / "apps/web/node_modules/next/dist/bin/next"), "start", "--hostname", "127.0.0.1", "--port", "3001"], cwd=ROOT / "apps/web", env=environment, stdout=log, stderr=log, start_new_session=True)
+                wait_for("http://127.0.0.1:3001", processes)
+                restarted = browser.new_page()
+                restarted.goto("http://127.0.0.1:3001")
+                expect(restarted.get_by_role("heading", name="Let’s make your next move, Fixture.")).to_be_visible()
+                expect(restarted.get_by_label("Workspace access token")).to_have_count(0)
                 assert not errors, errors
                 browser.close()
-                print("Browser smoke passed: authentication, job create/edit/status/history, profile, fact review invalidation, deadlines, desktop/mobile layout, lock/reload. Disposable data removed.")
+                print("Browser smoke passed: direct dashboard on initial load/reload/new browser/server restart, server-only credential, local origin guards, backend authentication, job CRUD/history, profile/fact review, deadlines and desktop/mobile layout. Disposable data removed.")
         finally:
             for process in processes:
                 if process.poll() is None:
