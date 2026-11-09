@@ -1,6 +1,6 @@
 # Current project status
 
-Reviewed: 9 November 2026 (Europe/London). This is an evidence summary, not a claim that the entire checkout has passed all checks today.
+Reviewed: 9 November 2026 (Europe/London). This records the current checked UI redesign and the remaining Phase 1 integration limits.
 
 **Phase 1: incomplete, roughly 60% verified. Phase 2: paused until the owner explicitly confirms Phase 1 is verified.** The percentage is a rough communication aid; only the acceptance criteria establish completion.
 
@@ -8,7 +8,7 @@ Start with [AGENTS.md](AGENTS.md), [stable context](docs/context/PROJECT.md), [S
 
 ## Published application baseline
 
-Last published application change: [`1c7c8e2`](https://github.com/justinnnnnn1208/application-tracker/commit/1c7c8e29cdaf674290c71825c88493449ef91049), on `dev/phase-1`. Later documentation commits do not imply a newer tested application build.
+The reference-inspired Phase 1 UI is complete and tested in this delivery on `dev/phase-1`; remote delivery is recorded in [HANDOVER.md](docs/HANDOVER.md). It builds on `1c7c8e2` (direct dashboard access) and the shared context documentation. No backend or dependency changes were needed.
 
 The published app opens directly to the dashboard, including after browser refresh/reopen and web-server restart. There is no unlock page or lock/sign-out control. The API token remains server-side, the proxy rejects non-local/cross-origin requests, and direct backend requests remain authenticated. Services bind to localhost.
 
@@ -24,11 +24,11 @@ The owner has run the app on a Mac in VS Code. Cloud checks are not a substitute
 | Backup/restore and overdue scheduling | Database/files/checksums restored in tests; overdue work enqueued once; full settings browser workflow not verified |
 | Google OAuth and import | Read-only scope, state/PKCE/encryption and synthetic Sheet preservation tests passed; no live Google connection or development-copy import verified |
 | Sheet writes, application submission and later phases | Disabled; no approval to enable them |
-| UI redesign using the owner's references | Paused, unfinished local edits; styling and browser verification pending; not published |
+| UI redesign using the owner's references | Inter/blue light dashboard, 220px sidebar, compact URL intake, real counts, neutral Unverified labels, job filters/sorting and native collapsible settings/tasks; production browser checks passed at 1440px, 390px and 320px |
 
 ## Phase 1 acceptance criteria
 
-PASSED below means the stated controlled check passed previously. It does not mean real-site, development-copy or whole-phase acceptance has been established.
+PASSED below means the stated controlled check passed in the current 42-test run. It does not mean real-site, development-copy or whole-phase acceptance has been established.
 
 | Criterion from SPEC.md | Result | Evidence | Remaining limit |
 |---|---|---|---|
@@ -39,21 +39,21 @@ PASSED below means the stated controlled check passed previously. It does not me
 | Database and storage backup restores successfully | PASSED — disposable data | Backup/restore tests verify restored DB contents, exact file bytes, checksums, integrity and tamper rejection | Owner chooses a destination; operational restore should be verified on the laptop before relying on backups |
 | Jobs default to UNVERIFIED unless supported by evidence | PASSED | API/database constraints, extraction defaults and non-inference tests in [test_tracker.py](apps/api/tests/test_tracker.py) and [test_workflows.py](apps/api/tests/test_workflows.py) | This slice stores only UNVERIFIED; automatic evidence assessment belongs to the gated later phase |
 
-## Recorded checks for the published baseline
+## Checks performed for this UI delivery
 
-These are previously recorded outcomes; the documentation/context task did not rerun them.
+These checks were run on the redesigned UI/source in the cloud workspace using disposable data:
 
 - `uv run --frozen pytest -q --tb=short` from `apps/api`: **42 passed**, one dependency deprecation warning.
 - `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` from `apps/web`: passed.
-- `uv run --frozen --group browser python ../../scripts/smoke_browser.py` from `apps/api`: passed for direct dashboard, reload/reopen/server restart, credential/origin guards, manual job CRUD/history, profile/fact review, deadlines and desktop/mobile layout using disposable data.
+- `uv run --frozen --group browser python ../../scripts/smoke_browser.py` from `apps/api`: passed for direct dashboard, reload/reopen/server restart, credential/origin guards, manual job CRUD/history, profile/fact review, deadlines, combined filters, notes search, sorting, actual dashboard counts, neutral sponsorship labels, collapsible backup settings, visible mobile navigation and 44px enabled Dashboard controls at 320px. All pages fit the 390px viewport; desktop checks used 1440px. No console page errors were recorded.
 
-The local paused UI redesign differs from this baseline. No successful build/browser result is claimed for those unfinished edits. Its changed headings and layout will also require checking/updating the browser smoke selectors. The full written design and all new workflow UI paths remain unverified.
+The stylesheet uses the existing Inter package and blue `#2F5BEA`; 11 normal-size text/background palette pairs passed a 4.5:1 contrast calculation. Dashboard and Jobs screenshots were visually inspected. No new dependencies, components directory structure, backend services, matching or review queues were added. This is not a full accessibility certification or proof that all expanded workflow UI paths work: CV upload/confirmation, backup execution and OAuth/import still need end-to-end browser verification. Their existing service/fixture checks remain separately recorded above.
 
 ## Owner inputs and remaining work
 
 - Google: development-copy spreadsheet ID, exact tab name and header-row number; OAuth setup described in [SETUP.md](docs/SETUP.md). Column headers have already been supplied—do not ask for them again.
 - Extraction provider/model choice before hosted fallback is enabled. Personal-data use of hosted models still needs explicit approval.
 - UI references were supplied in conversation; no `docs/design/dashboard.png` asset is present in the repository.
-- Finish the paused Phase 1 UI redesign and its tests only when that task is resumed. Do not start matching/Phase 2 from the rough progress percentage.
+- The current UI redesign is complete. Next Phase 1 work is end-to-end CV/backup UI verification and an owner-configured read-only development-copy import. Do not start matching/Phase 2 from the rough progress percentage.
 
 No credentials, CV text, legal declarations or owner database contents belong in this status file. See [HANDOVER.md](docs/HANDOVER.md) for exact unfinished paths and resumption steps.

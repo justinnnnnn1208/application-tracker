@@ -2,79 +2,66 @@
 
 Reviewed: 9 November 2026 (Europe/London).
 
-## Latest request and session scope
+## Latest request and scope
 
-The owner asked to build persistent repository context after discussing a friend's project-memory approach. This session updates documentation, startup reading instructions and a repeatable handover structure. It does **not** resume the paused UI redesign, implement new app features, install plugins or start Phase 2.
+The owner explicitly resumed the paused UI redesign after asking the agent to read AGENTS.md and the handover. The owner also asked to keep code and structure minimal. This delivery completes the existing Phase 1 UI changes and their styling/verification. Phase 2 remains paused until the owner confirms Phase 1 is verified.
 
-Read [AGENTS.md](../AGENTS.md), [stable project context](context/PROJECT.md), [SPEC.md](SPEC.md), [STATUS.md](../STATUS.md) and this file before changes. [SETUP.md](SETUP.md) covers the Mac launcher, checks and exact read-only Google OAuth setup. [CLAUDE.md](../CLAUDE.md) routes Claude Code to the same shared instructions; it does not create another source of rules.
+Read [AGENTS.md](../AGENTS.md), [stable context](context/PROJECT.md), [SPEC.md](SPEC.md), [STATUS.md](../STATUS.md) and this file. [SETUP.md](SETUP.md) covers local startup and read-only Google setup.
 
-## Published baseline and local worktree
+## Work completed
 
-- Repository branch: `dev/phase-1`.
-- Last published **application** commit: `1c7c8e29cdaf674290c71825c88493449ef91049` (direct dashboard, server-only API credential, no lock page/buttons).
-- This session delivers documentation only. Later documentation commits are not evidence of a newer application build.
-- Three pre-existing local UI redesign files are unfinished and deliberately excluded from this documentation delivery:
-  - `apps/web/src/app/layout.tsx` — title/branding changes.
-  - `apps/web/src/components/tracker.tsx` — dashboard/sidebar layout, job filters/sorting and disclosure changes.
-  - `apps/web/src/components/workflows.tsx` — compact URL intake, setup sidebar and collapsible settings/tasks.
-- The CSS still needs redesign work. The reference-inspired UI has not passed build/browser checks and is not published. Do not reset, overwrite, stage or silently ship these edits with an unrelated task.
-- These UI edits may exist only in the retained cloud worktree. A fresh Git clone may not include them. Inspect Git state rather than assuming either version is present. The reference image was supplied in conversation; no `docs/design/dashboard.png` is saved in the repository.
+- Resumed the three preserved UI edits rather than discarding/restarting them: `apps/web/src/app/layout.tsx`, `apps/web/src/components/tracker.tsx`, and `apps/web/src/components/workflows.tsx`.
+- Replaced the old welcome/green styling with one light Inter/blue stylesheet (`apps/web/src/app/globals.css`), a 220px desktop sidebar, warm-grey workspace, white bordered cards and mobile top navigation.
+- Dashboard now has compact URL intake, real last-Sheet-sync state, three required metrics, and the correctly filtered Closing soon table. Applied remains zero in this slice because confirmed submission is not implemented; imported source claims are not treated as confirmation.
+- Jobs supports combined status/deadline/sponsorship filters, notes/location/company/role search, and deadline/newest/company sorting. Unknown deadlines sort last by deadline. Sponsorship is a text label with a neutral grey Unverified tag.
+- Native details/summary controls collapse background tasks and settings. Removed duplicate form markup and an unnecessary setup-sidebar component from the earlier unfinished changes. No dependencies, backend code, database schema, services or new directory structure were added.
+- The functional app label is Job Tracker. Later-phase matching/review queues are not advertised or enabled. Direct dashboard/server-only credential handling is preserved.
 
-## What changed in this session
+## Verification performed this session
 
-- AGENTS.md now specifies the session-start reading order and status/handover update routine. Stale worker/evaluation command notes were corrected from the actual source.
-- Stable project/owner working preferences live in `docs/context/PROJECT.md`.
-- STATUS.md distinguishes published evidence from untested local UI edits, and records all six Phase 1 criteria with their limits.
-- This handover and `docs/templates/SESSION_HANDOVER.md` provide a repeatable stop/resume record.
-- README points to the shared context and accurate current implementation summary.
-- SETUP.md records Mac run commands, read-only Google Cloud setup and private credentials-file location. No Google credentials were requested in chat or created by this task.
+| Check | Working directory | Result | Evidence/limit |
+|---|---|---|---|
+| `npm run typecheck` | `apps/web` | PASSED, exit 0 | Current component types |
+| `NEXT_TELEMETRY_DISABLED=1 npm run build` | `apps/web` | PASSED, exit 0 | Final responsive CSS/components; build includes TypeScript checking |
+| `uv run --frozen pytest -q --tb=short` | `apps/api` | PASSED, 42 tests, exit 0 | One dependency deprecation warning; no real portals, Google Sheet or hosted model called |
+| `uv run --frozen --group browser python ../../scripts/smoke_browser.py` | `apps/api` | PASSED, exit 0 | Production servers with disposable DB/storage; direct dashboard/reload/reopen/server restart; origin/credential guards; manual jobs/history/profile/facts/deadlines; filters/search/sort; metrics; neutral sponsorship; native backup disclosure; all mobile nav items visible |
+| Layout and touch checks inside browser smoke | Disposable production UI | PASSED | 1440px desktop, 390px all-page width checks, 320px Dashboard; tables scroll internally; enabled visible Dashboard controls have effective targets at least 44px |
+| Palette contrast calculation | Repository root, inline Python | PASSED | 11 normal-size foreground/background palette pairs meet at least 4.5:1; not a full accessibility certification |
+| Screenshot inspection | Ignored `.local/` artifacts | PASSED visual review | Dashboard desktop and narrow mobile, plus Jobs mobile; synthetic test rows only |
 
-## Phase 1 acceptance state
+The smoke runner was updated for the new headings, filters and disclosures. An initial exact-text selector for the backup summary was corrected; the final complete run passed. A visually clipped mobile menu was changed to wrap, rebuilt and retested. No currently unresolved failure is being hidden by those fixes.
 
-| Criterion | Status | Evidence and limits |
+Snapshots remain ignored (`.local/dashboard-desktop.png`, `.local/dashboard-mobile.png`, `.local/browser-desktop.png`, `.local/browser-mobile.png`). They are not real owner data and are not committed. No original reference PNG is saved in the repository; the supplied chat references and written spec guided the styling.
+
+## Phase 1 acceptance
+
+| Criterion | Status | Evidence and remaining limit |
 |---|---|---|
-| Ten pasted URLs create correct job rows | PASSED — fixtures | Prior API/task/worker/extractor/DB test using ten synthetic job pages; live portals not tested |
-| Re-pasting creates no duplicates | PASSED — fixtures | Same test requeues tracking-URL variants; stable IDs/count/history checked |
-| Sheet import preserves all rows | NOT TESTED on development copy | Synthetic fixture preservation test passed; actual copy not configured/verified |
-| Status write touches only its target cell, preserving formulas/formatting/notes | NOT TESTED | Writes disabled pending read-only import verification and separate approval |
-| Database and storage backup restores | PASSED — disposable data | Prior content/checksum/integrity/tamper tests; owner laptop restore not verified |
-| Sponsorship defaults to UNVERIFIED | PASSED | Prior API/DB/extraction tests; no automatic confirmed sponsorship implemented |
+| Ten pasted URLs create correct job rows | PASSED — controlled fixtures | Current 42-test run exercises ten URLs through API/queue/worker/extractor/DB; no live vacancy set verified |
+| Re-pasting creates no duplicates | PASSED — fixtures | Tracking-URL variants preserve IDs/count/history in the same current suite |
+| Sheet import preserves every row | NOT TESTED on development copy | Synthetic preservation test passed; actual OAuth/copy import not configured/verified by this run |
+| Status write touches only its target cell and preserves formulas/formatting/notes | NOT TESTED | All Sheet mutations remain disabled until read-only import is verified and the owner separately approves writes |
+| Database/storage backup restores successfully | PASSED — disposable data | Current restore, file-byte, checksum, integrity and tamper tests; owner laptop restore not verified |
+| Sponsorship defaults to UNVERIFIED | PASSED | Current API/DB/extraction defaults and non-inference tests; no automatic confirmed sponsorship implemented |
 
-Phase 1 remains incomplete, with a rough progress indicator of about 60%. The owner must explicitly confirm it is verified before Phase 2 starts. A rough percentage or an old passing fixture suite does not satisfy that gate.
+Phase 1 is still incomplete, with a rough progress indication of about 60%. The UI task being complete does not satisfy the outstanding integration criteria or authorise Phase 2.
 
-## Verification record
+## Remaining work and owner inputs
 
-Previously recorded for the published application baseline, not rerun by this documentation task:
+- Full browser workflows for CV upload/candidate confirmation, running backups, OAuth and read-only import are not yet verified. Existing service/fixture coverage is separate from those browser checks.
+- Owner must configure OAuth locally using SETUP.md and provide the development-copy spreadsheet ID, exact tab and header-row number. Column names are already documented; do not ask for them again. Never request credentials or downloaded client JSON in chat.
+- Extraction provider/model choice remains open before enabling hosted fallback. Personal data must not be sent to a hosted provider without the required approval.
+- No writes to the original tracker, no enabling Sheet writes, no real portal run, no submission, and no Phase 2 start are authorised by this UI task.
 
-- API/service suite: 42 passed, one dependency deprecation warning.
-- TypeScript and production build: passed.
-- Desktop/mobile production browser smoke: passed for direct dashboard/reload/reopen/server restart, credential/origin guards, manual jobs/history, profile/facts and deadlines.
+## Next session
 
-These results do not cover the three paused UI files above, live Google import, real portals, a real-page extraction evaluation set or all expanded UI workflows. No phase-completion claim is made.
+1. Read the entry-point/context/status/handover and inspect Git state. This UI redesign is complete; do not assume the old three-file WIP is still outstanding.
+2. Follow the owner's next requested Phase 1 task. Good next verification work is the CV/backup browser flow or owner-configured development-copy import.
+3. Keep services on localhost and tests on disposable data. Preserve `.env`, `.local/` and storage; never reset owner data to get an empty screenshot.
+4. Update STATUS.md and this handover, push completed checked work to `dev/phase-1`, verify the remote ref, and give Mac pull/restart commands.
 
-Documentation delivery checks passed: nine documents were checked and 51 local links/references resolved; entry-point routing and evidence markers were checked; `git diff --check` passed; the three pre-existing UI file fingerprints were unchanged; staged paths contained documentation only, with no local credential values. Application tests were not rerun for Markdown-only changes.
+## Delivery
 
-## Owner inputs and permissions still needed
+Branch: `dev/phase-1`. The checked UI/source and these records are ready for commit/push; the remote application commit will be recorded after successful delivery. Context documentation previously landed in `e80d9c9` / `f1a7a40`; direct-dashboard support was previously delivered in `1c7c8e2`.
 
-- Development-copy spreadsheet ID, exact tab name and header-row number. Header names were already provided and are documented in SETUP.md; do not request them again.
-- Owner completes Google Cloud Web OAuth setup and puts the downloaded JSON in the ignored local location described in SETUP.md. Never request the JSON, client secret, token or encryption key in chat.
-- Extraction provider/model choice before enabling hosted fallback; separate approval before sending personal data to any hosted provider.
-- Phase 2 is **not authorised to begin** until the owner confirms Phase 1 is verified. Sheet writes, touching the original tracker, real application-portal runs and auto-submit remain blocked by the stated owner/agent rules.
-
-None of these owner inputs blocks the documentation/context task itself.
-
-## Resume in this order
-
-1. Read the entry-point/context/spec/status/handover files and inspect the actual branch/worktree.
-2. Confirm the owner's current requested task. Context setup is complete once checked/pushed; do not silently resume the paused UI work.
-3. If the owner resumes UI work: preserve/inspect the three local edits, complete Inter/blue styling and responsive/accessibility behaviour from SPEC.md section 13, adapt smoke selectors to the new headings, then run build/type/browser checks using disposable data. Keep later-phase elements hidden.
-4. For Google work: use SETUP.md, verify configuration **names/presence only**, connect only the development copy with readonly scope, and compare the actual read-only import with that copy. Keep writes disabled.
-5. Update STATUS.md and this handover with actual results, stage only the completed task, push to `dev/phase-1`, verify the remote commit and give the owner pull/restart instructions.
-
-## Delivery record
-
-- Shared-context documentation was pushed in commit [`e80d9c9`](https://github.com/justinnnnnn1208/application-tracker/commit/e80d9c9060d4ec7941e8fc16a8ac8f476089631a). Its full SHA matched the GitHub `dev/phase-1` ref in a read-only remote verification.
-- This final handover record and one-at-a-time setup clarification are a documentation-only follow-up. Use Git history for the newest documentation commit; the application baseline remains `1c7c8e2`.
-- All three runtime UI edits listed above remain local and excluded from this delivery. They were not modified by the context task.
-- Owner next step, from the local repository: `git pull --ff-only origin dev/phase-1`. No app restart is needed for documentation changes. If local changes conflict, preserve them and investigate rather than forcing the update.
-- No owner input is required to complete context setup. Google configuration inputs listed above are for later integration work.
+No owner configuration is required for this UI update. After delivery, stop the local app with Control+C, run `git pull --ff-only origin dev/phase-1` from the local project folder, and restart `python3 scripts/dev.py`. No dependency or migration refresh is needed for this change.

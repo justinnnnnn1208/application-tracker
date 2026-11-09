@@ -239,7 +239,7 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 
 ## 13. UI design reference
 
-A visual mockup of the Dashboard is saved at `docs/design/dashboard.png` (to be added by the owner). Match its layout and style. It is a guide, not a pixel-exact blueprint, and it shows some Phase 2 and 3 elements that must not be built yet (see "Phase 1 scope" below).
+The owner supplied two reference screenshots in conversation: a light dashboard with blue actions, and a compact dark tracker with filters and collapsible sections. Use the first for the light layout/palette specified below and the second for compact controls; these are guides, not pixel-exact blueprints. No reference PNG is currently committed at `docs/design/dashboard.png`. The references contain Phase 2 and 3 elements that must not be built yet (see "Phase 1 scope" below).
 
 ### Layout and style
 

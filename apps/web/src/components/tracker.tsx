@@ -13,10 +13,11 @@ const blankProfile: Profile = { display_name: "", email: "", target_locations: "
 
 function Icon({ name }: { name: string }) {
   const paths: Record<string, ReactNode> = {
-    Overview: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
+    Dashboard: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
     "Jobs": <><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3" /></>,
     Deadlines: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 11h18m-13 5h2m4 0h2" /></>,
     "My Profile": <><circle cx="12" cy="8" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2" /></>,
+    Settings: <><path d="m9 3 1-1h4l1 1 1 3 3 1 2 3v4l-2 3-3 1-1 3-1 1h-4l-1-1-1-3-3-1-2-3v-4l2-3 3-1z" /><circle cx="12" cy="12" r="3" /></>,
   };
   return <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">{paths[name] ?? <path d="m7 12 3 3 7-7M12 2l9 4v6c0 5-9 10-9 10S3 17 3 12V6z" />}</svg>;
 }
@@ -38,13 +39,65 @@ function Workspace() {
   const jobs = useQuery({ queryKey: ["jobs"], queryFn: () => api<Job[]>("jobs"), refetchInterval: 60000 });
   const profile = useQuery({ queryKey: ["profile"], queryFn: () => api<Profile>("profile") });
   const list = jobs.data ?? [];
-  const chosen = list.find(j => j.id === selected);
+  const chosen = list.find(job => job.id === selected);
+  const closing = list.filter(job => active(job) && job.deadline && daysUntil(job.deadline) >= 0 && daysUntil(job.deadline) <= 7)
+    .sort((a, b) => a.deadline!.localeCompare(b.deadline!));
   const firstName = profile.data?.display_name.trim().split(/\s+/)[0];
-  return <div className="app-shell"><aside className="sidebar"><div className="wordmark"><span className="brand-mark">n.</span> next step<span className="brand-dot"><Arrow /></span></div><div className="workspace-label">PERSONAL WORKSPACE</div><nav aria-label="Main navigation">{(["Dashboard", "Jobs", "Deadlines", "My Profile", "Settings"] as View[]).map(item => <button key={item} aria-label={item} aria-current={view === item ? "page" : undefined} className={view === item ? "nav-item current" : "nav-item"} onClick={() => { setView(item); setSelected(null); setAdding(false); }}><Icon name={item} />{item}{item === "Jobs" && <span className="nav-count">{list.length}</span>}</button>)}</nav><div className="sidebar-bottom"><div className="safety-card"><Icon name="shield" /><strong>You’re in control</strong><p>Track and prepare here.<br />Keep applying by hand.</p><span>Submissions disabled</span></div><div className="owner"><span className="avatar">{firstName?.[0]?.toUpperCase() ?? "Y"}</span><div><strong>{firstName ?? "Your workspace"}</strong><small>Private · Local only</small></div></div></div></aside><div className="main-wrap"><header className="topbar"><span>Workspace <span className="breadcrumb-slash">/</span> <strong>{view}</strong></span><div className="topbar-actions"><div className="local-pill"><span /> Local only</div></div></header><main className="main-content"><div className="page-heading"><div><span className="eyebrow">{view === "My Profile" ? "THE SOURCE OF TRUTH" : "YOUR NEXT CHAPTER"}</span><h1>{view === "Dashboard" ? `Let’s make your next move${firstName ? `, ${firstName}` : ""}.` : view === "Jobs" ? "Every opportunity, in one place." : view === "Deadlines" ? "A little ahead of the deadline." : view === "Settings" ? "Your workspace, your settings." : "Your experience. Your facts."}</h1><p className="muted">{view === "Dashboard" ? "A clear view of your applications and what needs your attention." : view === "My Profile" ? "Save only what’s true. Review each fact before it’s used in a future application." : "Keep the details close, so nothing important slips through."}</p></div>{view !== "My Profile" && view !== "Settings" && <Button onClick={() => { setAdding(true); setSelected(null); }}>＋ Add a job</Button>}</div><ErrorMessage error={jobs.error} /><ErrorMessage error={profile.error} />{adding ? <JobForm onDone={() => setAdding(false)} onCancel={() => setAdding(false)} /> : chosen ? <JobDetail key={chosen.id} job={chosen} onBack={() => setSelected(null)} /> : view === "My Profile" ? <><CVReview /><ProfileEditor profile={profile.data} /><Declarations /><TaskList onSelect={setSelected} /></> : view === "Settings" ? <><IntegrationSettings /><TaskList onSelect={setSelected} /></> : jobs.isPending ? <div className="panel empty" role="status">Loading your workspace…</div> : <>{view === "Dashboard" && <><URLImport /><SheetSyncTime /><div className="stats-grid"><Stat number={list.length} text="Jobs tracked" detail="All saved opportunities" /><Stat number={list.filter(j => active(j) && j.deadline && daysUntil(j.deadline) >= 0 && daysUntil(j.deadline) <= 7).length} text="Due in the next 7 days" detail="A good place to focus" accent /><Stat number={0} text="Applied" detail="Only with confirmation evidence" /></div><div className="focus-banner"><span className="focus-symbol"><Arrow /></span><div><strong>One thoughtful application at a time.</strong><p>Start with a role you’re excited about. Add its details, check the deadline, and verify sponsorship.</p></div><span className="phase-pill">Phase 1 · Foundation</span></div></>}{view === "Deadlines" ? <DeadlineList jobs={list} onSelect={setSelected} /> : <JobList jobs={view === "Dashboard" ? list.filter(j => active(j) && j.deadline && daysUntil(j.deadline) >= 0 && daysUntil(j.deadline) <= 7).sort((a,b) => a.deadline!.localeCompare(b.deadline!)) : list} onSelect={setSelected} onAdd={() => setAdding(true)} overview={view === "Dashboard"} />}{view === "Dashboard" && <TaskList onSelect={setSelected} />}{view === "Dashboard" && <div className="overview-footer"><Icon name="shield" /><span>Sponsorship starts as unverified. A sponsor licence alone never confirms a role offers sponsorship.</span></div>}</>}</main><footer className="app-footer"><span>Made for your next step.</span><span>Private by default · Manual applications for now</span></footer></div></div>;
+  function navigate(next: View) { setView(next); setSelected(null); setAdding(false); }
+  const subtitles: Record<View, string> = {
+    Dashboard: "Your job search, at a glance.",
+    Jobs: "All your saved roles. Find the right one to focus on next.",
+    Deadlines: "Keep track of what’s coming up, using the UK calendar.",
+    "My Profile": "Upload your CV, review your facts, and keep your details accurate.",
+    Settings: "Manage your Sheet connection, backups, and local workspace.",
+  };
+  return <div className="app-shell">
+    <aside className="sidebar">
+      <div className="wordmark"><span className="brand-mark"><Icon name="Jobs" /></span><span>Job Tracker</span></div>
+      <p className="workspace-label">PERSONAL WORKSPACE</p>
+      <nav aria-label="Main navigation">
+        {(["Dashboard", "Jobs", "Deadlines", "My Profile", "Settings"] as View[]).map(item => <button key={item} aria-label={item}
+          aria-current={view === item ? "page" : undefined} className={view === item ? "nav-item current" : "nav-item"} onClick={() => navigate(item)}>
+          <Icon name={item} /><span>{item}</span>{item === "Jobs" && <span className="nav-count" aria-hidden="true">{list.length}</span>}
+        </button>)}
+      </nav>
+      <div className="sidebar-bottom">
+        <div className="safety-card"><Icon name="shield" /><strong>You stay in control</strong><p>Track opportunities here.<br />Apply when you’re ready.</p><span>Automatic submission is off</span></div>
+        <div className="owner"><span className="avatar">{firstName?.[0]?.toUpperCase() ?? "Y"}</span><div><strong>{firstName ?? "Your workspace"}</strong><small>Local to this computer</small></div></div>
+      </div>
+    </aside>
+    <div className="main-wrap">
+      <main className="main-content">
+        <header className="page-heading">
+          <div><h1>{view}</h1><p className="muted">{subtitles[view]}</p>{view === "Dashboard" && <SheetSyncTime />}</div>
+          {view === "Dashboard" ? <URLImport compact /> : (view === "Jobs" || view === "Deadlines") && <Button onClick={() => { setAdding(true); setSelected(null); }}>＋ Add a job</Button>}
+        </header>
+        <ErrorMessage error={jobs.error} /><ErrorMessage error={profile.error} />
+        {adding ? <JobForm onDone={() => setAdding(false)} onCancel={() => setAdding(false)} />
+          : chosen ? <JobDetail key={chosen.id} job={chosen} onBack={() => setSelected(null)} />
+          : view === "My Profile" ? <div className="page-stack"><CVReview /><ProfileEditor profile={profile.data} /><Declarations /><TaskList onSelect={setSelected} /></div>
+          : view === "Settings" ? <div className="page-stack"><IntegrationSettings /><TaskList onSelect={setSelected} /></div>
+          : jobs.isPending ? <div className="panel empty" role="status">Loading your workspace…</div>
+          : jobs.isError ? <section className="panel empty"><h2>Your jobs couldn’t be loaded</h2><p>Check that the local API is running, then try again.</p><Button variant="outline" onClick={() => void jobs.refetch()}>Try again</Button></section>
+          : view === "Dashboard" ? <>
+            <div className="stats-grid">
+              <Stat number={list.length} text="Jobs tracked" detail="Saved in your tracker" />
+              <Stat number={closing.length} text="Closing in 7 days" detail="Active roles with a known deadline" />
+              <Stat number={0} text="Applied" detail="Confirmed submissions only" />
+            </div>
+            <JobList jobs={closing} onSelect={setSelected} onAdd={() => setAdding(true)} overview />
+            <TaskList onSelect={setSelected} />
+            <p className="overview-footer"><Icon name="shield" />Sponsorship stays Unverified until role-specific evidence is recorded. A sponsor licence alone is not confirmation.</p>
+          </> : view === "Deadlines" ? <DeadlineList jobs={list} onSelect={setSelected} />
+          : <JobList jobs={list} onSelect={setSelected} onAdd={() => setAdding(true)} overview={false} />}
+      </main>
+      <footer className="app-footer"><span>Job Tracker · Personal workspace</span><span>Local only · Automatic submission off</span></footer>
+    </div>
+  </div>;
 }
 
-function Stat({ number, text, detail, accent = false }: { number: number; text: string; detail: string; accent?: boolean }) {
-  return <div className={`stat panel ${accent ? "stat-accent" : ""}`}><span>{text}</span><strong>{number.toString().padStart(2, "0")}</strong><small>{detail}</small></div>;
+function Stat({ number, text, detail }: { number: number; text: string; detail: string }) {
+  return <div className="stat panel"><span>{text}</span><strong>{number}</strong><small>{detail}</small></div>;
 }
 
 function Deadline({ value }: { value: string | null }) {
@@ -55,9 +108,41 @@ function Deadline({ value }: { value: string | null }) {
 
 function JobList({ jobs, onSelect, onAdd, overview }: { jobs: Job[]; onSelect: (id: string) => void; onAdd: () => void; overview: boolean }) {
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("ALL");
-  const filtered = jobs.filter(j => `${j.company} ${j.title} ${j.location}`.toLowerCase().includes(search.toLowerCase()) && (filter === "ALL" || j.status === filter));
-  return <section className="panel jobs-panel"><div className="panel-heading"><div><h2>{overview ? "Closing soon" : "Job tracker"}<span className="count-pill">{jobs.length}</span></h2><p className="muted small">Your roles, from first look to shortlist.</p></div></div><div className="table-tools"><input aria-label="Search jobs" placeholder="Search roles, companies, or locations…" value={search} onChange={e => setSearch(e.target.value)} /><select aria-label="Filter by status" value={filter} onChange={e => setFilter(e.target.value)}><option value="ALL">All statuses</option>{statuses.map(s => <option key={s} value={s}>{label(s)}</option>)}</select></div>{filtered.length ? <div className="table-scroll"><table><thead><tr><th>COMPANY & ROLE</th><th>LOCATION</th><th>STATUS</th><th>SPONSORSHIP</th><th>DEADLINE</th><th><span className="sr-only">Details</span></th></tr></thead><tbody>{filtered.map(job => <tr key={job.id}><td><button className="job-link" onClick={() => onSelect(job.id)}><span className="company-avatar">{job.company.slice(0, 1).toUpperCase()}</span><span><strong>{job.title}</strong><small>{job.company}</small></span></button></td><td>{job.location || <span className="muted">Not provided</span>}</td><td><span className={`badge status-${job.status.toLowerCase()}`}>{label(job.status)}</span></td><td><span className="badge unverified">◌ Unverified</span></td><td><Deadline value={job.deadline} /></td><td><button className="row-arrow" onClick={() => onSelect(job.id)} aria-label={`View ${job.title} at ${job.company}`}><Arrow /></button></td></tr>)}</tbody></table></div> : <div className="empty"><div className="empty-icon"><Icon name="Jobs" /></div><h3>{overview ? "No active deadlines in the next 7 days." : jobs.length ? "No matching opportunities" : "Your next opportunity goes here."}</h3><p>{overview ? "Paste a job URL to get started, or browse all saved roles in Jobs." : jobs.length ? "Try a different search or status." : "Add a role you’ve found and start building your shortlist."}</p>{!jobs.length && <Button variant="outline" onClick={onAdd}>＋ Add your first job</Button>}</div>}<div className="table-footer">{filtered.length} {filtered.length === 1 ? "opportunity" : "opportunities"}<span>Saved in your local database</span></div></section>;
+  const [status, setStatus] = useState("ALL");
+  const [deadline, setDeadline] = useState("ALL");
+  const [sponsorship, setSponsorship] = useState("ALL");
+  const [sort, setSort] = useState("deadline");
+  const filtered = jobs.filter(job => {
+    const matchesSearch = `${job.company} ${job.title} ${job.location} ${job.notes}`.toLowerCase().includes(search.trim().toLowerCase());
+    const days = job.deadline ? daysUntil(job.deadline) : null;
+    const matchesDeadline = deadline === "ALL" || (deadline === "unknown" ? days === null : deadline === "past" ? days !== null && days < 0 : days !== null && days >= 0 && days <= Number(deadline));
+    return matchesSearch && (status === "ALL" || job.status === status) && matchesDeadline && (sponsorship === "ALL" || job.sponsorship === sponsorship);
+  }).sort((a, b) => sort === "company" ? a.company.localeCompare(b.company) : sort === "newest" ? b.created_at.localeCompare(a.created_at) : (a.deadline ?? "9999").localeCompare(b.deadline ?? "9999") || a.company.localeCompare(b.company));
+  return <section className="panel jobs-panel">
+    <div className="panel-heading"><div><h2>{overview ? "Closing soon" : "Saved jobs"}<span className="count-pill">{jobs.length}</span></h2><p className="muted small">{overview ? "Active opportunities closing in the next 7 days." : "Search, filter, and organise your opportunities."}</p></div></div>
+    {!overview && <div className="table-tools">
+      <Field label="Search"><input aria-label="Search jobs" placeholder="Company, role, location or notes" value={search} onChange={event => setSearch(event.target.value)} /></Field>
+      <Field label="Status"><select aria-label="Filter by status" value={status} onChange={event => setStatus(event.target.value)}><option value="ALL">All statuses</option>{statuses.map(value => <option key={value} value={value}>{label(value)}</option>)}</select></Field>
+      <Field label="Deadline"><select aria-label="Filter by deadline" value={deadline} onChange={event => setDeadline(event.target.value)}><option value="ALL">All deadlines</option><option value="7">Closing in 7 days</option><option value="30">Closing in 30 days</option><option value="past">Deadline passed</option><option value="unknown">No deadline provided</option></select></Field>
+      <Field label="Sponsorship"><select aria-label="Filter by sponsorship" value={sponsorship} onChange={event => setSponsorship(event.target.value)}><option value="ALL">All sponsorship</option><option value="UNVERIFIED">Unverified</option></select></Field>
+      <Field label="Sort"><select aria-label="Sort jobs" value={sort} onChange={event => setSort(event.target.value)}><option value="deadline">Deadline (soonest)</option><option value="newest">Newest first</option><option value="company">Company (A–Z)</option></select></Field>
+    </div>}
+    {filtered.length ? <div className="table-scroll" role="region" aria-label={overview ? "Closing soon jobs" : "Saved jobs"} tabIndex={0}><table>
+      <thead><tr><th>Role</th><th>Company and location</th><th>Deadline</th><th>Sponsorship</th><th>Status</th><th><span className="sr-only">Details</span></th></tr></thead>
+      <tbody>{filtered.map(job => <tr key={job.id}>
+        <td><button className="job-link" onClick={() => onSelect(job.id)}>{job.title}</button></td>
+        <td><div className="company-cell"><strong>{job.company}</strong><span>{job.location || "Location not provided"}</span></div></td>
+        <td><Deadline value={job.deadline} /></td><td><span className="badge unverified">Unverified</span></td>
+        <td><span className={`badge status-${job.status.toLowerCase()}`}>{label(job.status)}</span></td>
+        <td><button className="row-arrow" onClick={() => onSelect(job.id)} aria-label={`View ${job.title} at ${job.company}`}><Arrow /></button></td>
+      </tr>)}</tbody>
+    </table></div> : <div className="empty"><div className="empty-icon"><Icon name={overview ? "Deadlines" : "Jobs"} /></div>
+      <h3>{overview ? "No jobs closing in the next 7 days" : jobs.length ? "No jobs match these filters" : "Your tracker is ready"}</h3>
+      <p>{overview ? "Add a role with a deadline to see it here. All saved jobs are available in Jobs." : jobs.length ? "Try another search, status, or deadline." : "Paste a job URL on the Dashboard, or add your first job below."}</p>
+      {!jobs.length && <Button variant="outline" onClick={onAdd}>＋ Add your first job</Button>}
+    </div>}
+    <div className="table-footer"><span>{filtered.length} {filtered.length === 1 ? "job" : "jobs"}{!overview && ` of ${jobs.length}`}</span><span>Saved on this computer</span></div>
+  </section>;
 }
 
 function DeadlineList({ jobs, onSelect }: { jobs: Job[]; onSelect: (id: string) => void }) {
@@ -85,7 +170,7 @@ function JobDetail({ job, onBack }: { job: Job; onBack: () => void }) {
   const history = useQuery({ queryKey: ["events", job.id], queryFn: () => api<HistoryEvent[]>(`jobs/${job.id}/events`) });
   const mutation = useMutation({ mutationFn: (status: Status) => api<Job>(`jobs/${job.id}/status`, "PATCH", { status, expected_status: job.status }), onSuccess: async () => { await Promise.all([queryClient.invalidateQueries({ queryKey: ["jobs"] }), queryClient.invalidateQueries({ queryKey: ["events", job.id] })]); } });
   if (editing) return <JobForm job={job} onDone={() => setEditing(false)} onCancel={() => setEditing(false)} />;
-  return <><Button variant="ghost" onClick={onBack}>Back to opportunities</Button><div className="detail-grid"><section className="panel detail-panel"><div className="detail-heading"><span className="company-avatar large">{job.company[0]}</span><div><p className="muted">{job.company}</p><h2>{job.title}</h2><p className="muted">{job.location || "Location not provided"}</p></div></div><div className="detail-actions"><a href={job.url} target="_blank" rel="noopener noreferrer" className="button button-outline">Open job listing <Arrow /></a><Button variant="ghost" onClick={() => setEditing(true)}>Edit details</Button></div><h3>Job description</h3><p className="preserve">{job.description || "No description saved yet."}</p><h3>Start date and eligibility</h3><p className="preserve">{job.start_date ? formatDate(job.start_date) : "Start date not provided"}</p><p className="preserve">{job.eligibility_requirements || "Eligibility requirements not extracted yet."}</p>{job.tracker_status && <p className="notice">Imported tracker history is preserved separately and needs confirmation evidence before this app can mark an application as submitted.</p>}<h3>Your notes</h3><p className="preserve">{job.notes || "No notes yet."}</p><h3>History</h3><ErrorMessage error={history.error} />{history.isPending && <p role="status">Loading history…</p>}<ol className="history">{history.data?.map(event => <li key={event.id}><strong>{event.from_status ? `${label(event.from_status)} to ` : "Added · "}{label(event.to_status)}</strong><small>{new Date(event.created_at.endsWith("Z") || /[+-]\d\d:\d\d$/.test(event.created_at) ? event.created_at : event.created_at + "Z").toLocaleString("en-GB", { timeZone: "Europe/London" })} UK time</small></li>)}</ol></section><aside className="detail-aside"><section className="panel"><h3>Application status</h3><Field label="Update status"><select value={job.status} disabled={mutation.isPending} onChange={e => mutation.mutate(e.target.value as Status)}>{statuses.map(s => <option key={s} value={s}>{label(s)}</option>)}</select></Field><ErrorMessage error={mutation.error} /><p className="small muted">Preparation and submission statuses unlock in later phases.</p></section><section className="panel"><h3>Deadline</h3><Deadline value={job.deadline} /></section><section className="panel"><h3>Sponsorship</h3><span className="badge unverified">◌ Unverified</span><p className="small muted">Check the role’s explicit sponsorship policy. A sponsor licence is a separate signal.</p><p className="small">Licensed sponsor: {job.licensed_sponsor === null ? "Not checked" : job.licensed_sponsor ? "Yes" : "No"}</p></section></aside></div></>;
+  return <><Button variant="ghost" onClick={onBack}>Back to opportunities</Button><div className="detail-grid"><section className="panel detail-panel"><div className="detail-heading"><span className="company-avatar large">{job.company[0]}</span><div><p className="muted">{job.company}</p><h2>{job.title}</h2><p className="muted">{job.location || "Location not provided"}</p></div></div><div className="detail-actions"><a href={job.url} target="_blank" rel="noopener noreferrer" className="button button-outline">Open job listing <Arrow /></a><Button variant="ghost" onClick={() => setEditing(true)}>Edit details</Button></div><h3>Job description</h3><p className="preserve">{job.description || "No description saved yet."}</p><h3>Start date and eligibility</h3><p className="preserve">{job.start_date ? formatDate(job.start_date) : "Start date not provided"}</p><p className="preserve">{job.eligibility_requirements || "Eligibility requirements not extracted yet."}</p>{job.tracker_status && <p className="notice">Imported tracker history is preserved separately and needs confirmation evidence before this app can mark an application as submitted.</p>}<h3>Your notes</h3><p className="preserve">{job.notes || "No notes yet."}</p><h3>History</h3><ErrorMessage error={history.error} />{history.isPending && <p role="status">Loading history…</p>}<ol className="history">{history.data?.map(event => <li key={event.id}><strong>{event.from_status ? `${label(event.from_status)} to ` : "Added · "}{label(event.to_status)}</strong><small>{new Date(event.created_at.endsWith("Z") || /[+-]\d\d:\d\d$/.test(event.created_at) ? event.created_at : event.created_at + "Z").toLocaleString("en-GB", { timeZone: "Europe/London" })} UK time</small></li>)}</ol></section><aside className="detail-aside"><section className="panel"><h3>Application status</h3><Field label="Update status"><select value={job.status} disabled={mutation.isPending} onChange={e => mutation.mutate(e.target.value as Status)}>{statuses.map(s => <option key={s} value={s}>{label(s)}</option>)}</select></Field><ErrorMessage error={mutation.error} /><p className="small muted">Preparation and submission statuses unlock in later phases.</p></section><section className="panel"><h3>Deadline</h3><Deadline value={job.deadline} /></section><section className="panel"><h3>Sponsorship</h3><span className="badge unverified">Unverified</span><p className="small muted">Check the role’s explicit sponsorship policy. A sponsor licence is a separate signal.</p><p className="small">Licensed sponsor: {job.licensed_sponsor === null ? "Not checked" : job.licensed_sponsor ? "Yes" : "No"}</p></section></aside></div></>;
 }
 
 function ProfileEditor({ profile }: { profile: Profile | undefined }) {

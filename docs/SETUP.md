@@ -59,7 +59,7 @@ After the frontend build, from `apps/api`:
 uv run --frozen --group browser python ../../scripts/smoke_browser.py
 ```
 
-The browser check starts production test services on ports 8001/3001 with disposable DB/storage. It must not use the owner's database. It needs Chromium: use system `chromium`, set `CHROMIUM_EXECUTABLE`, or use the supported `uv run --group browser playwright install chromium` installer. Artifacts stay in ignored `.local/`. The unfinished UI redesign is not yet verified; see STATUS.md before interpreting an old test pass.
+The browser check starts production test services on ports 8001/3001 with disposable DB/storage. It must not use the owner's database. It needs Chromium: use system `chromium`, set `CHROMIUM_EXECUTABLE`, or use the supported `uv run --group browser playwright install chromium` installer. Artifacts stay in ignored `.local/`. The current reference-inspired UI has production desktop/mobile smoke coverage for core pages, filters, navigation and disclosures. See STATUS.md for the exact evidence and remaining workflow limits.
 
 ## Google Cloud: read-only development-copy setup
 

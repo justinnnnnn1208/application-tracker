@@ -4,6 +4,8 @@ From apps/api: uv run --group browser python ../../scripts/smoke_browser.py
 Requires apps/web to be built and Chromium installed (system Chromium is supported).
 """
 import os
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 import secrets
 import shutil
@@ -65,7 +67,7 @@ def main():
                 page.on("request", lambda request: browser_api_headers.append(request.headers) if "/api/" in request.url else None)
                 page.goto("http://127.0.0.1:3001")
                 expect(page.get_by_role("button", name="Dashboard", exact=True)).to_have_attribute("aria-current", "page")
-                expect(page.get_by_role("heading", name="Paste a job URL", exact=True)).to_be_visible()
+                expect(page.get_by_label("Job listing URL", exact=True)).to_be_visible()
                 expect(page.get_by_label("Workspace access token")).to_have_count(0)
                 expect(page.get_by_role("button", name="Lock workspace", exact=True)).to_have_count(0)
                 assert context.request.get("http://127.0.0.1:3001/api/profile").status == 200
@@ -82,13 +84,14 @@ def main():
                 assert context.request.get("http://127.0.0.1:3001/api/profile", headers={"Sec-Fetch-Site": "cross-site"}).status == 403
                 assert context.request.get("http://127.0.0.1:3001/api/profile", headers={"Host": "untrusted.example.org"}).status == 403
                 page.reload()
-                expect(page.get_by_role("heading", name="Paste a job URL", exact=True)).to_be_visible()
+                expect(page.get_by_label("Job listing URL", exact=True)).to_be_visible()
+                page.get_by_role("button", name="Jobs", exact=True).click()
                 page.get_by_role("button", name="Add a job", exact=False).first.click()
                 page.get_by_label("Job URL").fill("https://example.org/fixture?utm_source=test")
                 page.get_by_label("Company", exact=False).fill("Fixture employer")
                 page.get_by_label("Role title").fill("Fixture graduate engineer")
                 page.get_by_label("Location", exact=True).fill("Leeds")
-                page.get_by_label("Application deadline").fill("2027-01-15")
+                page.get_by_label("Application deadline").fill((datetime.now(ZoneInfo("Europe/London")).date() + timedelta(days=3)).isoformat())
                 page.get_by_label("Job description").fill("Fixture job description. No sponsorship information supplied.")
                 page.get_by_label("Your notes").fill("Fixture-only test record")
                 with page.expect_response(lambda response: response.url.endswith("/api/jobs") and response.request.method == "POST") as saved:
@@ -122,17 +125,84 @@ def main():
                 expect(page.get_by_text("Fixture graduate engineer", exact=True)).to_be_visible()
                 page.get_by_role("button", name="Jobs", exact=True).click()
                 expect(page.get_by_role("table").get_by_text("Shortlisted", exact=True)).to_be_visible()
+                # Extra disposable rows exercise combined filters and meaningful sorting.
+                today = datetime.now(ZoneInfo("Europe/London")).date()
+                for payload in [
+                    {"url": "https://example.org/fixture-data", "company": "Another fixture employer", "title": "Fixture data analyst", "location": "London", "deadline": (today + timedelta(days=12)).isoformat(), "notes": "Find-this-note"},
+                    {"url": "https://example.org/fixture-unknown", "company": "Z fixture employer", "title": "Fixture unknown deadline"},
+                ]:
+                    response = context.request.post("http://127.0.0.1:3001/api/jobs", headers={"Origin": "http://127.0.0.1:3001"}, data=payload)
+                    assert response.status == 201
+                page.reload()
+                expect(page.get_by_role("heading", name="Dashboard", exact=True)).to_be_visible()
+                expect(page.locator(".stat").filter(has=page.get_by_text("Jobs tracked", exact=True)).locator("strong")).to_have_text("3")
+                expect(page.locator(".stat").filter(has=page.get_by_text("Closing in 7 days", exact=True)).locator("strong")).to_have_text("1")
+                expect(page.locator(".stat").filter(has=page.get_by_text("Applied", exact=True)).locator("strong")).to_have_text("0")
+                expect(page.get_by_role("table").locator("tbody tr")).to_have_count(1)
+                expect(page.get_by_text("Last Sheet sync:", exact=False)).to_be_visible()
+                expect(page.get_by_role("button", name="Application Review", exact=True)).to_have_count(0)
+                expect(page.get_by_role("columnheader", name="Match", exact=True)).to_have_count(0)
+                page.screenshot(path=str(ROOT / ".local/dashboard-desktop.png"), full_page=True)
+                page.get_by_role("button", name="Jobs", exact=True).click()
+                rows = page.get_by_role("table").locator("tbody tr")
+                expect(rows).to_have_count(3)
+                page.get_by_label("Filter by status").select_option("SHORTLISTED")
+                expect(rows).to_have_count(1)
+                page.get_by_label("Filter by status").select_option("ALL")
+                page.get_by_label("Filter by deadline").select_option("7")
+                expect(rows).to_have_count(1)
+                page.get_by_label("Filter by deadline").select_option("unknown")
+                expect(rows).to_have_count(1)
+                expect(rows.first).to_contain_text("Fixture unknown deadline")
+                page.get_by_label("Filter by deadline").select_option("past")
+                expect(page.get_by_role("heading", name="No jobs match these filters", exact=True)).to_be_visible()
+                page.get_by_label("Filter by deadline").select_option("ALL")
+                page.get_by_label("Search jobs").fill("Find-this-note")
+                expect(rows).to_have_count(1)
+                expect(rows.first).to_contain_text("Fixture data analyst")
+                page.get_by_label("Search jobs").fill("")
+                page.get_by_label("Filter by sponsorship").select_option("UNVERIFIED")
+                expect(rows).to_have_count(3)
+                page.get_by_label("Sort jobs").select_option("company")
+                expect(rows.first).to_contain_text("Another fixture employer")
+                page.get_by_label("Sort jobs").select_option("deadline")
+                expect(rows.last).to_contain_text("Fixture unknown deadline")
+                expect(page.locator(".unverified")).to_have_count(3)
+                assert page.locator(".unverified").first.evaluate("e => getComputedStyle(e).backgroundColor") == "rgb(238, 240, 244)"
                 page.screenshot(path=str(ROOT / ".local/browser-desktop.png"), full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})
                 expect(page.get_by_role("button", name="Lock workspace", exact=True)).to_have_count(0)
+                for name in ["Dashboard", "Jobs", "Deadlines", "My Profile", "Settings"]:
+                    expect(page.get_by_role("button", name=name, exact=True)).to_be_in_viewport()
                 page.screenshot(path=str(ROOT / ".local/browser-mobile.png"), full_page=True)
                 overflow = page.evaluate("""() => ({width: innerWidth, documentWidth: document.documentElement.scrollWidth,
                     elements: [...document.querySelectorAll('body *')].map(e => ({tag: e.tagName, cls: e.className,
                       right: Math.round(e.getBoundingClientRect().right), width: Math.round(e.getBoundingClientRect().width)}))
                       .filter(e => e.right > innerWidth + 1)})""")
                 assert overflow["documentWidth"] <= overflow["width"], overflow
+                # All Phase 1 pages must fit a mobile viewport; tables scroll internally.
+                for name in ["Dashboard", "My Profile", "Settings", "Deadlines"]:
+                    page.get_by_role("button", name=name, exact=True).click()
+                    expect(page.get_by_role("heading", name=name, exact=True)).to_be_visible()
+                    assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), name
+                page.get_by_role("button", name="Settings", exact=True).click()
+                backups = page.locator("details").filter(has_text="Backup and restore").first
+                expect(backups).to_have_attribute("open", "")
+                backups.locator("summary").first.click()
+                expect(backups).not_to_have_attribute("open", "")
+                backups.locator("summary").first.click()
+                expect(page.get_by_label("Backup destination folder")).to_be_visible()
+                page.get_by_role("button", name="Dashboard", exact=True).click()
+                page.set_viewport_size({"width": 320, "height": 800})
+                expect(page.get_by_label("Job listing URL", exact=True)).to_be_visible()
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+                page.screenshot(path=str(ROOT / ".local/dashboard-mobile.png"), full_page=True)
+                # Native controls remain usable without tiny touch targets.
+                assert page.evaluate("""() => [...document.querySelectorAll('button,input,select,textarea,summary')].filter(e => {
+                    const r = e.getBoundingClientRect(); return r.width && r.height && !e.disabled;
+                  }).every(e => { const r = (e.type === 'checkbox' ? e.closest('label') : e).getBoundingClientRect(); return r.width >= 44 && r.height >= 44; })""")
                 page.reload()
-                expect(page.get_by_role("heading", name="Let’s make your next move, Fixture.")).to_be_visible()
+                expect(page.get_by_role("heading", name="Dashboard", exact=True)).to_be_visible()
                 expect(page.get_by_label("Workspace access token")).to_have_count(0)
                 assert token not in page.content()
                 assert browser_api_headers and all("authorization" not in headers for headers in browser_api_headers)
@@ -143,7 +213,7 @@ def main():
                 fresh = browser.new_context()
                 reopened = fresh.new_page()
                 reopened.goto("http://127.0.0.1:3001")
-                expect(reopened.get_by_role("heading", name="Let’s make your next move, Fixture.")).to_be_visible()
+                expect(reopened.get_by_role("heading", name="Dashboard", exact=True)).to_be_visible()
                 expect(reopened.get_by_label("Workspace access token")).to_have_count(0)
                 fresh.close()
                 # Restarting the local web server also needs no browser login.
@@ -153,11 +223,11 @@ def main():
                 wait_for("http://127.0.0.1:3001", processes)
                 restarted = browser.new_page()
                 restarted.goto("http://127.0.0.1:3001")
-                expect(restarted.get_by_role("heading", name="Let’s make your next move, Fixture.")).to_be_visible()
+                expect(restarted.get_by_role("heading", name="Dashboard", exact=True)).to_be_visible()
                 expect(restarted.get_by_label("Workspace access token")).to_have_count(0)
                 assert not errors, errors
                 browser.close()
-                print("Browser smoke passed: direct dashboard on initial load/reload/new browser/server restart, server-only credential, local origin guards, backend authentication, job CRUD/history, profile/fact review, deadlines and desktop/mobile layout. Disposable data removed.")
+                print("Browser smoke passed: direct dashboard on initial load/reload/new browser/server restart, server-only credential, local origin guards, backend authentication, job CRUD/history, profile/fact review, deadlines, filters/sorting, native disclosures and 1440/390/320px layouts. Disposable data removed.")
         finally:
             for process in processes:
                 if process.poll() is None:
