@@ -59,7 +59,7 @@ After the frontend build, from `apps/api`:
 uv run --frozen --group browser python ../../scripts/smoke_browser.py
 ```
 
-The browser check starts production test services on ports 8001/3001 with disposable DB/storage. It must not use the owner's database. It needs Chromium: use system `chromium`, set `CHROMIUM_EXECUTABLE`, or use the supported `uv run --group browser playwright install chromium` installer. Artifacts stay in ignored `.local/`. The current reference-inspired UI has production desktop/mobile smoke coverage for core pages, filters, navigation and disclosures. See STATUS.md for the exact evidence and remaining workflow limits.
+The browser check starts production test services on ports 8001/3001 with disposable DB/storage. It must not use the owner's database. It needs Chromium: use system `chromium`, set `CHROMIUM_EXECUTABLE`, or use the supported `uv run --group browser playwright install chromium` installer. Artifacts stay in ignored `.local/`. The current reference-inspired UI has production desktop/mobile smoke coverage for core pages, filters, navigation and disclosures, plus real-worker pasted-HTML extraction, TXT CV review/download and settings backup/CLI restore. See STATUS.md for the exact evidence and remaining workflow limits.
 
 ## Google Cloud: read-only development-copy setup
 
@@ -126,3 +126,7 @@ uv run python -m app.services.backup_cli restore \
 ```
 
 Substitute real local paths. This command checks archive contents/checksums and DB integrity and refuses to overwrite an existing destination. It does not switch the running app to that database. Stop all services and inspect the restored DB/files before any deliberate data switch. Keep the original data and encryption key intact; do not treat an untested laptop restore as complete just because cloud tests passed.
+
+## Desktop deadline reminders on Mac
+
+On Dashboard, choose **Enable desktop reminders** and allow the browser permission prompt. In macOS System Settings → Notifications, allow notifications for that browser (and website, if listed); Focus settings may silence them. Reminders are optional and run only while this browser tab and the local app are open. They cover active jobs due within seven days, once per job per UK day in that tab session. Reloading starts a new session; choose Enable again. Use **Pause desktop reminders** to stop. Denied/unsupported notifications leave the deadline view available. No email, OS background service or closed-browser scheduling is implemented.

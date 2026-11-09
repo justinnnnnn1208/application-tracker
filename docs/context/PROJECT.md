@@ -17,10 +17,12 @@ Question-driven brainstorming can be done in conversation. No interviewing plugi
 ## Owner's working preferences
 
 - The owner develops on a Mac using VS Code. Give commands with `python3`, explain the directory to run them from, and use Control+C to stop the app.
+- Desktop reminders are optional browser notifications while the tab is open; use macOS notification permissions. No closed-browser delivery is promised.
 - The website should open directly to the dashboard. No unlock page or lock/sign-out buttons. The backend credential remains server-side; services stay on localhost.
 - Send understandable progress updates: a rough phase bar, every Phase 1 acceptance criterion marked PASSED/FAILED/NOT TESTED with evidence, changes since the last update, work not reached, and any owner inputs needed. Percentages are rough indicators, not completion criteria or time estimates.
 - Keep the code and folder structure minimal. Reuse existing components, native controls and installed dependencies; avoid extra services or abstractions. Keep essential verification and safety rules intact.
 - Preserve useful work across sessions. Read and update the shared handover rather than asking the owner to repeat settled requirements.
+- New commits should use the owner-provided Git author identity configured locally; do not override it with Codex or rewrite old history. Ask for the verified/noreply email if missing.
 - Push completed, checked work to `dev/phase-1` on the existing repository. Give a pull/restart command. Exclude credentials, owner data and generated dependencies. Stage only the completed scope; unfinished edits must remain separate.
 
 ## Current authorisation boundaries
@@ -32,7 +34,7 @@ Question-driven brainstorming can be done in conversation. No interviewing plugi
 
 ## UI direction
 
-The owner supplied two images in conversation: a light sidebar/dashboard with blue actions, and a dark compact tracker with filters and collapsible sections. Section 13 of SPEC.md sets the written Phase 1 requirements: Inter, blue `#2F5BEA`, warm-grey background, white cards, accessible text/controls and responsive tables. The Phase 1 redesign uses the first image's light layout and the second image's compact controls. No reference image file is currently present at `docs/design/dashboard.png`; do not claim one is saved or re-create sample jobs as real data.
+The owner supplied two images in conversation: a light sidebar/dashboard with blue actions, and a dark compact tracker with filters and collapsible sections. Section 13 of SPEC.md sets the written Phase 1 requirements: Inter, blue `#2F5BEA`, charcoal-grey background, dark cards, accessible text/controls and responsive tables. The Phase 1 redesign uses the first image's layout and the second image's compact controls. The owner's latest preference is a charcoal-grey theme, without changing the current sizing. No reference image file is currently present at `docs/design/dashboard.png`; do not claim one is saved or re-create sample jobs as real data.
 
 Later-phase screenshot elements such as Match, Application Review and application queues remain out of Phase 1 scope. Use genuine empty states and real database values.
 

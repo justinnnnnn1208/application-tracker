@@ -239,12 +239,12 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 
 ## 13. UI design reference
 
-The owner supplied two reference screenshots in conversation: a light dashboard with blue actions, and a compact dark tracker with filters and collapsible sections. Use the first for the light layout/palette specified below and the second for compact controls; these are guides, not pixel-exact blueprints. No reference PNG is currently committed at `docs/design/dashboard.png`. The references contain Phase 2 and 3 elements that must not be built yet (see "Phase 1 scope" below).
+The owner supplied two reference screenshots in conversation: a light dashboard with blue actions, and a compact dark tracker with filters and collapsible sections. Use the first for layout and the second for compact controls; the owner subsequently requested a charcoal-grey theme; these are guides, not pixel-exact blueprints. No reference PNG is currently committed at `docs/design/dashboard.png`. The references contain Phase 2 and 3 elements that must not be built yet (see "Phase 1 scope" below).
 
 ### Layout and style
 
-- Left sidebar (about 220px) with the page links; main area to the right on a light warm-grey background with white rounded cards and thin borders.
-- Font: Inter. Text dark grey on white or light grey. Primary action colour: blue (`#2F5BEA`) with white text. Selected menu item: light blue background.
+- Left sidebar (about 220px) with the page links; main area to the right on a charcoal-grey background with slightly lighter dark rounded cards and thin borders.
+- Font: Inter. Text off-white with readable muted grey labels. Primary action colour: blue (`#2F5BEA`) with white text; links use lighter blue for contrast. Selected menu item: muted slate-blue background. Native form controls use the dark colour scheme.
 - Responsive: below about 760px the sidebar collapses to the top and columns stack; wide tables scroll inside their own box.
 - Accessibility: real buttons and links, labelled inputs, touch targets at least 44px, text contrast at least 4.5:1.
 
@@ -254,6 +254,8 @@ The owner supplied two reference screenshots in conversation: a light dashboard 
 - A status of `Applied` is only shown when confirmation evidence exists.
 - Nothing on the Dashboard or job list submits an application. Submission exists only on the Application Review page, behind the approval step.
 - Sample or placeholder data must never appear in the real app; empty states say what to do next (for example "Paste a job URL to get started").
+
+Desktop deadline reminders (owner clarification): opt-in browser notifications, displayed through macOS when browser/OS settings allow them. While the tab is open, notify once per job per UK day for active deadlines within 7 days; exclude expired/applied source rows. No reminders run after the tab closes. Keep the deadline view available when permission is denied.
 
 ### Phase 1 scope (pages and elements to build now)
 

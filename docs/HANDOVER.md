@@ -1,67 +1,71 @@
 # Latest session handover
 
-Reviewed: 9 November 2026 (Europe/London).
+Reviewed: 9 November 2026 (UTC).
 
-## Latest request and scope
+## Session
 
-The owner explicitly resumed the paused UI redesign after asking the agent to read AGENTS.md and the handover. The owner also asked to keep code and structure minimal. This delivery completes the existing Phase 1 UI changes and their styling/verification. Phase 2 remains paused until the owner confirms Phase 1 is verified.
+- Scope: continue Phase 1, change the bright UI to charcoal grey, and add owner-selected macOS/browser deadline reminders. Keep structure minimal.
+- Branch: `dev/phase-1`; previous published baseline `67477cd`. This delivery is prepared for commit/push; see Git log for the published SHA.
+- Phase 1 remains incomplete (roughly 70%); Phase 2 requires explicit owner confirmation after Phase 1 verification.
+- Initial worktree was clean. No owner data or pre-existing edits were changed.
+- Owner requested future commits be attributed to their supplied Git identity. Local Git author configuration is set accordingly; do not override it with Codex. Existing history was not rewritten. Use the latest owner-authored commit as reference if configuration needs restoring, without copying the email into project context files.
 
-Read [AGENTS.md](../AGENTS.md), [stable context](context/PROJECT.md), [SPEC.md](SPEC.md), [STATUS.md](../STATUS.md) and this file. [SETUP.md](SETUP.md) covers local startup and read-only Google setup.
+## What changed
 
-## Work completed
-
-- Resumed the three preserved UI edits rather than discarding/restarting them: `apps/web/src/app/layout.tsx`, `apps/web/src/components/tracker.tsx`, and `apps/web/src/components/workflows.tsx`.
-- Replaced the old welcome/green styling with one light Inter/blue stylesheet (`apps/web/src/app/globals.css`), a 220px desktop sidebar, warm-grey workspace, white bordered cards and mobile top navigation.
-- Dashboard now has compact URL intake, real last-Sheet-sync state, three required metrics, and the correctly filtered Closing soon table. Applied remains zero in this slice because confirmed submission is not implemented; imported source claims are not treated as confirmation.
-- Jobs supports combined status/deadline/sponsorship filters, notes/location/company/role search, and deadline/newest/company sorting. Unknown deadlines sort last by deadline. Sponsorship is a text label with a neutral grey Unverified tag.
-- Native details/summary controls collapse background tasks and settings. Removed duplicate form markup and an unnecessary setup-sidebar component from the earlier unfinished changes. No dependencies, backend code, database schema, services or new directory structure were added.
-- The functional app label is Job Tracker. Later-phase matching/review queues are not advertised or enabled. Direct dashboard/server-only credential handling is preserved.
-
-## Verification performed this session
-
-| Check | Working directory | Result | Evidence/limit |
-|---|---|---|---|
-| `npm run typecheck` | `apps/web` | PASSED, exit 0 | Current component types |
-| `NEXT_TELEMETRY_DISABLED=1 npm run build` | `apps/web` | PASSED, exit 0 | Final responsive CSS/components; build includes TypeScript checking |
-| `uv run --frozen pytest -q --tb=short` | `apps/api` | PASSED, 42 tests, exit 0 | One dependency deprecation warning; no real portals, Google Sheet or hosted model called |
-| `uv run --frozen --group browser python ../../scripts/smoke_browser.py` | `apps/api` | PASSED, exit 0 | Production servers with disposable DB/storage; direct dashboard/reload/reopen/server restart; origin/credential guards; manual jobs/history/profile/facts/deadlines; filters/search/sort; metrics; neutral sponsorship; native backup disclosure; all mobile nav items visible |
-| Layout and touch checks inside browser smoke | Disposable production UI | PASSED | 1440px desktop, 390px all-page width checks, 320px Dashboard; tables scroll internally; enabled visible Dashboard controls have effective targets at least 44px |
-| Palette contrast calculation | Repository root, inline Python | PASSED | 11 normal-size foreground/background palette pairs meet at least 4.5:1; not a full accessibility certification |
-| Screenshot inspection | Ignored `.local/` artifacts | PASSED visual review | Dashboard desktop and narrow mobile, plus Jobs mobile; synthetic test rows only |
-
-The smoke runner was updated for the new headings, filters and disclosures. An initial exact-text selector for the backup summary was corrected; the final complete run passed. A visually clipped mobile menu was changed to wrap, rebuilt and retested. No currently unresolved failure is being hidden by those fixes.
-
-Snapshots remain ignored (`.local/dashboard-desktop.png`, `.local/dashboard-mobile.png`, `.local/browser-desktop.png`, `.local/browser-mobile.png`). They are not real owner data and are not committed. No original reference PNG is saved in the repository; the supplied chat references and written spec guided the styling.
+| Work | State | Files/evidence |
+|---|---|---|
+| Charcoal theme | TESTED | Existing globals.css updated in place: dark cards/inputs/native controls, readable grey text, blue actions. Existing layout/sizing preserved; no dependencies added. |
+| Real-worker browser workflows | TESTED | smoke_browser.py now starts a separate disposable worker; verifies pasted fixture HTML extraction, TXT CV upload/edit/confirm, exact download bytes, settings-triggered backup and CLI restore into a fresh folder. Restored jobs/facts/CV bytes checked. |
+| Desktop reminders | TESTED with simulated browser Notification API | tracker.tsx, no new service: explicit permission request on click, active jobs due within 7 UK-calendar days, deduped per job/deadline/UK day within the mounted tab session. Pause supported. No automatic permission prompt or notifications before opt-in. Tab closure stops reminders. |
+| Spec/setup/context | UPDATED | Latest theme/reminder choices, exact setup limits, owner authorship preference and Google configuration retained. |
 
 ## Phase 1 acceptance
 
-| Criterion | Status | Evidence and remaining limit |
-|---|---|---|
-| Ten pasted URLs create correct job rows | PASSED — controlled fixtures | Current 42-test run exercises ten URLs through API/queue/worker/extractor/DB; no live vacancy set verified |
-| Re-pasting creates no duplicates | PASSED — fixtures | Tracking-URL variants preserve IDs/count/history in the same current suite |
-| Sheet import preserves every row | NOT TESTED on development copy | Synthetic preservation test passed; actual OAuth/copy import not configured/verified by this run |
-| Status write touches only its target cell and preserves formulas/formatting/notes | NOT TESTED | All Sheet mutations remain disabled until read-only import is verified and the owner separately approves writes |
-| Database/storage backup restores successfully | PASSED — disposable data | Current restore, file-byte, checksum, integrity and tamper tests; owner laptop restore not verified |
-| Sponsorship defaults to UNVERIFIED | PASSED | Current API/DB/extraction defaults and non-inference tests; no automatic confirmed sponsorship implemented |
+| Criterion | Result | Verification | Remaining limit |
+|---|---|---|---|
+| Ten pasted URLs create correct rows | PASSED — fixtures | 42-test API/service suite exercises ten URLs through queue/worker/extractor/DB; browser separately checks pasted fixture HTML through actual worker | Live vacancy pages not tested |
+| Re-pasting creates no duplicates | PASSED — fixtures | Same suite checks stable IDs/count/history with tracking variants | Live source variations untested |
+| Sheet import preserves all rows | NOT TESTED on development copy | Synthetic row/formula/notes/source-status preservation tests pass | Owner OAuth/copy setup missing |
+| Status write touches only intended cell | NOT TESTED | Writes blocked in API, worker, service and client; blocking tests pass | Read-only import must pass, then separate owner approval required |
+| Database/storage backup restores | PASSED — disposable data | Service integrity/checksum/tamper tests plus browser-requested backup and CLI restore verifying four jobs, reviewed fact and exact CV bytes | Owner laptop operational restore not tested |
+| Sponsorship defaults UNVERIFIED | PASSED | API/DB/extraction tests and browser labels | No automatic evidence assessment enabled |
 
-Phase 1 is still incomplete, with a rough progress indication of about 60%. The UI task being complete does not satisfy the outstanding integration criteria or authorise Phase 2.
+## Checks performed this session
 
-## Remaining work and owner inputs
+- `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api: **42 passed**, one existing Starlette/httpx deprecation warning. No backend edits followed this run.
+- `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` in apps/web: **PASSED**, including final reminder component.
+- `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen --group browser python ../../scripts/smoke_browser.py` in apps/api: **PASSED** with final theme/reminders and actual separate worker. Includes direct dashboard/reload/reopen/server restart, server-only token/origin guards, CRUD/history/profile/fact review, filters/sorting/counts, mobile navigation and 1440/390/320px layouts, CV and backup workflows above.
+- Notification test replaces Notification API with a deterministic fake: verifies no automatic opt-in, correct due-job body and no duplicates after pause/re-enable. This does not prove native macOS notification display, denied-permission UI or long-running day rollover.
+- Eleven dark foreground/background pairs pass >=4.5:1 contrast calculations. Charcoal desktop Dashboard screenshot visually inspected. Not a full accessibility audit.
+- `git diff --check`: passed before delivery.
 
-- Full browser workflows for CV upload/candidate confirmation, running backups, OAuth and read-only import are not yet verified. Existing service/fixture coverage is separate from those browser checks.
-- Owner must configure OAuth locally using SETUP.md and provide the development-copy spreadsheet ID, exact tab and header-row number. Column names are already documented; do not ask for them again. Never request credentials or downloaded client JSON in chat.
-- Extraction provider/model choice remains open before enabling hosted fallback. Personal data must not be sent to a hosted provider without the required approval.
-- No writes to the original tracker, no enabling Sheet writes, no real portal run, no submission, and no Phase 2 start are authorised by this UI task.
+Initial browser extension failed at an exact label selector even though the CV candidate was rendered; corrected to role/name and reran the full suite successfully. An interrupted exploratory rerun left disposable processes; these were stopped before the successful final runs. Default uv cache was read-only, so checks used a /tmp cache. No safety controls were relaxed.
 
-## Next session
+## Unfinished work and blockers
 
-1. Read the entry-point/context/status/handover and inspect Git state. This UI redesign is complete; do not assume the old three-file WIP is still outstanding.
-2. Follow the owner's next requested Phase 1 task. Good next verification work is the CV/backup browser flow or owner-configured development-copy import.
-3. Keep services on localhost and tests on disposable data. Preserve `.env`, `.local/` and storage; never reset owner data to get an empty screenshot.
-4. Update STATUS.md and this handover, push completed checked work to `dev/phase-1`, verify the remote ref, and give Mac pull/restart commands.
+- Actual Google OAuth/read-only development-copy import is untested. No default OAuth client JSON exists in this cloud checkout. Owner must follow SETUP.md locally; never upload credentials in chat.
+- Need development-copy spreadsheet ID, exact tab and header-row number. Headers are already supplied; do not ask again. Original Sheet remains blocked. No write approval exists.
+- Native macOS notifications require browser/OS permissions and owner verification. Reminder permission/enablement is per tab session; reload requires Enable again. No service worker/background daemon or email delivery.
+- PDF/DOCX have service tests; browser upload path tested with TXT only. Live URL evaluation/provider fallback and laptop operational restore remain unverified.
+- No Phase 2, submissions, portal automation or hosted personal-data use authorised.
 
-## Delivery
+## Resume in this order
 
-Branch: `dev/phase-1`. The checked UI/source was published in [`d20a19e`](https://github.com/justinnnnnn1208/application-tracker/commit/d20a19e0c135fbb74e11130d315368560b8c7d27); its full local SHA matched GitHub in a read-only remote-ref check. The worktree was clean after that application commit. This delivery-record follow-up changes documentation only. Context documentation previously landed in `e80d9c9` / `f1a7a40`; direct-dashboard support was previously delivered in `1c7c8e2`. No unfinished runtime edits remain from this UI task.
+1. Read AGENTS.md and linked context/status/spec/setup; inspect Git state and latest remote SHA.
+2. Help owner configure local OAuth using SETUP.md, then verify read-only import against their actual development copy. Never infer success from synthetic tests.
+3. Verify macOS reminders and laptop backup/restore as owner setup permits.
+4. Only after read-only import passes, seek separate approval before any Sheet write scope or implementation. Phase 2 still needs explicit owner confirmation.
+5. Update status/handover, commit with owner-configured authorship, push checked scope and verify remote ref.
 
-No owner configuration is required for this UI update. After delivery, stop the local app with Control+C, run `git pull --ff-only origin dev/phase-1` from the local project folder, and restart `python3 scripts/dev.py`. No dependency or migration refresh is needed for this change.
+## Delivery and owner next step
+
+Prepared files: stylesheet, reminder component, browser runner, README, spec/setup/status/context/handover. No dependencies, migrations, secrets or owner data included. Publication follows checks; latest Git log/remote ref identify the final SHA.
+
+On Mac, stop the app with Control+C, then from the repository root:
+
+```sh
+git pull --ff-only origin dev/phase-1
+python3 scripts/dev.py
+```
+
+Open `http://127.0.0.1:3000`. Choose Enable desktop reminders on Dashboard and allow browser/macOS notifications. No dependency or migration update is required for this delivery.

@@ -4,6 +4,8 @@ From apps/api: uv run --group browser python ../../scripts/smoke_browser.py
 Requires apps/web to be built and Chromium installed (system Chromium is supported).
 """
 import os
+import json
+import sqlite3
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from pathlib import Path
@@ -54,6 +56,7 @@ def main():
         try:
             processes.append(subprocess.Popen([str(API / ".venv/bin/uvicorn"), "app.main:create_app", "--factory", "--host", "127.0.0.1", "--port", "8001", "--no-access-log"], cwd=API, env=environment, stdout=log, stderr=log, start_new_session=True))
             processes.append(subprocess.Popen(["node", str(ROOT / "apps/web/node_modules/next/dist/bin/next"), "start", "--hostname", "127.0.0.1", "--port", "3001"], cwd=ROOT / "apps/web", env=environment, stdout=log, stderr=log, start_new_session=True))
+            processes.append(subprocess.Popen([str(API / ".venv/bin/python"), "-m", "app.worker.main"], cwd=API, env=environment, stdout=log, stderr=log, start_new_session=True))
             wait_for("http://127.0.0.1:8001/health", processes)
             wait_for("http://127.0.0.1:3001", processes)
             with sync_playwright() as playwright:
@@ -168,7 +171,7 @@ def main():
                 page.get_by_label("Sort jobs").select_option("deadline")
                 expect(rows.last).to_contain_text("Fixture unknown deadline")
                 expect(page.locator(".unverified")).to_have_count(3)
-                assert page.locator(".unverified").first.evaluate("e => getComputedStyle(e).backgroundColor") == "rgb(238, 240, 244)"
+                assert page.locator(".unverified").first.evaluate("e => getComputedStyle(e).backgroundColor") == "rgb(52, 55, 61)"
                 page.screenshot(path=str(ROOT / ".local/browser-desktop.png"), full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})
                 expect(page.get_by_role("button", name="Lock workspace", exact=True)).to_have_count(0)
@@ -222,12 +225,70 @@ def main():
                 processes[1] = subprocess.Popen(["node", str(ROOT / "apps/web/node_modules/next/dist/bin/next"), "start", "--hostname", "127.0.0.1", "--port", "3001"], cwd=ROOT / "apps/web", env=environment, stdout=log, stderr=log, start_new_session=True)
                 wait_for("http://127.0.0.1:3001", processes)
                 restarted = browser.new_page()
+                restarted.add_init_script("""window.fixtureNotifications = []; window.fixturePermissionRequests = 0;
+                    window.Notification = class {
+                      static permission = 'default';
+                      static async requestPermission() { window.fixturePermissionRequests++; this.permission = 'granted'; return 'granted'; }
+                      constructor(title, options) { window.fixtureNotifications.push({title, ...options}); }
+                      close() {}
+                    };""")
                 restarted.goto("http://127.0.0.1:3001")
                 expect(restarted.get_by_role("heading", name="Dashboard", exact=True)).to_be_visible()
                 expect(restarted.get_by_label("Workspace access token")).to_have_count(0)
+                assert restarted.evaluate("fixtureNotifications.length === 0 && fixturePermissionRequests === 0")
+                restarted.get_by_role("button", name="Enable desktop reminders", exact=True).click()
+                expect(restarted.get_by_role("button", name="Pause desktop reminders", exact=True)).to_be_visible()
+                restarted.wait_for_function("fixtureNotifications.length === 1")
+                assert restarted.evaluate("fixtureNotifications[0].body.includes('Fixture graduate engineer')")
+                restarted.get_by_role("button", name="Pause desktop reminders", exact=True).click()
+                restarted.get_by_role("button", name="Enable desktop reminders", exact=True).click()
+                assert restarted.evaluate("fixtureNotifications.length === 1")
+                # Exercise the actual separate worker, using pasted fixture HTML only.
+                restarted.get_by_label("Job listing URL", exact=True).fill("https://example.org/worker-browser")
+                restarted.get_by_text("Paste page HTML instead", exact=True).click()
+                listing = {"@context": "https://schema.org", "@type": "JobPosting", "title": "Browser worker engineer", "hiringOrganization": {"name": "Worker fixture company"}, "description": "Fixture description", "jobLocation": {"address": {"addressLocality": "Leeds"}}}
+                restarted.get_by_label("Public job page HTML").fill('<script type="application/ld+json">' + json.dumps(listing) + '</script>')
+                restarted.get_by_role("button", name="Add job", exact=True).click()
+                restarted.get_by_text("Background tasks", exact=False).first.click()
+                expect(restarted.locator(".task-row").filter(has_text="Job URL extraction").get_by_text("succeeded", exact=True)).to_be_visible(timeout=20000)
+                restarted.get_by_role("button", name="Jobs", exact=True).click()
+                expect(restarted.get_by_role("table")).to_contain_text("Browser worker engineer")
+                restarted.get_by_role("button", name="My Profile", exact=True).click()
+                cv_bytes = b"Skills\nPython fixture browser skill\n"
+                restarted.get_by_label("CV file", exact=True).set_input_files({"name": "fixture.txt", "mimeType": "text/plain", "buffer": cv_bytes})
+                restarted.get_by_role("button", name="Upload CV for local parsing", exact=True).click()
+                candidate = restarted.get_by_role("textbox", name="Candidate fact")
+                expect(candidate).to_have_value("Python fixture browser skill", timeout=20000)
+                expect(restarted.get_by_role("button", name="Save confirmed fact")).to_be_disabled()
+                candidate.fill("Python fixture browser skill reviewed")
+                restarted.get_by_role("combobox", name="Candidate category").select_option("skill")
+                restarted.get_by_label("I have checked and confirm this exact fact.", exact=True).check()
+                restarted.get_by_role("button", name="Save confirmed fact", exact=True).click()
+                expect(candidate).to_have_count(0)
+                expect(restarted.get_by_text("Python fixture browser skill reviewed", exact=True)).to_be_visible()
+                with restarted.expect_download() as downloaded:
+                    restarted.get_by_role("button", name="Download CV", exact=False).click()
+                assert Path(downloaded.value.path()).read_bytes() == cv_bytes
+                restarted.get_by_role("button", name="Settings", exact=True).click()
+                restarted.get_by_label("Backup destination folder", exact=True).fill(str(Path(temp) / "backups"))
+                restarted.get_by_role("button", name="Save settings", exact=True).click()
+                expect(restarted.get_by_text("Settings saved.", exact=True)).to_be_visible()
+                restarted.get_by_role("button", name="Back up and verify restore", exact=True).click()
+                task_panel = restarted.locator("details.task-panel")
+                if not task_panel.get_attribute("open"):
+                    task_panel.locator("summary").click()
+                expect(task_panel.get_by_text("Backup restored and verified.", exact=False).first).to_be_visible(timeout=20000)
+                archives = sorted((Path(temp) / "backups").glob("*.zip"))
+                assert archives
+                destination = Path(temp) / "restored"
+                subprocess.run([str(API / ".venv/bin/python"), "-m", "app.services.backup_cli", "restore", "--archive", str(archives[-1]), "--destination", str(destination)], cwd=API, env=environment, check=True, stdout=log, stderr=log)
+                with sqlite3.connect(destination / "database.sqlite3") as restored:
+                    assert restored.execute("SELECT count(*) FROM jobs").fetchone()[0] == 4
+                    assert restored.execute("SELECT count(*) FROM facts WHERE content = ?", ("Python fixture browser skill reviewed",)).fetchone()[0] == 1
+                assert any(path.read_bytes() == cv_bytes for path in (destination / "storage").rglob("*") if path.is_file())
                 assert not errors, errors
                 browser.close()
-                print("Browser smoke passed: direct dashboard on initial load/reload/new browser/server restart, server-only credential, local origin guards, backend authentication, job CRUD/history, profile/fact review, deadlines, filters/sorting, native disclosures and 1440/390/320px layouts. Disposable data removed.")
+                print("Browser smoke passed: direct dashboard on initial load/reload/new browser/server restart, server-only credential, local origin guards, backend authentication, job CRUD/history, profile/fact review, deadlines, filters/sorting, native disclosures, real-worker HTML extraction, CV upload/review/download, UI backup plus CLI restore, opt-in desktop reminders with session dedupe, charcoal theme and 1440/390/320px layouts. Disposable data removed.")
         finally:
             for process in processes:
                 if process.poll() is None:

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CVReview, Declarations, IntegrationSettings, TaskList, URLImport, SheetSyncTime } from "@/components/workflows";
 import { Button } from "@/components/ui/button";
-import { active, api, daysUntil, formatDate, label, statuses, type Fact, type HistoryEvent, type Job, type JobInput, type Profile, type Status } from "@/lib/api";
+import { active, api, daysUntil, todayUK, formatDate, label, statuses, type Fact, type HistoryEvent, type Job, type JobInput, type Profile, type Status } from "@/lib/api";
 
 function Arrow() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" /></svg>; }
 
@@ -72,6 +72,7 @@ function Workspace() {
           <div><h1>{view}</h1><p className="muted">{subtitles[view]}</p>{view === "Dashboard" && <SheetSyncTime />}</div>
           {view === "Dashboard" ? <URLImport compact /> : (view === "Jobs" || view === "Deadlines") && <Button onClick={() => { setAdding(true); setSelected(null); }}>＋ Add a job</Button>}
         </header>
+        <DeadlineReminders jobs={list} hidden={view !== "Dashboard" || adding || Boolean(chosen)} />
         <ErrorMessage error={jobs.error} /><ErrorMessage error={profile.error} />
         {adding ? <JobForm onDone={() => setAdding(false)} onCancel={() => setAdding(false)} />
           : chosen ? <JobDetail key={chosen.id} job={chosen} onBack={() => setSelected(null)} />
@@ -94,6 +95,47 @@ function Workspace() {
       <footer className="app-footer"><span>Job Tracker · Personal workspace</span><span>Local only · Automatic submission off</span></footer>
     </div>
   </div>;
+}
+
+
+function DeadlineReminders({ jobs, hidden }: { jobs: Job[]; hidden: boolean }) {
+  const [enabled, setEnabled] = useState(false);
+  const [message, setMessage] = useState("Optional desktop reminders while this browser tab is open.");
+  const sent = useRef(new Set<string>());
+  useEffect(() => {
+    if (!enabled || !("Notification" in window)) return;
+    if (Notification.permission !== "granted") {
+      setEnabled(false);
+      setMessage("Notifications are blocked. Allow them in your browser settings to enable reminders.");
+      return;
+    }
+    for (const job of jobs) {
+      if (!active(job) || !job.deadline || daysUntil(job.deadline) < 0 || daysUntil(job.deadline) > 7) continue;
+      const key = `${todayUK()}:${job.id}:${job.deadline}`;
+      if (sent.current.has(key)) continue;
+      try {
+        const notification = new Notification("Job deadline reminder", {
+          body: `${job.title} at ${job.company} closes ${formatDate(job.deadline)}.`, tag: key,
+        });
+        notification.onclick = () => { window.focus(); notification.close(); };
+        sent.current.add(key);
+      } catch {
+        setEnabled(false);
+        setMessage("Desktop notifications are unavailable. Your deadlines remain visible below.");
+        break;
+      }
+    }
+  }, [enabled, jobs]);
+  async function toggle() {
+    if (enabled) { setEnabled(false); setMessage("Desktop reminders paused for this tab."); return; }
+    if (!("Notification" in window)) { setMessage("This browser does not support desktop notifications. Use the deadline view."); return; }
+    try {
+      const permission = await Notification.requestPermission();
+      setEnabled(permission === "granted");
+      setMessage(permission === "granted" ? "Enabled for this tab: one reminder per job per UK day for deadlines within 7 days. Closing the tab stops reminders." : "Permission was not granted. Allow notifications in your browser settings; the deadline view still works.");
+    } catch { setMessage("Notifications could not be enabled. Your deadlines remain available below."); }
+  }
+  return <div className="reminder-controls" hidden={hidden}><Button variant="outline" onClick={() => void toggle()}>{enabled ? "Pause desktop reminders" : "Enable desktop reminders"}</Button><p className="small" role="status">{message}</p></div>;
 }
 
 function Stat({ number, text, detail }: { number: number; text: string; detail: string }) {
