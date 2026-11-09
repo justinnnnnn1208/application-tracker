@@ -58,7 +58,7 @@ Discovery is the first manual Greenhouse slice only. It imports all records from
 
 ## Delivery
 
-Code/tests/docs prepared for commit/push. Generated next-env.d.ts drift excluded. No owner configuration, credentials, storage, dependencies or migrations changed. Publication recorded in Git log and follow-up delivery note.
+Code/tests/docs published as `ba9c99e64f4e75b308054c51e8d15cee1b7e8a7d`; local SHA matched GitHub dev/phase-1. This follow-up records delivery only; no unfinished runtime edits remain. Generated next-env.d.ts drift excluded. No owner configuration, credentials, storage, dependencies or migrations changed. Publication recorded in Git log and follow-up delivery note.
 
 Mac update from project root after Control+C:
 
