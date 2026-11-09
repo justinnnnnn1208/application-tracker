@@ -59,7 +59,7 @@ Read-only remains the working default. Do not infer Phase 2 permission from impl
 
 ## Delivery and owner next step
 
-Code/tests/docs are prepared for commit/push as one completed scope; publication is recorded in the follow-up delivery record and Git log. Generated next-env.d.ts drift is excluded. Owner Git identity remains configured; do not override with Codex or rewrite history.
+Code/tests/docs were published in `76a88ac26707c7121d2740222d4d84333cf21454`; the full local SHA matched GitHub dev/phase-1. This documentation-only follow-up records delivery. No unfinished runtime edits remain. Generated next-env.d.ts drift is excluded. Owner Git identity remains configured; do not override with Codex or rewrite history.
 
 On Mac, stop with Control+C and run from the project root:
 

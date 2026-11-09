@@ -37,4 +37,4 @@ Follow the task sheet in docs/HANDOVER.md. On Mac pull/restart, verify listing l
 
 The owner approved write implementation earlier. Keeping read-only and deferring live write-back was subsequently recommended but not explicitly accepted as a changed Phase 1 scope. Do not silently remove the criterion or start Phase 2. The owner must either verify the live write or explicitly accept the deferral, then authorise progression. Existing sync does not append new app jobs to Sheets or implement full managed-field synchronisation.
 
-No owner data/configuration was reset or copied to tracked files. The current delivery will be committed/pushed using owner-configured Git authorship; see HANDOVER.md and Git log for publication.
+No owner data/configuration was reset or copied to tracked files. The current delivery was committed with owner-configured Git authorship and pushed as `76a88ac`; its full local SHA matched GitHub dev/phase-1. See HANDOVER.md for the task sheet and remaining owner checks.
