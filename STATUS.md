@@ -2,39 +2,40 @@
 
 Reviewed: 9 November 2026 (Europe/London).
 
-**Phase 1: incomplete, roughly 80% verified. Phase 2: paused pending explicit owner acceptance.** Percentages are rough communication aids, not acceptance criteria. Read AGENTS.md, docs/context/PROJECT.md, docs/SPEC.md and docs/HANDOVER.md before work.
+**Phase 1: accepted for progression with explicit deferrals. Phase 2: authorised and started, roughly 10%.** Acceptance with deferrals does not mean every original Phase 1 check passed. The owner confirmed listing links/imported-status UI on the Mac, accepted live status-write verification as deferred, and retained native Mac notification/operational restore checks as outstanding.
 
-## Latest checked work
+## Current scope and implementation
 
-- Job tables and details have direct Open listing links to the original application URL.
-- Original Sheet statuses are visible separately from the app status. Applied history displays “Applied — imported from Sheet”, has a filter, and its count appears in the Dashboard Applied explanation. Imported claims never create confirmed APPLIED records; that count remains zero without evidence support.
-- Approved status-only write-back is implemented, disabled by default. `SHEETS_WRITE_COPY_ID` must match the copy, and renewed OAuth consent must grant Sheets write permission. Original tracker access remains blocked; scheduled tasks remain read-only imports. No Notes, deadline, sponsorship or range writes, appends, submission functionality, dependency changes or migrations were added.
-- The owner reported Google connected and all 20 development-copy jobs imported, then confirmed the requested preservation check and approved copy-only writes. This is owner-reported verification on the Mac, not independent cloud access to the private session.
-- Native desktop reminders and local backup remain available. Cloud tests use disposable data; they do not prove Mac notification delivery or an operational restore on that laptop.
+The owner prioritises genuine graduate/junior UK technology postings. Sponsorship is informational, never an exclusion or score penalty. The owner mentioned the Graduate visa; no legal declaration, immigration eligibility or expiry was inferred or changed. Sheets remains read-only by default; no write setting or grant was enabled here.
 
-## Phase 1 acceptance criteria
+- Existing local tracker, CV review, deadlines/reminders, backups and guarded default-disabled copy status writes remain available.
+- New offline evaluation runner validates local saved-page paths, SHA-256, unique canonical URLs, labels and sponsorship quotes; reports field accuracy, extraction failures and false confirmed sponsorship separately. Failure cases remain in denominators. It does not fetch pages or call a model. The manifest is empty: **real benchmark NOT TESTED**, expected exit 2, not a pass.
+- New Greenhouse adapter reads only the official public board API through existing allowlist/robots/rate/size guards. Settings supports adding/removing sources and requesting manual discovery. Worker imports valid published records, dedupes canonical URLs, reports invalid rows and leaves sponsorship UNVERIFIED. No seeded boards, automatic runs, form interaction, legal/profile use or hosted processing.
+- First discovery version imports the chosen board, without UK/junior ranking. Missing company metadata uses an explicit unknown label; missing dates stay null. Live API behaviour unverified. Cross-source fuzzy merging, matching/scoring, feedback, licensing data, other ATS/aggregators are not implemented.
 
-| SPEC.md criterion | Result | Evidence and remaining limit |
+## Phase 1 acceptance record
+
+| Criterion | Result | Evidence / limit |
 |---|---|---|
-| Ten pasted URLs create correct job rows | PASSED — controlled fixtures | Current API→queue→worker→extractor→DB tests verify 10 correct rows; browser checks pasted fixture HTML through a real worker. Live vacancy set untested. |
-| Re-pasting creates no duplicates | PASSED — fixtures | Tracking URL variants preserve IDs/count/history in current suite. |
-| Sheet import preserves all rows | PASSED — owner report and fixtures | Owner reports all 20 jobs and confirms matching data; synthetic tests preserve incomplete rows, formulas, Notes and source statuses. Actual Google task output not independently inspected here. |
-| Status write changes only intended cell; formulas/formatting/Notes preserved | NOT TESTED on actual development copy | Single-cell RAW HTTP request, exact values/formula preservation, Notes conflict, duplicate/formula/moved-row/concurrent-cell guards, OAuth copy/scope gates and worker no-retry tests pass. Live formatting/preservation comparison still required. |
-| Database/storage backup restores successfully | PASSED — disposable data | Service checksums/integrity/tamper tests and UI-requested backup→CLI restore verify jobs, reviewed fact and CV bytes in a new folder. Laptop operational restore untested. |
-| Every job defaults UNVERIFIED | PASSED | Current API/DB/extraction tests; imported sponsorship claims remain Notes, not confirmed evidence. |
+| 10 URLs create correct rows | PASSED — controlled fixtures | API→queue→worker→extractor→DB tests; ten live vacancy pages not tested. |
+| Re-pasting avoids duplicates | PASSED — fixtures | Canonical/tracking URL variants preserve IDs/count/history. |
+| Sheet preserves all rows | PASSED — owner report + fixtures | Owner reports 20 jobs and matching data; synthetic tests cover incomplete rows/formulas/Notes/source statuses. No independent access to Mac OAuth session. |
+| Status changes only intended cell | NOT TESTED live — explicitly deferred | Exact one-cell RAW HTTP/worker tests, formula/move/concurrent/duplicate/Notes guards and no-retry tests pass; live formatting preservation check outstanding. |
+| Backup restores | PASSED — disposable data | Checksums/integrity/tamper and real-worker UI backup→CLI restore verify DB/facts/CV bytes. Operational Mac restore outstanding. |
+| Sponsorship defaults UNVERIFIED | PASSED | API/DB/extraction/discovery fixture tests; no automatic inference from licences or Notes. |
 
-## Current verification
+## Current checks
 
-- In apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`: **53 passed**, one existing Starlette/httpx deprecation warning.
-- In apps/web: `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build`: **PASSED**.
-- In apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen --group browser python ../../scripts/smoke_browser.py`: **PASSED** on final UI. Direct dashboard/reload/reopen/restart, server-only credentials, origin/auth guards, CRUD/history/profile/fact review, filter/search/sort/counts, Open listing href/rel, imported Applied labels/filter/count explanation, real-worker extraction, TXT CV edit/confirm/download, backup/CLI restore, opt-in Notification mock and 1440/390/320px layouts. No real Google or application portal calls.
-- Notification mock proves opt-in and session dedupe; native macOS display, denied-permission path and day rollover remain untested here.
-- Charcoal Jobs screenshot visually inspected; ignored .local artifacts contain only synthetic data. `git diff --check` passed before staging.
+- apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`: **67 passed**, one existing Starlette/httpx deprecation warning.
+- apps/web: `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build`: **PASSED**.
+- apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen --group browser python ../../scripts/smoke_browser.py`: **PASSED**, including Settings discovery source creation, disabled-source control and removal. Existing direct-dashboard/security/CRUD/filters/imported Applied/link/CV/backup/reminder/responsive checks also pass. No real discovery or Google call during tests.
+- Evaluation CLI on empty real manifest: **exit 2 as intended**, zero pages, dataset_ready false, phase_2_accepted false. Runner tests use synthetic fixtures only and must never be reported as real postings.
+- No extraction/scoring/sponsorship algorithm changed by this slice. Real evaluation baseline remains blocked, not waived. Matching must wait for the roughly 30 real reviewed postings required by SPEC.md. Numeric accuracy thresholds remain unagreed; zero false CONFIRMED_YES stays required.
 
-## Next steps and owner inputs
+## Network blocker and saved draft
 
-Follow the task sheet in docs/HANDOVER.md. On Mac pull/restart, verify listing links/imported labels, allow notifications and check a backup restore. Optional write setup and an exact one-cell acceptance procedure are in docs/SETUP.md. No credentials should be sent in chat.
+Default sandbox requests to Greenhouse robots.txt returned `URLError: Tunnel connection failed: 403 Forbidden`. Environment status confirmed current enforced restricted policy has no custom job-source hosts. No bypass/alternate transport was attempted.
 
-The owner approved write implementation earlier. Keeping read-only and deferring live write-back was subsequently recommended but not explicitly accepted as a changed Phase 1 scope. Do not silently remove the criterion or start Phase 2. The owner must either verify the live write or explicitly accept the deferral, then authorise progression. Existing sync does not append new app jobs to Sheets or implement full managed-field synchronisation.
+Saved environment draft `cecfgdraft_ca60bddc6fc081998e5c4da96f887495` adds only `boards-api.greenhouse.io` and `job-boards.greenhouse.io`, preserves install/repository/secret settings and updates obsolete startup phase guidance. Save returned status saved and requires_publish true. **It is not applied or published.** Owner must review/save/publish in environment settings; then recheck observed policy and a fresh permitted request. See SETUP.md. No credentials needed for these public endpoints.
 
-No owner data/configuration was reset or copied to tracked files. The current delivery was committed with owner-configured Git authorship and pushed as `76a88ac`; its full local SHA matched GitHub dev/phase-1. See HANDOVER.md for the task sheet and remaining owner checks.
+Next: apply permitted network settings, collect and hand-label genuine diverse public vacancies, agree thresholds, then build matching. Real portal forms/submissions and hosted personal-data use remain unauthorised. Keep Phase 1 deferrals recorded. Current code/tests/docs are prepared for owner-authored commit/push; delivery is recorded in HANDOVER.md and Git log.

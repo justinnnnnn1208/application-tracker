@@ -12,7 +12,7 @@ Priorities, in order: **accuracy and safety > application quality > speed to fir
 
 - Final-year BSc Computer Science, University of Leeds, graduating 2027.
 - Targets: London, Manchester, Leeds, wider UK.
-- **Requires UK work visa sponsorship.**
+- **Current owner update:** prioritise graduate/junior UK technology roles regardless of sponsorship availability. Sponsorship is informational and must not exclude or penalise a role. The owner mentioned the Graduate visa; do not infer eligibility, expiry dates or change fixed legal/right-to-work declarations without owner-confirmed profile values.
 - Target roles: graduate software engineer, AI/ML engineer, data scientist/engineer/analyst, technology graduate programmes, FinTech/banking tech, technology consulting/BA, logistics tech/automation.
 - Source of truth for experience: my CV, parsed into verified facts (section 6).
 
@@ -100,7 +100,7 @@ If a form asks something in this category that is not in my profile, status beco
 Existing tracker: https://docs.google.com/spreadsheets/d/1UCZX9aj7Ls_EIgY231bhufQ0kQKjU0wGz_PP0RHT2dk/edit
 
 - OAuth 2.0, `spreadsheets` scope, tokens encrypted at rest.
-- **Current rollout (owner update):** the owner reported all 20 development-copy jobs imported and approved copy-only status write-back. Read-only remains the default. Only an explicit private `SHEETS_WRITE_COPY_ID` enables the broader `spreadsheets` scope, followed by renewed consent. The app restricts mutations to single mapped status cells on that copy; the original remains blocked. Live write verification is still pending. Deferring that acceptance criterion and starting Phase 2 requires explicit owner agreement.
+- **Current rollout (owner update):** the owner reported all 20 development-copy jobs imported and approved copy-only status write-back. Read-only remains the default. Only an explicit private `SHEETS_WRITE_COPY_ID` enables the broader `spreadsheets` scope, followed by renewed consent. The app restricts mutations to single mapped status cells on that copy; the original remains blocked. Live write verification is still pending. The owner subsequently explicitly accepted deferring live write verification and authorised Phase 2, with Mac notification and operational restore checks also outstanding. Keep Sheets read-only by default.
 - Map columns **by header name** through a configurable mapping. Header names have been supplied; the development-copy tab and header-row number still need confirmation (see [SETUP.md](SETUP.md)).
 - A row's job URL is its identity; store the row number alongside it.
 - **Never rewrite ranges.** Write single cells only, so formulas, formatting and notes stay intact.
@@ -204,8 +204,10 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 - Paste-URL flow with extraction and dedupe; Sheets OAuth, import, and cell-level write-back; dashboard, job list, job detail, deadline view and reminders.
 - Accept when: pasting 10 URLs creates 10 correct job rows; re-pasting creates no duplicates; the sheet import preserves all rows; a status write-back changes only the target cell and leaves formulas, formatting and notes untouched (verified on the copy); the backup script produces a copy that restores successfully; every job defaults to `UNVERIFIED` unless evidence text is present.
 
+**Phase 1 progression decision (9 November 2026):** the owner accepted progression with the live status-cell preservation test deferred and Mac notification/operational restore checks outstanding. These remain recorded limitations, not passed tests. The owner confirmed the delivered listing links and imported-status UI checks on their Mac.
+
 **Phase 2: Job intelligence**
-- Matching with explainable scores, sponsorship evidence and licensed-sponsor signal, discovery from ATS and aggregator APIs, fuzzy dedupe, match feedback (good/bad) to tune weights.
+- Matching with explainable scores, informational sponsorship evidence and licensed-sponsor signal, discovery from ATS and aggregator APIs, fuzzy dedupe, match feedback (good/bad) to tune weights. Prioritise graduate/junior UK technology roles; do not exclude or penalise roles for sponsorship status. Matching awaits the real hand-labelled evaluation set; numerical field-accuracy thresholds are still to be agreed.
 - Accept when: the eval set meets agreed thresholds and has zero false `CONFIRMED_YES`; the same job from two sources is merged.
 
 **Phase 3: Application preparation**

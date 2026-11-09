@@ -151,3 +151,21 @@ To perform the remaining live acceptance test on your Mac:
 Writes use RAW values on one cell per request, with header, row-identity, formula and target-value checks. Avoid editing/sorting the copy during sync: these checks cannot make Google's separate reads and write atomic. Duplicate URLs and formula status cells are skipped; moved/concurrently changed targets halt further writes. An uncertain outcome needs inspection and is never automatically retried.
 
 Current write-back updates existing linked statuses only: it does not append new app jobs, change deadlines/sponsorship, write Notes, or set APPLIED. Those broader sync behaviours are not delivered by this slice. To stay read-only, leave the setting unset and retain the current grant. If already granted broader permission, removing the setting blocks its use in this app; reconnect read-only (and revoke the old Google grant if necessary) to reduce Google's permission too.
+
+## Phase 2: manual public-board discovery
+
+The owner authorised Phase 2 with the Phase 1 live write test deferred. Keep Google Sheets read-only. In Settings → Job discovery, enter the employer's Greenhouse board **slug**, not its URL. It is the identifier in a URL such as `https://job-boards.greenhouse.io/BOARD`. No sources are seeded or fetched automatically. Review the source's terms before enabling it; the checkbox enables manual task requests only.
+
+For a permitted public API fetch, add `boards-api.greenhouse.io` to your existing comma-separated `URL_FETCH_ALLOWED_HOSTS` in the private root .env, preserving any hosts already approved. Restart the app. Add/enable the chosen source, click Discover jobs from that source, then inspect Background tasks and Jobs. Imports run in the worker, dedupe canonical URLs and leave sponsorship UNVERIFIED. This first adapter imports the whole chosen board; UK/junior preference ranking is not yet implemented. Unsupported/missing dates stay unknown, and absent API company names are explicitly shown as Employer not provided. No submissions, Sheets writes, profile data or hosted LLM calls are involved.
+
+The shared fetcher requires publicly resolving addresses, explicit host approval, accessible robots.txt and allowed crawl rules. It bounds responses to 1 MB, rate-limits, and stops on redirects, 401/403/429 or robots denial. Large boards may need a later bounded pagination/detail adapter; this version fails rather than silently truncating them. Live API behaviour is not verified yet.
+
+The cloud policy currently denies `boards-api.greenhouse.io` and `job-boards.greenhouse.io`. A saved environment draft adds only those two domains and updates stale startup guidance. **Saved is not applied**: review/save the draft in environment settings, then Publish as requested by the product. Recheck status and perform a fresh permitted fetch before claiming live discovery works. Local .env host permission and the cloud network policy are separate controls.
+
+Real-page evaluation instructions and manifest format are in `fixtures/eval/README.md`. The manifest is currently empty. From apps/api run:
+
+```sh
+uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest.json
+```
+
+An empty dataset exits 2 and reports NOT READY; it is not a benchmark pass. Matching waits for about 30 real reviewed postings. Synthetic parser/runner tests are only software tests, not real job postings or evaluation evidence. Proposed numerical thresholds were not accepted yet; zero false CONFIRMED_YES remains required regardless of whether sponsorship affects job selection.

@@ -4,8 +4,9 @@ from pathlib import Path
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from app.db.models import Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
+from app.db.models import DiscoverySource, Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
 from app.integrations.llm.provider import configured_provider
+from app.integrations.discovery.greenhouse import read_board
 from app.integrations.sheets.client import GoogleSheet
 from app.integrations.sheets.sync import import_sheet
 from app.schemas import as_utc
@@ -36,6 +37,17 @@ def catch_up(session, current=None):
 
 
 def execute(session, task, settings):
+    if task.kind == "discover":
+        source = session.get(DiscoverySource, task.payload.get("source_id"))
+        if not source or not source.enabled or source.provider != "greenhouse":
+            raise NeedsInput("The discovery source is missing, disabled or unsupported.")
+        jobs, warnings = read_board(source.board)
+        created = 0
+        for data in jobs:
+            _, added = ensure_job(session, data)
+            created += int(added)
+        session.commit()
+        return {"postings_read": len(jobs), "jobs_created": created, "duplicates": len(jobs) - created, "warnings": warnings}
     if task.kind == "extract_url":
         html = task.payload.get("page_html") or fetch_page(task.payload["url"])
         data = extract_job(task.payload["url"], html, configured_provider())

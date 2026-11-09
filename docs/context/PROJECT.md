@@ -27,10 +27,14 @@ Question-driven brainstorming can be done in conversation. No interviewing plugi
 
 ## Current authorisation boundaries
 
-- Phase 1 is incomplete. Do not start Phase 2 until the owner explicitly confirms Phase 1 is verified, even if older messages requested faster progress to Phase 2.
-- Google access defaults to read-only and is limited to the development copy. The owner confirmed a 20-row import and approved copy-only status writes; enabling them locally requires explicit copy configuration and renewed Google consent. Live write verification remains pending. Do not touch the original tracker or infer approval to start Phase 2 or drop its prerequisites.
+- The owner explicitly authorised Phase 2 after accepting live write-back verification as deferred and Mac notification/operational restore checks as outstanding. Phase 1 is accepted for progression with limitations, not a claim that every original test passed.
+- Google access defaults to read-only and is limited to the development copy. The owner confirmed a 20-row import and approved copy-only status writes; enabling them locally requires explicit copy configuration and renewed Google consent. Live write verification remains pending. Do not touch the original tracker. Phase 2 is now explicitly authorised; keep Sheets read-only and retain deferred checks.
 - No application submissions, auto-submit enablement, real application-portal runs, or hosted processing of personal data without the approvals specified in AGENTS.md and SPEC.md.
 - Run locally through Phases 1–5. No hosting, Docker, multi-user auth or Postgres work before Phase 6 unless explicitly requested. Phase 6 is optional.
+
+## Discovery and ranking preference
+
+Prioritise genuine graduate/junior UK technology vacancies. Include roles regardless of sponsorship availability; treat sponsorship evidence and sponsor-licence data as informational. This preference does not establish immigration eligibility or modify legal declarations. Numerical evaluation thresholds remain to be agreed; real postings are mandatory.
 
 ## UI direction
 

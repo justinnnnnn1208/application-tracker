@@ -202,6 +202,14 @@ def main():
                     expect(page.get_by_role("heading", name=name, exact=True)).to_be_visible()
                     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), name
                 page.get_by_role("button", name="Settings", exact=True).click()
+                discovery = page.locator("details").filter(has=page.locator("summary", has_text="Job discovery")).first
+                discovery.locator("summary").click()
+                discovery.get_by_label("Greenhouse board slug", exact=True).fill("fixture-board")
+                discovery.get_by_role("button", name="Add discovery source", exact=True).click()
+                expect(discovery.get_by_role("button", name="Discover jobs from fixture-board", exact=True)).to_be_disabled()
+                discovery.get_by_role("button", name="Remove fixture-board", exact=True).click()
+                expect(discovery.get_by_role("button", name="Remove fixture-board", exact=True)).to_have_count(0)
+                discovery.locator("summary").click()
                 backups = page.locator("details").filter(has_text="Backup and restore").first
                 expect(backups).to_have_attribute("open", "")
                 backups.locator("summary").first.click()

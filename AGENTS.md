@@ -67,7 +67,8 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 ## Working agreements
 
 - **Work one phase at a time**, as defined in `docs/SPEC.md`. Do not start the next phase unprompted.
-- Phase 2 is paused until the owner explicitly confirms Phase 1 is verified. Sheets access defaults to read-only and operates only on a development copy. The owner reported all 20 rows imported and separately approved copy-only status writes. Write-back remains disabled unless explicitly configured for that copy and OAuth is reconnected; live write verification is still pending. A later suggestion to defer write-back has not yet been explicitly accepted as a revised Phase 1 scope.
+- The owner accepted Phase 1 progression with live Sheet write verification explicitly deferred and Mac notification/operational restore checks outstanding, then authorised Phase 2. Keep those limitations recorded rather than marking untested checks passed. Google Sheets stays read-only by default; do not enable writes during Phase 2.
+- Current discovery target: real graduate/junior UK technology postings. Sponsorship is informational, never a mandatory filter or a reason to penalise a match. Do not change owner-confirmed legal/right-to-work declarations from this preference. Build matching only after the real hand-labelled evaluation set required by SPEC.md is ready.
 - Progress updates include a phase progress bar, every Phase 1 acceptance criterion marked PASSED/FAILED/NOT TESTED with evidence, changes since the last update, work not reached, and clearly listed owner inputs.
 - A phase is done only when its acceptance criteria pass. Report which criteria were verified and how; say plainly what is untested or partial.
 - Write tests with the code. Portal adapters are tested against saved HTML fixtures, not live sites.
