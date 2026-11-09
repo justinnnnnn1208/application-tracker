@@ -5,7 +5,7 @@ Reviewed: 9 November 2026 (UTC).
 ## Session
 
 - Scope: continue Phase 1, change the bright UI to charcoal grey, and add owner-selected macOS/browser deadline reminders. Keep structure minimal.
-- Branch: `dev/phase-1`; previous published baseline `67477cd`. This delivery is prepared for commit/push; see Git log for the published SHA.
+- Branch: `dev/phase-1`; previous published baseline `67477cd`. The application delivery is published as `a625c01c4f4303fc5a944603b6fb997338069545`; its local SHA matched GitHub.
 - Phase 1 remains incomplete (roughly 70%); Phase 2 requires explicit owner confirmation after Phase 1 verification.
 - Initial worktree was clean. No owner data or pre-existing edits were changed.
 - Owner requested future commits be attributed to their supplied Git identity. Local Git author configuration is set accordingly; do not override it with Codex. Existing history was not rewritten. Use the latest owner-authored commit as reference if configuration needs restoring, without copying the email into project context files.
@@ -59,7 +59,7 @@ Initial browser extension failed at an exact label selector even though the CV c
 
 ## Delivery and owner next step
 
-Prepared files: stylesheet, reminder component, browser runner, README, spec/setup/status/context/handover. No dependencies, migrations, secrets or owner data included. Publication follows checks; latest Git log/remote ref identify the final SHA.
+Prepared files: stylesheet, reminder component, browser runner, README, spec/setup/status/context/handover. No dependencies, migrations, secrets or owner data included. Application commit `a625c01` was pushed and its full SHA matched the remote ref. This follow-up only records delivery; no runtime edits remain.
 
 On Mac, stop the app with Control+C, then from the repository root:
 

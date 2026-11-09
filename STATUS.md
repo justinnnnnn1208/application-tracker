@@ -59,4 +59,4 @@ The stylesheet uses the existing Inter package and blue `#2F5BEA`; 11 dark-theme
 
 No credentials, CV text, legal declarations or owner database contents belong in this status file. See [HANDOVER.md](docs/HANDOVER.md) for exact unfinished paths and resumption steps.
 
-Latest delivery: charcoal theme and expanded real-worker browser verification are checked locally; publication is recorded in HANDOVER.md. New commits use the owner-provided Git identity, configured locally rather than stored in project Markdown.
+Latest delivery: charcoal theme, opt-in desktop reminders and expanded real-worker browser verification were published as `a625c01`; the full local SHA matched GitHub on dev/phase-1. New commits use the owner-provided Git identity, configured locally rather than stored in project Markdown.
