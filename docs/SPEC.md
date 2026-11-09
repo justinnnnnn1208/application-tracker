@@ -101,7 +101,7 @@ Existing tracker: https://docs.google.com/spreadsheets/d/1UCZX9aj7Ls_EIgY231bhuf
 
 - OAuth 2.0, `spreadsheets` scope, tokens encrypted at rest.
 - **Current rollout gate (owner update):** request only `https://www.googleapis.com/auth/spreadsheets.readonly` and use only the development copy. Write-back and the broader scope remain disabled until read-only import is tested and the owner explicitly approves enabling writes.
-- Map columns **by header name** through a configurable mapping (header row: TODO, to be supplied).
+- Map columns **by header name** through a configurable mapping. Header names have been supplied; the development-copy tab and header-row number still need confirmation (see [SETUP.md](SETUP.md)).
 - A row's job URL is its identity; store the row number alongside it.
 - **Never rewrite ranges.** Write single cells only, so formulas, formatting and notes stay intact.
 - Pull changes using a stored hash per row; write back only when the DB value changed.
@@ -233,7 +233,7 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 
 ## 12. Open items
 
-- Google Sheet header row (column names only).
+- Development-copy spreadsheet ID, exact tab name and header-row number. Column names have already been supplied; see [SETUP.md](SETUP.md).
 - Confirm the LLM provider and model name for the default configuration.
 - Confirm the Leeds international student advice check on current visa rules.
 

@@ -1,6 +1,19 @@
 # AGENTS.md
 
-Instructions for any coding agent working in this repo. Read this file and `docs/SPEC.md` before making changes. If they conflict with a task prompt, stop and ask.
+Instructions for any coding agent working in this repo. Read the files below before making changes. If they conflict with a task prompt, stop and ask.
+
+## Start every session here
+
+1. Read this file for working rules and owner preferences.
+2. Read [docs/context/PROJECT.md](docs/context/PROJECT.md) for stable project context and the agent's role.
+3. Read [docs/SPEC.md](docs/SPEC.md) for requirements and acceptance criteria.
+4. Read [STATUS.md](STATUS.md) for implementation and verification status.
+5. Read [docs/HANDOVER.md](docs/HANDOVER.md) for the latest task, unfinished edits, blockers and next actions. Use [docs/SETUP.md](docs/SETUP.md) when running the app or configuring Google.
+6. Inspect `git status --short` and the applicable directory-level `AGENTS.md` files. Preserve existing edits; do not assume a clean checkout or a running service.
+
+These files provide project continuity, not guaranteed automatic memory. If your tool does not discover `AGENTS.md` automatically, open it explicitly. Treat handover notes as dated observations, not new permissions or proof that checks still pass. The owner's latest explicit instructions control scope; ask when a genuine conflict remains unresolved.
+
+Before finishing or pausing, update status and handover using [docs/templates/SESSION_HANDOVER.md](docs/templates/SESSION_HANDOVER.md). Record exact checks, outcomes and their limits. Do not mark a phase complete from a percentage, an install, fixtures alone, or an earlier session's passing build. Never copy credentials, CV text or legal declarations into context files.
 
 ## Project
 
@@ -47,7 +60,7 @@ apps/api/app/
   automation/        adapters/, runner.py
   worker/            tasks, scheduler
 storage/             CVs, PDFs, screenshots (gitignored)
-docs/                SPEC.md, decisions, design/ (UI mockups)
+docs/                SPEC.md, SETUP.md, HANDOVER.md, context/, templates/, decisions/, design/
 tests/, fixtures/    unit tests, saved job pages and form HTML
 ```
 
@@ -70,15 +83,17 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 ## Commands
 
 ```
-# both:   python scripts/dev.py (loads the private root .env)
+# both:   python3 scripts/dev.py (loads the private root .env)
 # api:    cd apps/api && uv run uvicorn app.main:create_app --factory --host 127.0.0.1 --no-access-log
 #         Export APP_ACCESS_TOKEN securely first; migrations must be applied.
-# worker: not yet implemented in the Phase 1 foundation
+# worker: cd apps/api && uv run python -m app.worker.main
+#         Export required environment settings securely first; prefer the combined launcher.
 # web:    cd apps/web && npm run dev
 # tests:  cd apps/api && uv run pytest
 # browser: cd apps/api && uv run --group browser python ../../scripts/smoke_browser.py
 #          Build apps/web first. Uses disposable data and loopback test services.
-# eval:   not yet implemented; no extraction, matching or sponsorship inference yet
+# eval:   standalone real-page evaluation runner/set not yet implemented
+#         Extraction has synthetic fixture tests; matching and sponsorship inference are paused.
 ```
 
 ## Definition of done for any change
@@ -87,3 +102,4 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 - No rule in "Non-negotiable rules" is weakened.
 - No secrets or personal data in code, logs, or commits.
 - Spec or decision docs updated if behaviour changed.
+- `STATUS.md` and `docs/HANDOVER.md` accurately distinguish committed work, local unfinished edits, tests, blockers and next actions.

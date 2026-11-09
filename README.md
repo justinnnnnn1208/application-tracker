@@ -1,55 +1,57 @@
-# Next step · Application tracker
+# Application tracker
 
-A private, local-first workspace for UK graduate opportunities. The requirements are in [docs/SPEC.md](docs/SPEC.md); agents must also read [AGENTS.md](AGENTS.md).
+A single-user, local-first workspace for UK graduate job opportunities. Phase 1 is incomplete; Phase 2 is paused until the owner explicitly confirms Phase 1 is verified. Application submission and Google Sheet writes are disabled.
 
-## Current slice: Phase 1 foundation
+## Start here
 
-Working: token-protected API, SQLite migrations, profile/fact CRUD and owner review, manual job intake with canonical-URL deduplication, job details/editing, shortlist/status history, dashboard, search, and in-app deadline reminders using the UK calendar. Data starts empty; no applicant details or sample jobs are seeded.
+| Read | Purpose |
+|---|---|
+| [AGENTS.md](AGENTS.md) | Agent rules, safety and mandatory session-start reading order |
+| [Project context](docs/context/PROJECT.md) | Stable purpose, agent role and owner working preferences |
+| [Product spec](docs/SPEC.md) | Requirements, phases and acceptance criteria |
+| [Current status](STATUS.md) | What is implemented, tested, unverified or blocked |
+| [Latest handover](docs/HANDOVER.md) | Exact unfinished work and where the next session should resume |
+| [Setup](docs/SETUP.md) | Mac run commands, verification, read-only Google setup and backup/restore |
 
-Not yet implemented: CV upload/parsing, URL extraction, sponsorship evidence editing, Google Sheets OAuth/import/sync, background worker, external reminder delivery, and automated backups. Phase 1 is **partial**. Later-phase preparation, matching and submission are not enabled.
+[CLAUDE.md](CLAUDE.md) directs Claude Code to the same shared instructions. No plugin is required. An arbitrary Markdown folder is not guaranteed to be read automatically; agents must follow the linked entry-point instructions or be explicitly asked to read AGENTS.md.
 
-## Local development
+## Run locally on macOS
 
-Requires Python 3.12+, uv, Node 24 and npm. Use the existing checkout; cloud tasks are already isolated, so do not create a worktree unless requested.
-
-From the repository root:
+Requires Python 3.12+, uv, Node.js 24 and npm. From the project directory:
 
 ```sh
-python scripts/init_local.py
+python3 scripts/init_local.py
 cd apps/api
 uv sync --frozen
 uv run alembic upgrade head
 cd ../web
 npm ci
 cd ../..
-python scripts/dev.py
+python3 scripts/dev.py
 ```
 
-API listens on loopback port 8000, UI on loopback port 3000. Open the local UI in your browser: it goes straight to the dashboard, including after refresh/restart. There is no unlock page or lock button. `APP_ACCESS_TOKEN` stays in the server's private `.env`; the Next.js proxy uses it for backend calls. The browser never receives or stores it. Never share or commit `.env`. The launcher loads `.env` values literally, without shell interpolation; exported environment variables take precedence. Restart after changing configuration. API refuses to start without a 32-character token or applied migrations.
+Open `http://127.0.0.1:3000` on the same computer. The dashboard opens directly. The API token stays server-side; no unlock page or token entry is needed. Keep the terminal open and use Control+C to stop. The launcher starts the web app, API and worker and loads the private root `.env` literally; exported environment variables take precedence.
 
-Do not expose either port to the internet. Keep local browser, access-token file, DB and backups private. SQLite and profile facts are not encrypted; OAuth token encryption will be implemented before OAuth storage is added.
+For later starts, run `python3 scripts/dev.py` from the root. For updates, stop the app and use `git pull --ff-only origin dev/phase-1`, preserving any local changes. See [SETUP.md](docs/SETUP.md) for dependency/migration refreshes and troubleshooting.
 
-For separate processes, activate `apps/api/.venv`, export the same `APP_ACCESS_TOKEN` securely to both server processes and run `uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log` from `apps/api`; run `npm run dev` from `apps/web`. Prefer the combined launcher, which loads the token automatically. The web server proxies only allowlisted API paths, accepts loopback Host values only, and requires matching Origin headers for writes. Requests marked cross-site are rejected. Direct backend calls still require a bearer token. Any user with access to the local website on this machine can use the dashboard; keep the machine account private and do not expose the ports.
+## Current capabilities
 
-## Checks
+Jobs/profile/fact management, manual and queued URL intake, canonical-URL deduplication, status history, dashboard/deadlines, a separate worker, local CV parsing/review, read-only Sheets OAuth/import code, and checksum-verified backup/restore are implemented to varying levels of verification. [STATUS.md](STATUS.md) records the evidence and limits. An unfinished UI redesign is local and not published.
 
-```sh
-cd apps/api
-uv run pytest
-uv run alembic check
-cd ../web
-npm run typecheck
-npm run build
-```
+Google is not connected or verified against the owner's development copy. The original tracker is blocked; broad write scope and Sheet mutations are disabled. See [Google setup](docs/SETUP.md#google-cloud-read-only-development-copy-setup) for the exact read-only OAuth scope, redirect URI and private JSON-file location. Do not send credentials through chat.
 
-After building the frontend, run `uv run --frozen --group browser python ../../scripts/smoke_browser.py` from `apps/api`. The browser suite starts production services on loopback ports 8001/3001 and uses a disposable migrated database. It needs Chromium: set `CHROMIUM_EXECUTABLE`, use system `chromium`, or install Playwright Chromium with `uv run --group browser playwright install chromium`. Screenshots and service logs go to ignored `.local/`. It never uses the owner's database or access token.
+Matching, application preparation, browser prefill and submission are later-phase work, not available features. The current DB restricts application statuses and sponsorship so neither confirmed submission nor sponsored-role claims can be set without the later evidence workflow.
 
-Tests migrate isolated temporary databases and exercise authentication, CRUD, fact review invalidation, manual intake of ten unique URLs plus repeat dedupe, database constraints, status history, and migration rollback/reapply. These do **not** establish URL extraction or Google Sheets acceptance criteria. No real portals, live Sheet, or hosted model are contacted.
+## Privacy and storage
 
-## Data and safety
+Keep both ports (UI 3000, API 8000) on localhost. The local web proxy enforces loopback hosts and same-origin writes; direct API requests still require a token. This trusts users of the local machine and must not be exposed publicly.
 
-`storage/` holds the local database and is gitignored. `application_events` has no update/delete API, and ORM updates/deletes are rejected. Database administrators can still change files directly. The API intentionally allows only foundation tracking statuses. `APPLIED`, approval and submission cannot be set, and confirmed sponsorship cannot be stored in this slice. Later phases must replace these restrictive constraints with evidence/approval checks through explicit migrations.
+`.env`, `.local/`, `storage/` and generated dependencies are ignored. CVs, profile facts and the SQLite database are local; they are not encrypted by default. OAuth tokens are Fernet-encrypted, with the key in private configuration. Keep that key separately so backups remain recoverable. Never store credentials, CV text or legal declarations in tracked context documents.
 
-Only manually entered facts are stored. Editing a reviewed fact clears its review; confirm it again after checking the saved text. Sensitive legal declarations are not collected or inferred. Jobs and fact text render as escaped plain text.
+No real applicant/job data or sample opportunities are seeded. Facts need owner review; legal declarations are fixed owner-confirmed values and are never LLM-generated. Submission is off. All fetched content is untrusted data.
 
-For the next Phase 1 slices, provide tracker column headers and configure OAuth against a **copy** of the Sheet. Do not write to the real tracker. Choose an extraction provider/model before hosted extraction is enabled. Never send personal data to a hosted model without the owner's explicit confirmation of retention/training settings.
+## Verification and continuity
+
+Checks and their working directories are in [SETUP.md](docs/SETUP.md#useful-verification-commands). Browser checks use disposable DB/storage and loopback test ports, never owner data. Historic passing checks do not establish that a later unfinished checkout works.
+
+At the end of a session, update [STATUS.md](STATUS.md) and [HANDOVER.md](docs/HANDOVER.md), using the [session template](docs/templates/SESSION_HANDOVER.md). Record actual commands/outcomes, owner inputs, phase gates and uncommitted work. Commit/push only the completed, checked scope to `dev/phase-1`; leave unrelated unfinished work intact.
