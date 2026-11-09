@@ -8,7 +8,7 @@ Start with [AGENTS.md](AGENTS.md), [stable context](docs/context/PROJECT.md), [S
 
 ## Published application baseline
 
-The reference-inspired Phase 1 UI is complete and tested in this delivery on `dev/phase-1`; remote delivery is recorded in [HANDOVER.md](docs/HANDOVER.md). It builds on `1c7c8e2` (direct dashboard access) and the shared context documentation. No backend or dependency changes were needed.
+The reference-inspired Phase 1 UI was published in [`d20a19e`](https://github.com/justinnnnnn1208/application-tracker/commit/d20a19e0c135fbb74e11130d315368560b8c7d27) on `dev/phase-1`; the full local SHA matched the remote ref. It builds on `1c7c8e2` (direct dashboard access) and the shared context documentation. No backend or dependency changes were needed. See [HANDOVER.md](docs/HANDOVER.md) for the checked scope and delivery record.
 
 The published app opens directly to the dashboard, including after browser refresh/reopen and web-server restart. There is no unlock page or lock/sign-out control. The API token remains server-side, the proxy rejects non-local/cross-origin requests, and direct backend requests remain authenticated. Services bind to localhost.
 
