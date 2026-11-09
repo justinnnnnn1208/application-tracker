@@ -56,15 +56,13 @@ def execute(session, task, settings):
         if not count:
             raise NeedsInput("No fact candidates were identified. Add facts manually after checking the CV.")
         return {"document_id": document.id, "candidates": count}
-    if task.kind == "sheets_sync":
-        raise NeedsInput("Sheet write-back is disabled. Use read-only import.")
-    if task.kind == "sheets_import":
+    if task.kind in {"sheets_import", "sheets_sync"}:
         config = session.get(SheetConfig, 1)
         if not config:
             raise NeedsInput("Configure a test-copy spreadsheet and its header mapping first.")
-        sheet = GoogleSheet(session, config)
+        sheet = GoogleSheet(session, config, write=task.kind == "sheets_sync")
         try:
-            return import_sheet(session, config, sheet)
+            return import_sheet(session, config, sheet, write=task.kind == "sheets_sync")
         finally:
             sheet.close()
     if task.kind == "backup":

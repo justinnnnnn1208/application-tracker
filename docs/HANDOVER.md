@@ -1,71 +1,71 @@
 # Latest session handover
 
-Reviewed: 9 November 2026 (UTC).
-
 ## Session
 
-- Scope: continue Phase 1, change the bright UI to charcoal grey, and add owner-selected macOS/browser deadline reminders. Keep structure minimal.
-- Branch: `dev/phase-1`; previous published baseline `67477cd`. The application delivery is published as `a625c01c4f4303fc5a944603b6fb997338069545`; its local SHA matched GitHub.
-- Phase 1 remains incomplete (roughly 70%); Phase 2 requires explicit owner confirmation after Phase 1 verification.
-- Initial worktree was clean. No owner data or pre-existing edits were changed.
-- Owner requested future commits be attributed to their supplied Git identity. Local Git author configuration is set accordingly; do not override it with Codex. Existing history was not rewritten. Use the latest owner-authored commit as reference if configuration needs restoring, without copying the email into project context files.
+Reviewed: 9 November 2026 (Europe/London). Branch: `dev/phase-1`.
 
-## What changed
+Latest request: read AGENTS.md/handover and work through tomorrow's task sheet. Preserve minimal structure, direct dashboard access, charcoal theme and owner Git authorship. Phase 2 remains paused. The owner supplied development-copy configuration, reported Google connected/all 20 jobs imported, and approved copy-only status writes. A later recommendation to defer live write verification was not explicitly accepted as revised Phase 1 scope.
 
-| Work | State | Files/evidence |
+Initial worktree contained the previous session's unfinished write-back integration, tests and direct listing links (10 modified files); preserved and completed rather than discarded. Last published baseline was `949ea62`. No owner data or local credentials were modified.
+
+## Work completed
+
+- Completed default-disabled copy-only status writes through API queue, worker, sync service and HTTP client. Only existing linked mapped status cells are written, RAW one cell per request. No appends or Notes/deadline/sponsorship writes. Original tracker stays blocked even if configured as the allowed write ID.
+- Read-only import remains the default and scheduled behaviour. Private `SHEETS_WRITE_COPY_ID` opt-in selects broader OAuth scope; old readonly tokens can still import but cannot write. Renewed consent required; only read/write spreadsheet scopes accepted, no unrelated grants.
+- Sync guards formulas, duplicate URLs, moved rows and changed targets. Uncertain write outcomes become NEEDS_INPUT; no automatic retries. Separate Google reads/writes are not atomic: avoid concurrent copy editing during the manual test.
+- Direct Open listing links in job tables; visible original Sheet statuses in rows/details, an Applied-imported filter and Dashboard source count explanation. Confirmed Applied count stays zero; no APPLIED state or submission path added.
+- Updated spec, setup, context and AGENTS authorization notes. No dependencies, migrations, services or directory abstractions added. Writes remain disabled unless owner explicitly configures them locally.
+
+## Task sheet
+
+| Order | Task | State / remaining action |
 |---|---|---|
-| Charcoal theme | TESTED | Existing globals.css updated in place: dark cards/inputs/native controls, readable grey text, blue actions. Existing layout/sizing preserved; no dependencies added. |
-| Real-worker browser workflows | TESTED | smoke_browser.py now starts a separate disposable worker; verifies pasted fixture HTML extraction, TXT CV upload/edit/confirm, exact download bytes, settings-triggered backup and CLI restore into a fresh folder. Restored jobs/facts/CV bytes checked. |
-| Desktop reminders | TESTED with simulated browser Notification API | tracker.tsx, no new service: explicit permission request on click, active jobs due within 7 UK-calendar days, deduped per job/deadline/UK day within the mounted tab session. Pause supported. No automatic permission prompt or notifications before opt-in. Tab closure stops reminders. |
-| Spec/setup/context | UPDATED | Latest theme/reminder choices, exact setup limits, owner authorship preference and Google configuration retained. |
+| 1 | Pull/start latest app | Delivery prepared here; owner runs Mac commands below after push. Cloud production app builds/runs. |
+| 2 | Verify 20 imported jobs | PASSED by owner report; cloud cannot inspect private Mac data. Fixtures independently cover preservation. |
+| 3 | Open listing links | PASSED in browser: correct href and safe new-tab attributes; real destination portals not opened. Owner can click actual imported listings. |
+| 4 | Clarify imported Applied | IMPLEMENTED/TESTED: rows/details, dedicated filter, Dashboard explanation, no false confirmation. |
+| 5 | Desktop reminders | PASSED with deterministic Notification fake (opt-in/dedupe); actual macOS delivery requires owner browser/OS permission and check. |
+| 6 | Local backup/restore | PASSED with disposable real-worker UI backup and CLI restore, including exact CV bytes; owner chooses local directory and checks operational restore. |
+| 7 | Sheets rollout | Default read-only preserved. Copy-only write implementation tested; live one-cell check requires private env setting and renewed OAuth consent (SETUP.md). Deferral is an option, not an accepted scope change yet. |
+| 8 | Phase 1 review | PENDING: live write test or explicit accepted deferral, plus owner review of Mac checks. Do not claim fully complete. |
+| 9 | Phase 2 | NOT STARTED: explicit owner progression approval required. |
 
 ## Phase 1 acceptance
 
-| Criterion | Result | Verification | Remaining limit |
-|---|---|---|---|
-| Ten pasted URLs create correct rows | PASSED — fixtures | 42-test API/service suite exercises ten URLs through queue/worker/extractor/DB; browser separately checks pasted fixture HTML through actual worker | Live vacancy pages not tested |
-| Re-pasting creates no duplicates | PASSED — fixtures | Same suite checks stable IDs/count/history with tracking variants | Live source variations untested |
-| Sheet import preserves all rows | NOT TESTED on development copy | Synthetic row/formula/notes/source-status preservation tests pass | Owner OAuth/copy setup missing |
-| Status write touches only intended cell | NOT TESTED | Writes blocked in API, worker, service and client; blocking tests pass | Read-only import must pass, then separate owner approval required |
-| Database/storage backup restores | PASSED — disposable data | Service integrity/checksum/tamper tests plus browser-requested backup and CLI restore verifying four jobs, reviewed fact and exact CV bytes | Owner laptop operational restore not tested |
-| Sponsorship defaults UNVERIFIED | PASSED | API/DB/extraction tests and browser labels | No automatic evidence assessment enabled |
+| Criterion | Result | Verification / limit |
+|---|---|---|
+| 10 URLs create correct rows | PASSED — fixtures | Current real queue/worker/extractor/DB tests, with mocked external fetch; no live 10-page evaluation. |
+| Re-pasting deduplicates | PASSED — fixtures | Tracking variants keep IDs/count/history. |
+| Import preserves all rows | PASSED — owner report + fixtures | Owner reports 20 jobs and confirms matching data; synthetic incomplete-row/formula/Notes/source-status preservation tests. No independent private Google access here. |
+| Status writes only one intended cell | NOT TESTED live | Exact single-cell RAW request, values/formulas/Notes preservation and guardrail tests pass; real copy/formatting test pending. |
+| Backup restores | PASSED — disposable data | Checksums/integrity/tamper plus UI→worker backup→CLI restore of DB/facts/CV; operational Mac restore pending. |
+| Defaults UNVERIFIED | PASSED | API/DB/extraction and neutral UI labels; Sheet Notes never infer YES. |
 
-## Checks performed this session
+Rough Phase 1 progress: 80%; only acceptance evidence or an explicit revised scope can establish completion.
 
-- `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api: **42 passed**, one existing Starlette/httpx deprecation warning. No backend edits followed this run.
-- `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` in apps/web: **PASSED**, including final reminder component.
-- `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen --group browser python ../../scripts/smoke_browser.py` in apps/api: **PASSED** with final theme/reminders and actual separate worker. Includes direct dashboard/reload/reopen/server restart, server-only token/origin guards, CRUD/history/profile/fact review, filters/sorting/counts, mobile navigation and 1440/390/320px layouts, CV and backup workflows above.
-- Notification test replaces Notification API with a deterministic fake: verifies no automatic opt-in, correct due-job body and no duplicates after pause/re-enable. This does not prove native macOS notification display, denied-permission UI or long-running day rollover.
-- Eleven dark foreground/background pairs pass >=4.5:1 contrast calculations. Charcoal desktop Dashboard screenshot visually inspected. Not a full accessibility audit.
-- `git diff --check`: passed before delivery.
+## Checks performed
 
-Initial browser extension failed at an exact label selector even though the CV candidate was rendered; corrected to role/name and reran the full suite successfully. An interrupted exploratory rerun left disposable processes; these were stopped before the successful final runs. Default uv cache was read-only, so checks used a /tmp cache. No safety controls were relaxed.
+- apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`: **53 passed**, one existing dependency deprecation warning.
+- apps/web: `npm run typecheck`; `NEXT_TELEMETRY_DISABLED=1 npm run build`: **PASSED**.
+- apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen --group browser python ../../scripts/smoke_browser.py`: **PASSED** with final UI, separate disposable worker and data. Includes imported Applied labels/filter/count explanation and direct listing href checks, besides prior CRUD/security/CV/backup/reminder/mobile coverage.
+- `git diff --check`: PASSED before staging. Jobs charcoal screenshot visually inspected; only ignored synthetic screenshots/logs retained.
+- This delivery has no calls to real job portals, Google APIs or hosted LLMs. No automatic retries, write scopes or private env settings enabled in the owner/cloud runtime.
 
-## Unfinished work and blockers
+## Remaining work / resume
 
-- Actual Google OAuth/read-only development-copy import is untested. No default OAuth client JSON exists in this cloud checkout. Owner must follow SETUP.md locally; never upload credentials in chat.
-- Need development-copy spreadsheet ID, exact tab and header-row number. Headers are already supplied; do not ask again. Original Sheet remains blocked. No write approval exists.
-- Native macOS notifications require browser/OS permissions and owner verification. Reminder permission/enablement is per tab session; reload requires Enable again. No service worker/background daemon or email delivery.
-- PDF/DOCX have service tests; browser upload path tested with TXT only. Live URL evaluation/provider fallback and laptop operational restore remain unverified.
-- No Phase 2, submissions, portal automation or hosted personal-data use authorised.
+Read AGENTS.md and its context links, inspect Git state, then help the owner perform the Mac checks and choose live write verification or an explicit deferral. docs/SETUP.md documents the exact approved copy, case-sensitive tab/header settings, OAuth steps and one-cell test. Do not ask again for supplied headers, IDs or Google account details. Never request secrets, client JSON, callback URLs or tokens in chat.
 
-## Resume in this order
-
-1. Read AGENTS.md and linked context/status/spec/setup; inspect Git state and latest remote SHA.
-2. Help owner configure local OAuth using SETUP.md, then verify read-only import against their actual development copy. Never infer success from synthetic tests.
-3. Verify macOS reminders and laptop backup/restore as owner setup permits.
-4. Only after read-only import passes, seek separate approval before any Sheet write scope or implementation. Phase 2 still needs explicit owner confirmation.
-5. Update status/handover, commit with owner-configured authorship, push checked scope and verify remote ref.
+Read-only remains the working default. Do not infer Phase 2 permission from implementing write-back or from the progress percentage. Full append/managed-field sync, live vacancy evaluation, PDF/DOCX browser upload, actual OS notification delivery and laptop operational restore are not verified by this session.
 
 ## Delivery and owner next step
 
-Prepared files: stylesheet, reminder component, browser runner, README, spec/setup/status/context/handover. No dependencies, migrations, secrets or owner data included. Application commit `a625c01` was pushed and its full SHA matched the remote ref. This follow-up only records delivery; no runtime edits remain.
+Code/tests/docs are prepared for commit/push as one completed scope; publication is recorded in the follow-up delivery record and Git log. Generated next-env.d.ts drift is excluded. Owner Git identity remains configured; do not override with Codex or rewrite history.
 
-On Mac, stop the app with Control+C, then from the repository root:
+On Mac, stop with Control+C and run from the project root:
 
 ```sh
 git pull --ff-only origin dev/phase-1
 python3 scripts/dev.py
 ```
 
-Open `http://127.0.0.1:3000`. Choose Enable desktop reminders on Dashboard and allow browser/macOS notifications. No dependency or migration update is required for this delivery.
+No dependency or migration refresh needed. Open `http://127.0.0.1:3000`. Check Open listing and imported statuses, then test reminders and backup/restore. Keep current Google permission for read-only; only follow Optional approved status write-back in SETUP.md if choosing the live write test. No need to grant broader permission just to use the delivered UI.

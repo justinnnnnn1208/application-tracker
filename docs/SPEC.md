@@ -100,7 +100,7 @@ If a form asks something in this category that is not in my profile, status beco
 Existing tracker: https://docs.google.com/spreadsheets/d/1UCZX9aj7Ls_EIgY231bhufQ0kQKjU0wGz_PP0RHT2dk/edit
 
 - OAuth 2.0, `spreadsheets` scope, tokens encrypted at rest.
-- **Current rollout gate (owner update):** request only `https://www.googleapis.com/auth/spreadsheets.readonly` and use only the development copy. Write-back and the broader scope remain disabled until read-only import is tested and the owner explicitly approves enabling writes.
+- **Current rollout (owner update):** the owner reported all 20 development-copy jobs imported and approved copy-only status write-back. Read-only remains the default. Only an explicit private `SHEETS_WRITE_COPY_ID` enables the broader `spreadsheets` scope, followed by renewed consent. The app restricts mutations to single mapped status cells on that copy; the original remains blocked. Live write verification is still pending. Deferring that acceptance criterion and starting Phase 2 requires explicit owner agreement.
 - Map columns **by header name** through a configurable mapping. Header names have been supplied; the development-copy tab and header-row number still need confirmation (see [SETUP.md](SETUP.md)).
 - A row's job URL is its identity; store the row number alongside it.
 - **Never rewrite ranges.** Write single cells only, so formulas, formatting and notes stay intact.
@@ -269,3 +269,7 @@ Desktop deadline reminders (owner clarification): opt-in browser notifications, 
 - The Match column and scores (Phase 2).
 - "Awaiting your review" and "Needs your input" cards, Application Queue, Application Review, My Applications, and CV Manager (Phase 3 onwards).
 - Sidebar links for pages that do not exist yet should be hidden, not left as dead links.
+
+### Current Phase 1 status presentation
+
+Show original Sheet statuses in job rows and details. Applied source rows use “Applied — imported from Sheet” and have a dedicated filter. Dashboard shows the imported count separately in the Applied metric explanation; the app’s confirmed Applied count remains zero until confirmation evidence is supported. Direct Open listing links are available in the job table and details. No imported claim creates a confirmed APPLIED state.

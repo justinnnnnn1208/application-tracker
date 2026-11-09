@@ -63,7 +63,7 @@ The browser check starts production test services on ports 8001/3001 with dispos
 
 ## Google Cloud: read-only development-copy setup
 
-No live Google connection is verified. Configure this on the same computer that runs the app, because the OAuth callback is a loopback address. The original tracker is blocked by the code. Read-only OAuth permission can read spreadsheets available to the account; the configured development-copy ID is the app's additional restriction. The OAuth scope itself is not limited to one spreadsheet.
+The owner reports successful Google connection and all 20 development-copy jobs imported on their Mac; this cloud workspace has not independently inspected that private session. Configure this on the same computer that runs the app, because the OAuth callback is a loopback address. The original tracker is blocked by the code. Read-only OAuth permission can read spreadsheets available to the account; the configured development-copy ID is the app's additional restriction. The OAuth scope itself is not limited to one spreadsheet.
 
 1. In Google Cloud Console, create or select a project dedicated to this app.
 2. Open **APIs & Services → Library** and enable **Google Sheets API**. No Drive API is required for this read-only import.
@@ -111,7 +111,7 @@ The owner already supplied these headers:
 
 `Deadline alert` and `Days left` are preserved and must not be write targets. There is no dedicated role-title column; the current import uses the explicit unknown label `Role not provided` and retains original row data. Source status text is retained separately and cannot establish a confirmed APPLIED state. Sponsorship claims in Notes do not become confirmed sponsorship.
 
-The development-copy ID, tab and header-row number are still unknown; do not guess them. Read-only import must pass before write access is even considered, and enabling writes requires separate owner approval. There is no current approval to enable them.
+The owner supplied development-copy ID `1xjj0CEMzWrQS7sROq7QHvyoaLle67vkeWn9lIXv6bEY`, tab `sheet1` (use the exact case displayed in Google), header row `1`, then reported all 20 jobs imported and approved copy-only status writes. Live write verification is still pending. Read-only continues to work without any scope change.
 
 ## Backup and restore
 
@@ -130,3 +130,24 @@ Substitute real local paths. This command checks archive contents/checksums and 
 ## Desktop deadline reminders on Mac
 
 On Dashboard, choose **Enable desktop reminders** and allow the browser permission prompt. In macOS System Settings → Notifications, allow notifications for that browser (and website, if listed); Focus settings may silence them. Reminders are optional and run only while this browser tab and the local app are open. They cover active jobs due within seven days, once per job per UK day in that tab session. Reloading starts a new session; choose Enable again. Use **Pause desktop reminders** to stop. Denied/unsupported notifications leave the deadline view available. No email, OS background service or closed-browser scheduling is implemented.
+
+## Optional approved status write-back on the development copy
+
+You can keep Sheets read-only by leaving `SHEETS_WRITE_COPY_ID` unset. There is no automatic write scheduling. The owner approved development-copy status writes after reporting the successful import; this approval does not permit touching the original tracker or starting Phase 2.
+
+To perform the remaining live acceptance test on your Mac:
+
+1. Stop the app with Control+C and pull `dev/phase-1`. In your private root `.env`, add exactly one line (or update it if already present):
+   ```text
+   SHEETS_WRITE_COPY_ID=1xjj0CEMzWrQS7sROq7QHvyoaLle67vkeWn9lIXv6bEY
+   ```
+   This ID must match Settings. Do not set it to the original ID, which remains blocked even if entered here.
+2. In Google Auth Platform → Data Access, add `https://www.googleapis.com/auth/spreadsheets` for the existing testing client. No Drive scope is needed. This Google permission can edit spreadsheets available to the account; the app additionally restricts writes to the configured copy. The OAuth scope itself cannot restrict access to a single spreadsheet.
+3. Start `python3 scripts/dev.py`. In Settings → Google Sheets choose Connect Google again and grant the requested permission. The existing read-only grant cannot perform writes. Keeping both the existing readonly and new spreadsheets grant is supported; unrelated permissions are rejected.
+4. Import the test copy again to establish a current baseline. Choose one row whose source status is Not Started and whose status cell contains plain text, not a formula. Record its row number, current status, notes, deadline, formula cells and formatting. Ensure there are no other pending local status changes: the manual sync writes all changed linked statuses, not only the currently open job.
+5. In that job's app details, change Discovered to Shortlisted. In Settings choose Write changed statuses to copy. Background tasks should report **1 cell written**. In Google verify only that row's Status cell changed to Shortlisted; Notes, deadlines, formulas, formatting and all other rows must remain unchanged.
+6. Run the same write-back once more without changing anything. Expect **0 cells written**. Send the task counts and the comparison result, never credentials or callback URLs. Phase 1's live single-cell criterion is not passed until this comparison succeeds.
+
+Writes use RAW values on one cell per request, with header, row-identity, formula and target-value checks. Avoid editing/sorting the copy during sync: these checks cannot make Google's separate reads and write atomic. Duplicate URLs and formula status cells are skipped; moved/concurrently changed targets halt further writes. An uncertain outcome needs inspection and is never automatically retried.
+
+Current write-back updates existing linked statuses only: it does not append new app jobs, change deadlines/sponsorship, write Notes, or set APPLIED. Those broader sync behaviours are not delivered by this slice. To stay read-only, leave the setting unset and retain the current grant. If already granted broader permission, removing the setting blocks its use in this app; reconnect read-only (and revoke the old Google grant if necessary) to reduce Google's permission too.

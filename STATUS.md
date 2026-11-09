@@ -1,62 +1,40 @@
 # Current project status
 
-Reviewed: 9 November 2026 (Europe/London). This records the current checked UI redesign and the remaining Phase 1 integration limits.
+Reviewed: 9 November 2026 (Europe/London).
 
-**Phase 1: incomplete, roughly 70% verified. Phase 2: paused until the owner explicitly confirms Phase 1 is verified.** The percentage is a rough communication aid; only the acceptance criteria establish completion.
+**Phase 1: incomplete, roughly 80% verified. Phase 2: paused pending explicit owner acceptance.** Percentages are rough communication aids, not acceptance criteria. Read AGENTS.md, docs/context/PROJECT.md, docs/SPEC.md and docs/HANDOVER.md before work.
 
-Start with [AGENTS.md](AGENTS.md), [stable context](docs/context/PROJECT.md), [SPEC.md](docs/SPEC.md) and the [latest handover](docs/HANDOVER.md). Runtime and Google configuration instructions are in [SETUP.md](docs/SETUP.md).
+## Latest checked work
 
-## Published application baseline
-
-The previous reference-inspired Phase 1 UI was published in [`d20a19e`](https://github.com/justinnnnnn1208/application-tracker/commit/d20a19e0c135fbb74e11130d315368560b8c7d27) on `dev/phase-1`; the full local SHA matched the remote ref. It builds on `1c7c8e2` (direct dashboard access) and the shared context documentation. No backend or dependency changes were needed for the current theme/reminder delivery. See [HANDOVER.md](docs/HANDOVER.md) for the checked scope and delivery record.
-
-The published app opens directly to the dashboard, including after browser refresh/reopen and web-server restart. There is no unlock page or lock/sign-out control. The API token remains server-side, the proxy rejects non-local/cross-origin requests, and direct backend requests remain authenticated. Services bind to localhost.
-
-The owner has run the app on a Mac in VS Code. Cloud checks are not a substitute for verifying new changes on that laptop.
-
-## Implemented capabilities and limits
-
-| Capability | Current evidence and limits |
-|---|---|
-| Jobs, profile/facts, manual intake, dedupe, status history and deadlines | API tests and core browser smoke tests passed for the published baseline |
-| Queued URL extraction and a separate worker | Ten synthetic fixture URLs exercised API → task → worker → extractor → database; live job pages not verified |
-| Local CV upload/parsing and fact review | TXT/PDF/DOCX service tests and explicit fact-review tests passed; actual-worker TXT upload, correction, explicit confirmation and byte-identical download now pass in the browser |
-| Backup/restore and overdue scheduling | Database/files/checksums restored in tests; overdue work enqueued once; settings-triggered backup and CLI restore now pass end to end with disposable data |
-| Google OAuth and import | Read-only scope, state/PKCE/encryption and synthetic Sheet preservation tests passed; no live Google connection or development-copy import verified |
-| Sheet writes, application submission and later phases | Disabled; no approval to enable them |
-| UI redesign using the owner's references | Inter/blue charcoal-grey dashboard, 220px sidebar, compact URL intake, real counts, neutral Unverified labels, job filters/sorting and native collapsible settings/tasks; production browser checks passed at 1440px, 390px and 320px |
+- Job tables and details have direct Open listing links to the original application URL.
+- Original Sheet statuses are visible separately from the app status. Applied history displays “Applied — imported from Sheet”, has a filter, and its count appears in the Dashboard Applied explanation. Imported claims never create confirmed APPLIED records; that count remains zero without evidence support.
+- Approved status-only write-back is implemented, disabled by default. `SHEETS_WRITE_COPY_ID` must match the copy, and renewed OAuth consent must grant Sheets write permission. Original tracker access remains blocked; scheduled tasks remain read-only imports. No Notes, deadline, sponsorship or range writes, appends, submission functionality, dependency changes or migrations were added.
+- The owner reported Google connected and all 20 development-copy jobs imported, then confirmed the requested preservation check and approved copy-only writes. This is owner-reported verification on the Mac, not independent cloud access to the private session.
+- Native desktop reminders and local backup remain available. Cloud tests use disposable data; they do not prove Mac notification delivery or an operational restore on that laptop.
 
 ## Phase 1 acceptance criteria
 
-PASSED below means the stated controlled check passed in the current 42-test run. It does not mean real-site, development-copy or whole-phase acceptance has been established.
+| SPEC.md criterion | Result | Evidence and remaining limit |
+|---|---|---|
+| Ten pasted URLs create correct job rows | PASSED — controlled fixtures | Current API→queue→worker→extractor→DB tests verify 10 correct rows; browser checks pasted fixture HTML through a real worker. Live vacancy set untested. |
+| Re-pasting creates no duplicates | PASSED — fixtures | Tracking URL variants preserve IDs/count/history in current suite. |
+| Sheet import preserves all rows | PASSED — owner report and fixtures | Owner reports all 20 jobs and confirms matching data; synthetic tests preserve incomplete rows, formulas, Notes and source statuses. Actual Google task output not independently inspected here. |
+| Status write changes only intended cell; formulas/formatting/Notes preserved | NOT TESTED on actual development copy | Single-cell RAW HTTP request, exact values/formula preservation, Notes conflict, duplicate/formula/moved-row/concurrent-cell guards, OAuth copy/scope gates and worker no-retry tests pass. Live formatting/preservation comparison still required. |
+| Database/storage backup restores successfully | PASSED — disposable data | Service checksums/integrity/tamper tests and UI-requested backup→CLI restore verify jobs, reviewed fact and CV bytes in a new folder. Laptop operational restore untested. |
+| Every job defaults UNVERIFIED | PASSED | Current API/DB/extraction tests; imported sponsorship claims remain Notes, not confirmed evidence. |
 
-| Criterion from SPEC.md | Result | Evidence | Remaining limit |
-|---|---|---|---|
-| Ten pasted URLs create ten correct job rows | PASSED — controlled fixtures | `test_ten_queued_url_extractions_and_repaste_dedupe` in [test_workflows.py](apps/api/tests/test_workflows.py) checks the real queue/worker/extractor/DB path with a mocked external fetch | Ten live vacancy pages not tested |
-| Re-pasting creates no duplicates | PASSED — controlled fixtures | Same test requeues all ten canonical URLs with tracking variants and checks stable IDs/count/history; manual dedupe also tested | Live source variations not tested |
-| Sheet import preserves all rows | NOT TESTED on development copy | `test_readonly_import_preserves_all_rows_formulas_notes_and_prior_status` passed against a synthetic fixture, including incomplete rows | Requires owner-configured OAuth and the actual development copy |
-| Status write changes only the target cell; formulas/formatting/notes preserved | NOT TESTED | Write operations are blocked at API, worker, sync service and HTTP client; blocking tests passed | Read-only import must be verified and the owner must separately approve writes before this acceptance check can run |
-| Database and storage backup restores successfully | PASSED — disposable data | Backup/restore tests verify restored DB contents, exact file bytes, checksums, integrity and tamper rejection | Owner chooses a destination; operational restore should be verified on the laptop before relying on backups |
-| Jobs default to UNVERIFIED unless supported by evidence | PASSED | API/database constraints, extraction defaults and non-inference tests in [test_tracker.py](apps/api/tests/test_tracker.py) and [test_workflows.py](apps/api/tests/test_workflows.py) | This slice stores only UNVERIFIED; automatic evidence assessment belongs to the gated later phase |
+## Current verification
 
-## Checks performed for this delivery
+- In apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`: **53 passed**, one existing Starlette/httpx deprecation warning.
+- In apps/web: `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build`: **PASSED**.
+- In apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen --group browser python ../../scripts/smoke_browser.py`: **PASSED** on final UI. Direct dashboard/reload/reopen/restart, server-only credentials, origin/auth guards, CRUD/history/profile/fact review, filter/search/sort/counts, Open listing href/rel, imported Applied labels/filter/count explanation, real-worker extraction, TXT CV edit/confirm/download, backup/CLI restore, opt-in Notification mock and 1440/390/320px layouts. No real Google or application portal calls.
+- Notification mock proves opt-in and session dedupe; native macOS display, denied-permission path and day rollover remain untested here.
+- Charcoal Jobs screenshot visually inspected; ignored .local artifacts contain only synthetic data. `git diff --check` passed before staging.
 
-These checks were run on the redesigned UI/source in the cloud workspace using disposable data:
+## Next steps and owner inputs
 
-- `uv run --frozen pytest -q --tb=short` from `apps/api`: **42 passed**, one dependency deprecation warning.
-- `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` from `apps/web`: passed.
-- `uv run --frozen --group browser python ../../scripts/smoke_browser.py` from `apps/api`: passed for direct dashboard, reload/reopen/server restart, credential/origin guards, manual job CRUD/history, profile/fact review, deadlines, combined filters, notes search, sorting, actual dashboard counts, neutral sponsorship labels, collapsible backup settings, visible mobile navigation and 44px enabled Dashboard controls at 320px. All pages fit the 390px viewport; desktop checks used 1440px. No console page errors were recorded.
+Follow the task sheet in docs/HANDOVER.md. On Mac pull/restart, verify listing links/imported labels, allow notifications and check a backup restore. Optional write setup and an exact one-cell acceptance procedure are in docs/SETUP.md. No credentials should be sent in chat.
 
-The stylesheet uses the existing Inter package and blue `#2F5BEA`; 11 dark-theme normal-size text/background palette pairs passed a 4.5:1 contrast calculation. The charcoal Dashboard screenshot was visually inspected; responsive screenshots are retained only in ignored .local/. No new dependencies, components directory structure, backend services, matching or review queues were added. This is not a full accessibility certification. The expanded browser run now starts the real separate worker and verifies pasted fixture HTML extraction, TXT CV upload, editing and confirming a candidate, byte-identical CV download, saving a backup destination, requesting a restore-verified backup and running the CLI restore into a new folder. Restored jobs, reviewed facts and CV bytes are checked. PDF/DOCX have service coverage, not full browser coverage. OAuth/import still requires live development-copy verification.
+The owner approved write implementation earlier. Keeping read-only and deferring live write-back was subsequently recommended but not explicitly accepted as a changed Phase 1 scope. Do not silently remove the criterion or start Phase 2. The owner must either verify the live write or explicitly accept the deferral, then authorise progression. Existing sync does not append new app jobs to Sheets or implement full managed-field synchronisation.
 
-## Owner inputs and remaining work
-
-- The owner selected macOS/browser reminders. Optional Notification API reminders are implemented. Browser checks with a simulated Notification API passed for explicit opt-in, the correct due job and avoiding repeated reminders when paused/re-enabled. Actual macOS delivery still needs owner verification with browser/OS permission.
-- Google: development-copy spreadsheet ID, exact tab name and header-row number; OAuth setup described in [SETUP.md](docs/SETUP.md). Column headers have already been supplied—do not ask for them again.
-- Extraction provider/model choice before hosted fallback is enabled. Personal-data use of hosted models still needs explicit approval.
-- UI references were supplied in conversation; no `docs/design/dashboard.png` asset is present in the repository.
-- The current UI redesign is complete. Next Phase 1 work is an owner-configured read-only development-copy import and a Mac notification delivery check. Do not start matching/Phase 2 from the rough progress percentage.
-
-No credentials, CV text, legal declarations or owner database contents belong in this status file. See [HANDOVER.md](docs/HANDOVER.md) for exact unfinished paths and resumption steps.
-
-Latest delivery: charcoal theme, opt-in desktop reminders and expanded real-worker browser verification were published as `a625c01`; the full local SHA matched GitHub on dev/phase-1. New commits use the owner-provided Git identity, configured locally rather than stored in project Markdown.
+No owner data/configuration was reset or copied to tracked files. The current delivery will be committed/pushed using owner-configured Git authorship; see HANDOVER.md and Git log for publication.

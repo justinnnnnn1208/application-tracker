@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import datetime
 import hashlib
 import json
@@ -5,6 +6,7 @@ import json
 from sqlalchemy import select
 from app.db.models import Application, ApplicationEvent, Job, SheetLink
 from app.schemas import JobData
+from app.integrations.sheets.oauth import write_enabled
 from app.services.errors import NeedsInput
 from app.services.jobs import ensure_job
 from app.services.urls import canonical_url
@@ -48,8 +50,8 @@ def set_status(session, job, new):
 
 
 def import_sheet(session, config, sheet, write=False):
-    if write:
-        raise NeedsInput("Sheet write-back is disabled. Read-only import must be verified first.")
+    if write and not write_enabled(config.spreadsheet_id):
+        raise NeedsInput("Sheet write-back is disabled for this copy.")
     values, formulas = sheet.read()
     if len(values) < config.header_row:
         raise NeedsInput("The configured header row was not found in the test copy.")
@@ -61,6 +63,14 @@ def import_sheet(session, config, sheet, write=False):
         columns[field] = headers.index(header)
     if not {"url", "company"} <= columns.keys():
         raise NeedsInput("Map the Company and Application Link headers before importing.")
+    if write and "status" not in columns:
+        raise NeedsInput("Map the Status header before write-back.")
+    url_counts = Counter()
+    for row in values[config.header_row:]:
+        try:
+            url_counts[canonical_url(at(row, columns["url"]))] += 1
+        except ValueError:
+            pass
     links = {link.row_number: link for link in session.scalars(select(SheetLink).where(SheetLink.spreadsheet_id == config.spreadsheet_id, SheetLink.tab == config.tab))}
     counts = {"rows_preserved": 0, "jobs_created": 0, "cells_written": 0, "warnings": 0}
     seen_job_ids = set()
@@ -83,7 +93,7 @@ def import_sheet(session, config, sheet, write=False):
             data = JobData(url=content["url"], company=content["company"], title=content.get("title") or "Role not provided", location=content.get("location", ""), notes=content.get("notes", ""), deadline=deadline(content.get("deadline", "")))
             job, created = ensure_job(session, data)
             counts["jobs_created"] += int(created)
-            duplicate = job.id in seen_job_ids
+            duplicate = job.id in seen_job_ids or url_counts[job.url] > 1
             seen_job_ids.add(job.id)
             # Ignore an old row-number binding after an owner sorts or moves rows.
             baseline = link.last_db_values if link.job_id == job.id else {}
@@ -110,7 +120,7 @@ def import_sheet(session, config, sheet, write=False):
                     set_status(session, job, mapped)
             current = db_values(session, job)
             if write and not duplicate and baseline:
-                for field in ("status", "deadline", "sponsorship"):
+                for field in ("status",):
                     if field not in columns or current[field] == baseline.get(field):
                         continue
                     index = columns[field]
@@ -147,28 +157,4 @@ def import_sheet(session, config, sheet, write=False):
         counts["warnings"] += int(warning is not None)
         # Persist progress after each row: an uncertain remote write is never blindly replayed.
         session.commit()
-    if write:
-        linked_ids = {link.job_id for link in session.scalars(select(SheetLink).where(SheetLink.spreadsheet_id == config.spreadsheet_id, SheetLink.tab == config.tab)) if link.job_id}
-        next_row = max(len(values), len(formulas), config.header_row) + 1
-        for job in session.scalars(select(Job).order_by(Job.created_at, Job.id)).all():
-            if job.id in linked_ids:
-                continue
-            current = db_values(session, job)
-            if sheet.cell(next_row, columns["url"] + 1, formula=True):
-                raise NeedsInput("The append row is no longer empty. Review the test copy before syncing again.")
-            saved = [""] * (max(columns.values()) + 1)
-            # URL first gives interrupted appends a stable identity on the next pull.
-            fields = ["url"] + [field for field in columns if field not in {"url", "notes"}]
-            for field in fields:
-                index = columns[field]
-                if sheet.cell(next_row, index + 1, formula=True):
-                    raise NeedsInput("An append target was edited concurrently. Review the partial row in the test copy.")
-                value = current.get(field, "")
-                if value:
-                    sheet.write_cell(next_row, index + 1, value)
-                    saved[index] = value
-                    counts["cells_written"] += 1
-            session.add(SheetLink(spreadsheet_id=config.spreadsheet_id, tab=config.tab, row_number=next_row, job_id=job.id, row_hash=digest(saved, saved), raw_values=saved, raw_formulas=saved, last_db_values=current))
-            session.commit()
-            next_row += 1
     return counts

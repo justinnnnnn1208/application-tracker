@@ -16,6 +16,21 @@ from app.schemas import as_utc
 from app.services.errors import NeedsInput
 
 SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly"
+WRITE_SCOPE = "https://www.googleapis.com/auth/spreadsheets"
+
+
+def write_enabled(spreadsheet_id):
+    from app.integrations.sheets.client import LIVE_SHEET_ID
+    return bool(spreadsheet_id and spreadsheet_id != LIVE_SHEET_ID and os.environ.get("SHEETS_WRITE_COPY_ID") == spreadsheet_id)
+
+
+def requested_scope():
+    return WRITE_SCOPE if write_enabled(os.environ.get("SHEETS_WRITE_COPY_ID")) else SCOPE
+
+
+def valid_scope(scope):
+    scopes = set(scope.split())
+    return scopes == {SCOPE} or (requested_scope() == WRITE_SCOPE and WRITE_SCOPE in scopes and scopes <= {SCOPE, WRITE_SCOPE})
 REDIRECT = "http://127.0.0.1:8000/oauth/google/callback"
 
 
@@ -44,7 +59,7 @@ def start(session):
     session.commit()
     challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
     return "https://accounts.google.com/o/oauth2/v2/auth?" + urlencode({
-        "client_id": client_id, "redirect_uri": REDIRECT, "response_type": "code", "scope": SCOPE,
+        "client_id": client_id, "redirect_uri": REDIRECT, "response_type": "code", "scope": requested_scope(),
         "access_type": "offline", "prompt": "consent", "state": state,
         "code_challenge": challenge, "code_challenge_method": "S256",
     })
@@ -59,11 +74,11 @@ def token_request(data, client=None):
         result = response.json()
         if not isinstance(result.get("access_token"), str):
             raise ValueError("No access token")
-        if set(result.get("scope", "").split()) != {SCOPE}:
+        if not valid_scope(result.get("scope", "")):
             raise ValueError("Unexpected permissions")
         return result
     except (httpx.HTTPError, ValueError, TypeError):
-        raise NeedsInput("Google OAuth failed. Check configuration and grant only the spreadsheets.readonly permission.") from None
+        raise NeedsInput("Google OAuth failed. Check client settings and grant only the configured spreadsheet permission (read-only by default).") from None
     finally:
         if owned:
             client.close()
@@ -95,17 +110,19 @@ def save_tokens(session, tokens):
     session.commit()
 
 
-def access_token(session, client=None):
+def access_token(session, client=None, require_write=False):
     from datetime import datetime
     row = session.get(OAuthCredential, "google")
     if not row:
         raise NeedsInput("Connect Google before running Sheet import or sync.")
     tokens = json.loads(decrypt(row.ciphertext))
-    if set(tokens.get("scope", "").split()) != {SCOPE}:
+    if not valid_scope(tokens.get("scope", "")):
         raise NeedsInput("Reconnect Google with read-only spreadsheet permission. Broader stored grants are not used.")
     if datetime.fromisoformat(tokens["expires_at"]) <= now():
         id, secret = client_settings()
         refreshed = token_request({"client_id": id, "client_secret": secret, "refresh_token": tokens["refresh_token"], "grant_type": "refresh_token"}, client)
         tokens = {**tokens, **refreshed}
         save_tokens(session, tokens)
+    if require_write and WRITE_SCOPE not in set(tokens.get("scope", "").split()):
+        raise NeedsInput("Reconnect Google to grant the approved development-copy write permission.")
     return tokens["access_token"]

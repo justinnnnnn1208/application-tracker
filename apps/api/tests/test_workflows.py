@@ -339,3 +339,146 @@ def test_google_client_file_loading_and_broader_permissions_rejected(client, mon
     network = httpx.Client(transport=httpx.MockTransport(lambda _: httpx.Response(200, json={"access_token": "fixture", "scope": "https://www.googleapis.com/auth/spreadsheets"})))
     with pytest.raises(NeedsInput, match="read"):
         oauth.token_request({}, network)
+
+class WritableCopyFixture(ReadOnlySheetFixture):
+    def cell(self, row, column, formula=False):
+        if getattr(self, "moved", False) and column == 3:
+            return "https://fixture.example.org/moved"
+        if getattr(self, "concurrent", False) and column == 4:
+            return "Owner concurrent edit"
+        return (self.formulas if formula else self.values)[row - 1][column - 1]
+
+    def write_cell(self, row, column, value):
+        self.writes.append((row, column, value))
+        self.values[row - 1][column - 1] = self.formulas[row - 1][column - 1] = value
+
+
+def writable_copy(session, monkeypatch):
+    config = SheetConfig(id=1, spreadsheet_id="fixture-development-copy", tab="Tracker", header_row=1, mapping=DEFAULT_MAPPING)
+    session.add(config)
+    session.commit()
+    monkeypatch.setenv("SHEETS_WRITE_COPY_ID", config.spreadsheet_id)
+    sheet = WritableCopyFixture()
+    import_sheet(session, config, sheet)
+    job = session.scalar(select(Job).where(Job.url.endswith("/a")))
+    from app.integrations.sheets.sync import set_status
+    set_status(session, job, "SHORTLISTED")
+    session.commit()
+    return config, sheet, job
+
+
+def test_status_sync_changes_only_one_cell_and_preserves_notes(client, monkeypatch):
+    with Session(client.app.state.engine) as session:
+        config, sheet, job = writable_copy(session, monkeypatch)
+        sheet.values[1][4] = sheet.formulas[1][4] = "Owner edited notes"
+        expected_values, expected_formulas = deepcopy((sheet.values, sheet.formulas))
+        result = import_sheet(session, config, sheet, write=True)
+        assert result["cells_written"] == 1 and sheet.writes == [(2, 4, "Shortlisted")]
+        expected_values[1][3] = expected_formulas[1][3] = "Shortlisted"
+        assert (sheet.values, sheet.formulas) == (expected_values, expected_formulas)
+        assert job.notes == "Owner edited notes"
+        assert import_sheet(session, config, sheet, write=True)["cells_written"] == 0
+        assert len(sheet.writes) == 1
+        assert client.post("/api/tasks/sheets/sync").status_code == 202
+
+
+@pytest.mark.parametrize("obstacle", ["formula", "moved", "concurrent", "duplicate", "wrong_copy"])
+def test_status_sync_guards(client, monkeypatch, obstacle):
+    with Session(client.app.state.engine) as session:
+        config, sheet, _ = writable_copy(session, monkeypatch)
+        if obstacle == "formula":
+            sheet.formulas[1][3] = '=IF(A2<>"","Not Started","")'
+        elif obstacle in {"moved", "concurrent"}:
+            setattr(sheet, obstacle, True)
+        elif obstacle == "duplicate":
+            sheet.values.append(list(sheet.values[1]))
+            sheet.formulas.append(list(sheet.formulas[1]))
+        else:
+            monkeypatch.setenv("SHEETS_WRITE_COPY_ID", "another-copy")
+        if obstacle in {"moved", "concurrent", "wrong_copy"}:
+            with pytest.raises(NeedsInput):
+                import_sheet(session, config, sheet, write=True)
+        else:
+            assert import_sheet(session, config, sheet, write=True)["cells_written"] == 0
+        assert sheet.writes == []
+
+
+def test_google_http_write_is_raw_single_status_cell(client, monkeypatch):
+    monkeypatch.setenv("SHEETS_WRITE_COPY_ID", "fixture-development-copy")
+    calls = []
+    def handle(request):
+        calls.append(request)
+        if request.method == "PUT":
+            return httpx.Response(200, json={"updatedCells": 1})
+        if "1%3A1" in str(request.url):
+            return httpx.Response(200, json={"values": [list(DEFAULT_MAPPING.values())]})
+        return httpx.Response(200, json={"values": [["Not Started"]]})
+    with Session(client.app.state.engine) as session:
+        config = SheetConfig(id=1, spreadsheet_id="fixture-development-copy", tab="Tracker", header_row=1, mapping=DEFAULT_MAPPING)
+        monkeypatch.setattr("app.integrations.sheets.client.access_token", lambda *a, **kw: "fixture-token")
+        sheet = GoogleSheet(session, config, httpx.Client(transport=httpx.MockTransport(handle)), write=True)
+        sheet.write_cell(2, 4, "Shortlisted")
+        writes = [r for r in calls if r.method == "PUT"]
+        assert len(writes) == 1 and writes[0].url.path.endswith("/'Tracker'!D2")
+        assert writes[0].url.params["valueInputOption"] == "RAW"
+        assert json.loads(writes[0].content)["values"] == [["Shortlisted"]]
+        for row, column, value in [(2, 5, "notes"), (1, 4, "Shortlisted"), (2, 4, "APPLIED")]:
+            with pytest.raises(NeedsInput):
+                sheet.write_cell(row, column, value)
+        config.spreadsheet_id = LIVE_SHEET_ID
+        monkeypatch.setenv("SHEETS_WRITE_COPY_ID", LIVE_SHEET_ID)
+        with pytest.raises(NeedsInput):
+            GoogleSheet(session, config, write=True)
+
+
+def test_write_scope_is_gated_and_readonly_token_requires_reconnection(client, monkeypatch):
+    from urllib.parse import parse_qs, urlsplit
+    monkeypatch.setenv("GOOGLE_CLIENT_ID", "fixture-client")
+    monkeypatch.setenv("GOOGLE_CLIENT_SECRET", "fixture-secret")
+    monkeypatch.setenv("OAUTH_ENCRYPTION_KEY", Fernet.generate_key().decode())
+    monkeypatch.setenv("SHEETS_WRITE_COPY_ID", "fixture-development-copy")
+    with Session(client.app.state.engine) as session:
+        assert parse_qs(urlsplit(oauth.start(session)).query)["scope"] == [oauth.WRITE_SCOPE]
+        oauth.save_tokens(session, {"access_token": "read-token", "refresh_token": "refresh", "scope": oauth.SCOPE})
+        assert oauth.access_token(session) == "read-token"
+        with pytest.raises(NeedsInput, match="Reconnect"):
+            oauth.access_token(session, require_write=True)
+        oauth.save_tokens(session, {"access_token": "write-token", "refresh_token": "refresh", "scope": oauth.WRITE_SCOPE})
+        assert oauth.access_token(session, require_write=True) == "write-token"
+        monkeypatch.delenv("SHEETS_WRITE_COPY_ID")
+        with pytest.raises(NeedsInput):
+            oauth.access_token(session)
+
+
+def test_write_grant_allows_existing_readonly_scope_but_no_unrelated_permissions(monkeypatch):
+    monkeypatch.setenv("SHEETS_WRITE_COPY_ID", "fixture-development-copy")
+    assert oauth.valid_scope(oauth.SCOPE + " " + oauth.WRITE_SCOPE)
+    assert not oauth.valid_scope(oauth.WRITE_SCOPE + " https://www.googleapis.com/auth/drive")
+    monkeypatch.setenv("SHEETS_WRITE_COPY_ID", LIVE_SHEET_ID)
+    assert not oauth.valid_scope(oauth.WRITE_SCOPE)
+
+@pytest.mark.parametrize("uncertain", [False, True])
+def test_status_write_worker_and_uncertain_outcome_are_not_retried(client, monkeypatch, uncertain):
+    with Session(client.app.state.engine) as session:
+        _, sheet, _ = writable_copy(session, monkeypatch)
+    original_write = sheet.write_cell
+    def write(row, column, value):
+        original_write(row, column, value)
+        if uncertain:
+            raise NeedsInput("Uncertain write. Inspect the copy before continuing.")
+    sheet.write_cell = write
+    sheet.close = lambda: None
+    def factory(session, config, write=False):
+        assert write is True and oauth.write_enabled(config.spreadsheet_id)
+        return sheet
+    monkeypatch.setattr("app.worker.tasks.GoogleSheet", factory)
+    assert client.post("/api/tasks/sheets/sync").status_code == 202
+    drain(client)
+    task = client.get("/api/tasks").json()[0]
+    assert task["status"] == ("NEEDS_INPUT" if uncertain else "SUCCEEDED")
+    assert sheet.writes == [(2, 4, "Shortlisted")]
+    assert not run_once(client.app.state.engine, client.app.state.settings)
+    # A new, explicit sync observes the remote result instead of repeating the write.
+    client.post("/api/tasks/sheets/sync")
+    drain(client)
+    assert len(sheet.writes) == 1

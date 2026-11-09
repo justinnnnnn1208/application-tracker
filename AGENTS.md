@@ -67,7 +67,7 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 ## Working agreements
 
 - **Work one phase at a time**, as defined in `docs/SPEC.md`. Do not start the next phase unprompted.
-- Phase 2 is paused until the owner explicitly confirms Phase 1 is verified. Sheets OAuth must remain read-only and operate only on a development copy; enabling writes requires verified read-only import and separate owner approval.
+- Phase 2 is paused until the owner explicitly confirms Phase 1 is verified. Sheets access defaults to read-only and operates only on a development copy. The owner reported all 20 rows imported and separately approved copy-only status writes. Write-back remains disabled unless explicitly configured for that copy and OAuth is reconnected; live write verification is still pending. A later suggestion to defer write-back has not yet been explicitly accepted as a revised Phase 1 scope.
 - Progress updates include a phase progress bar, every Phase 1 acceptance criterion marked PASSED/FAILED/NOT TESTED with evidence, changes since the last update, work not reached, and clearly listed owner inputs.
 - A phase is done only when its acceptance criteria pass. Report which criteria were verified and how; say plainly what is untested or partial.
 - Write tests with the code. Portal adapters are tested against saved HTML fixtures, not live sites.

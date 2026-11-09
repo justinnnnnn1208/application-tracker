@@ -13,7 +13,7 @@ from sqlalchemy import select
 from app.core.encryption import cipher
 from app.db.models import Document, Fact, FactCandidate, OAuthCredential, Preferences, Schedule, SheetConfig, SheetLink, Task, SensitiveDeclaration, new_id, now
 from app.integrations.sheets.client import LIVE_SHEET_ID
-from app.integrations.sheets.oauth import finish, start, client_settings
+from app.integrations.sheets.oauth import finish, start, client_settings, write_enabled
 from app.integrations.sheets.sync import DEFAULT_MAPPING
 from app.routers.tracker import DB, require
 from app.schemas import FactData, StrictModel, UtcTimestamp
@@ -259,7 +259,7 @@ def sheet_config(session: DB):
         missing.append("GOOGLE_OAUTH_CLIENT_FILE")
     if not os.environ.get("OAUTH_ENCRYPTION_KEY"):
         missing.append("OAUTH_ENCRYPTION_KEY")
-    return {"mode": "read_only", "last_sync": last.finished_at.isoformat() if last else None, "config": {"spreadsheet_id": config.spreadsheet_id, "tab": config.tab, "header_row": config.header_row, "mapping": config.mapping, "is_test_copy": True, "sync_every_minutes": schedule.interval_seconds // 60 if schedule else 0} if config else None,
+    return {"mode": "copy_status_write" if config and write_enabled(config.spreadsheet_id) else "read_only", "last_sync": last.finished_at.isoformat() if last else None, "config": {"spreadsheet_id": config.spreadsheet_id, "tab": config.tab, "header_row": config.header_row, "mapping": config.mapping, "is_test_copy": True, "sync_every_minutes": schedule.interval_seconds // 60 if schedule else 0} if config else None,
             "connected": session.get(OAuthCredential, "google") is not None,
             "missing": missing}
 
@@ -314,5 +314,7 @@ def oauth_callback(request: Request, session: DB):
 @router.post("/tasks/sheets/{operation}", response_model=TaskOut, status_code=202)
 def sheet_task(operation: Literal["import", "sync"], session: DB):
     if operation == "sync":
-        raise HTTPException(403, "Sheet write-back is disabled until read-only import is verified and the owner approves write access.")
+        config = session.get(SheetConfig, 1)
+        if not config or not write_enabled(config.spreadsheet_id):
+            raise HTTPException(403, "Sheet write-back is disabled for this copy.")
     return enqueue(session, "sheets_" + operation, {})

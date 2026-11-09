@@ -170,8 +170,21 @@ def main():
                 expect(rows.first).to_contain_text("Another fixture employer")
                 page.get_by_label("Sort jobs").select_option("deadline")
                 expect(rows.last).to_contain_text("Fixture unknown deadline")
+                expect(page.get_by_role("link", name="Open job listing at Fixture employer", exact=True)).to_have_attribute("href", "https://example.org/fixture")
+                expect(page.get_by_role("link", name="Open job listing at Fixture employer", exact=True)).to_have_attribute("rel", "noopener noreferrer")
                 expect(page.locator(".unverified")).to_have_count(3)
                 assert page.locator(".unverified").first.evaluate("e => getComputedStyle(e).backgroundColor") == "rgb(52, 55, 61)"
+                # Simulated imported history stays separate from confirmed application state.
+                with sqlite3.connect(Path(temp) / "test.db") as fixture_db:
+                    fixture_db.execute("UPDATE jobs SET tracker_status = 'Applied' WHERE url = ?", ("https://example.org/fixture-unknown",))
+                page.reload()
+                expect(page.locator(".stat").filter(has=page.get_by_text("Applied", exact=True)).locator("strong")).to_have_text("0")
+                expect(page.get_by_text("1 applied in Sheet · no stored confirmation", exact=True)).to_be_visible()
+                page.get_by_role("button", name="Jobs", exact=True).click()
+                page.get_by_label("Filter by status").select_option("IMPORTED_APPLIED")
+                expect(page.get_by_role("table").locator("tbody tr")).to_have_count(1)
+                expect(page.get_by_role("table").get_by_text("Applied — imported from Sheet", exact=True)).to_be_visible()
+                page.get_by_label("Filter by status").select_option("ALL")
                 page.screenshot(path=str(ROOT / ".local/browser-desktop.png"), full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})
                 expect(page.get_by_role("button", name="Lock workspace", exact=True)).to_have_count(0)

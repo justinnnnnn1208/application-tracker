@@ -28,7 +28,7 @@ Question-driven brainstorming can be done in conversation. No interviewing plugi
 ## Current authorisation boundaries
 
 - Phase 1 is incomplete. Do not start Phase 2 until the owner explicitly confirms Phase 1 is verified, even if older messages requested faster progress to Phase 2.
-- Google access is read-only and limited to the owner's development copy. Do not touch the original tracker. Enabling writes requires a verified read-only import and separate approval.
+- Google access defaults to read-only and is limited to the development copy. The owner confirmed a 20-row import and approved copy-only status writes; enabling them locally requires explicit copy configuration and renewed Google consent. Live write verification remains pending. Do not touch the original tracker or infer approval to start Phase 2 or drop its prerequisites.
 - No application submissions, auto-submit enablement, real application-portal runs, or hosted processing of personal data without the approvals specified in AGENTS.md and SPEC.md.
 - Run locally through Phases 1–5. No hosting, Docker, multi-user auth or Postgres work before Phase 6 unless explicitly requested. Phase 6 is optional.
 
