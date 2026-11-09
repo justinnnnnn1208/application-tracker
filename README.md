@@ -17,7 +17,7 @@ A single-user, local-first workspace for UK graduate job opportunities. Phase 1 
 
 ## Run locally on macOS
 
-Requires Python 3.12+, uv, Node.js 24 and npm. From the project directory:
+Requires Python 3.12+, uv, Node.js 24 and npm. From the project directory, run one command at a time and stop if a command fails:
 
 ```sh
 python3 scripts/init_local.py

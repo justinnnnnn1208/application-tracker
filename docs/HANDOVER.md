@@ -52,7 +52,7 @@ Previously recorded for the published application baseline, not rerun by this do
 
 These results do not cover the three paused UI files above, live Google import, real portals, a real-page extraction evaluation set or all expanded UI workflows. No phase-completion claim is made.
 
-Documentation delivery checks: resolve local Markdown links; check required context/entry-point files and references; check `git diff --check`; verify unchanged fingerprints of the three pre-existing UI files; review staged paths for documentation-only scope and absence of private data. Record the actual delivery result below after running these checks. Application tests are not needed for Markdown-only changes and must not be described as rerun.
+Documentation delivery checks passed: nine documents were checked and 51 local links/references resolved; entry-point routing and evidence markers were checked; `git diff --check` passed; the three pre-existing UI file fingerprints were unchanged; staged paths contained documentation only, with no local credential values. Application tests were not rerun for Markdown-only changes.
 
 ## Owner inputs and permissions still needed
 
@@ -73,4 +73,8 @@ None of these owner inputs blocks the documentation/context task itself.
 
 ## Delivery record
 
-Documentation checks and GitHub delivery are pending until recorded by the current session. The runtime UI edits listed above must remain local and excluded from this delivery.
+- Shared-context documentation was pushed in commit [`e80d9c9`](https://github.com/justinnnnnn1208/application-tracker/commit/e80d9c9060d4ec7941e8fc16a8ac8f476089631a). Its full SHA matched the GitHub `dev/phase-1` ref in a read-only remote verification.
+- This final handover record and one-at-a-time setup clarification are a documentation-only follow-up. Use Git history for the newest documentation commit; the application baseline remains `1c7c8e2`.
+- All three runtime UI edits listed above remain local and excluded from this delivery. They were not modified by the context task.
+- Owner next step, from the local repository: `git pull --ff-only origin dev/phase-1`. No app restart is needed for documentation changes. If local changes conflict, preserve them and investigate rather than forcing the update.
+- No owner input is required to complete context setup. Google configuration inputs listed above are for later integration work.

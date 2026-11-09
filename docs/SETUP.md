@@ -6,7 +6,7 @@ These instructions describe the current code. Run on the owner's own computer; t
 
 Requirements: Python 3.12+, uv, Node.js 24 and npm. The owner uses a Mac and has already run the published app. If `uv` is missing, install it with `brew install uv` when Homebrew is available, then reopen the terminal and check `uv --version`. Dependency/runtime failures are setup work, not a reason to recreate or discard private data.
 
-From the repository root, first-time setup:
+From the repository root, first-time setup. Run commands one at a time and stop at the first error; a later successful command does not fix an earlier failed installation:
 
 ```sh
 python3 scripts/init_local.py
