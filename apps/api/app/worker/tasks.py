@@ -4,7 +4,7 @@ from pathlib import Path
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from app.db.models import DiscoverySource, Job, Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
+from app.db.models import Application, MatchResult, DiscoverySource, Job, Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
 from app.integrations.llm.provider import configured_provider
 from app.integrations.discovery.greenhouse import read_board
 from app.integrations.sheets.client import GoogleSheet
@@ -16,7 +16,7 @@ from app.services.errors import NeedsInput
 from app.services.extraction import extract_job
 from app.services.fetching import fetch_page
 from app.services.jobs import ensure_job
-from app.services.matching import save_match
+from app.services.matching import save_match, shared_inputs, inputs, fingerprint, ready, active_for_matching
 
 
 def catch_up(session, current=None):
@@ -39,6 +39,25 @@ def catch_up(session, current=None):
 
 def execute(session, task, settings):
     if task.kind == "match_jobs":
+        if "job_ids" in task.payload:
+            ids = task.payload["job_ids"]
+            if not isinstance(ids, list) or len(ids) > 500:
+                raise NeedsInput("Invalid scoring batch; request a fresh bounded batch.")
+            shared = shared_inputs(session)
+            rows = session.execute(select(Job, Application).join(Application).where(Job.id.in_(ids))).all()
+            counts = {"matched": 0, "current": 0, "skipped": len(ids) - len(rows)}
+            for job, application in rows:
+                if not ready(job) or not active_for_matching(job, application):
+                    counts["skipped"] += 1
+                    continue
+                previous = session.get(MatchResult, job.id)
+                if previous and previous.inputs_hash == fingerprint(inputs(session, job, shared)):
+                    counts["current"] += 1
+                    continue
+                save_match(session, job, shared=shared, commit=False)
+                counts["matched"] += 1
+            session.commit()
+            return counts
         job = session.get(Job, task.payload.get("job_id"))
         if not job:
             raise NeedsInput("The job no longer exists.")

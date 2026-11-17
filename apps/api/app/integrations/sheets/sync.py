@@ -9,6 +9,7 @@ from app.schemas import JobData
 from app.integrations.sheets.oauth import write_enabled
 from app.services.errors import NeedsInput
 from app.services.jobs import ensure_job
+from app.services.sheet_notes import fill_sheet_details
 from app.services.urls import canonical_url
 
 DEFAULT_MAPPING = {"company": "Company", "deadline": "Deadline", "url": "Application Link", "status": "Status", "notes": "Notes"}
@@ -118,6 +119,9 @@ def import_sheet(session, config, sheet, write=False):
                 mapped = SOURCE_STATUSES.get(content.get("status", "").strip().lower())
                 if mapped and baseline and current["status"] == baseline.get("status"):
                     set_status(session, job, mapped)
+            note_fields = baseline.get("_notes_fields", {})
+            if not duplicate:
+                note_fields = fill_sheet_details(job, note_fields)
             current = db_values(session, job)
             if write and not duplicate and baseline:
                 for field in ("status",):
@@ -146,7 +150,7 @@ def import_sheet(session, config, sheet, write=False):
                 baseline = current
             link.job_id = job.id
             # Preserve pending DB changes when an import, rather than sync, is run.
-            link.last_db_values = baseline
+            link.last_db_values = {**baseline, "_notes_fields": note_fields}
         except (ValueError, TypeError):
             warning = "Row preserved but not imported: check its company, HTTP(S) URL and DD/MM/YYYY deadline."
             link.job_id = None

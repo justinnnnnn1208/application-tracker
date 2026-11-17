@@ -109,7 +109,7 @@ The owner already supplied these headers:
 | status | Status |
 | notes | Notes |
 
-`Deadline alert` and `Days left` are preserved and must not be write targets. There is no dedicated role-title column; the current import uses the explicit unknown label `Role not provided` and retains original row data. Source status text is retained separately and cannot establish a confirmed APPLIED state. Sponsorship claims in Notes do not become confirmed sponsorship.
+`Deadline alert` and `Days left` are preserved and must not be write targets. There is no dedicated role-title column: column E, Notes, supplies literal role/location summaries. Clear first-sentence titles and supported place names populate missing fields; company-only entries retain Role not provided. Original row data/Notes are preserved. Source status text is retained separately and cannot establish a confirmed APPLIED state. Sponsorship claims in Notes do not become confirmed sponsorship.
 
 The owner supplied development-copy ID `1xjj0CEMzWrQS7sROq7QHvyoaLle67vkeWn9lIXv6bEY`, tab `sheet1` (use the exact case displayed in Google), header row `1`, then reported all 20 jobs imported and approved copy-only status writes. Live write verification is still pending. Read-only continues to work without any scope change.
 
@@ -176,7 +176,7 @@ Open a job's details and choose **Calculate preference match**. Keep the worker 
 
 The score is a preference heuristic, not an eligibility decision, sponsorship check or probability of success. Changing source fields, reviewed facts or preferences makes old results stale; recalculate before relying on them. Source/Notes instructions never change legal declarations or application statuses.
 
-For imported Sheet stubs, fill the actual role title and vacancy description using Edit details, or paste the existing application URL on Dashboard to enrich missing details where extraction is supported. Existing Notes, statuses and populated fields are preserved. Matching is disabled until enough source content is present; a missing description is not presented as a low-quality match.
+Existing Sheet imports now repair missing titles/locations automatically from stored Notes on API startup. No new Google permission or import is needed for already imported data. In details, Description from Notes shows the original summary when a full description is absent. Company-only rows still require an actual role title. You can paste the existing URL on Dashboard to enrich details with a supported full listing. Existing Notes, statuses and populated fields are preserved. Matching can use a Notes summary when a real role title is available, with an explicit summary-only notice. Missing role/summary data is shown as Needs details rather than a misleading zero score.
 
 To reproduce the development report from apps/api:
 
@@ -185,3 +185,18 @@ uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval
 ```
 
 Reports are stored under fixtures/eval/reports. No new dependency or migration is required for this delivery. Sheets remains read-only; no Google permission change is needed.
+
+## Apply the Notes fix to existing jobs on Mac
+
+Stop the app with Control+C, then from the project root:
+
+```sh
+git pull --ff-only origin dev/phase-1
+python3 scripts/dev.py
+```
+
+No dependency/migration update is required. API startup fills missing fields from already stored Notes for Sheet-linked jobs. You do not need to paste the 20 rows, add a Role column, reconnect Google or re-import unchanged data. Cloud code delivery cannot directly change the separately running Mac app; this restart applies the repair locally.
+
+In tests using all 20 supplied public summaries, 19 have clear role titles. The company-only startup opportunity has no actual title, so it remains Role not provided while its Notes are visible. Supported explicit locations are copied literally; no location/eligibility is guessed. Full original Notes and imported statuses are preserved. Fields manually edited or replaced by official listing data are protected from later Notes refreshes. Newer edits made in Google after the last import still require Import test copy (read-only).
+
+On Jobs, choose **Score active jobs**, wait for Background tasks, then select **Preference match (highest)**. Current scores appear in the table; stale, inactive and incomplete records show text labels. Batch scoring excludes already applied/closed/past-deadline jobs and handles up to 500 ready active rows. Existing unchanged scores are reused; job details still explain scores and accept individual ratings. Scores based on Notes are explicitly limited summaries, not verified requirements or application eligibility. Google write permission is not needed.

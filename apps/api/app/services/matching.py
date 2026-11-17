@@ -2,13 +2,15 @@
 import hashlib
 import json
 import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import select
 
 from app.db.models import Fact, MatchResult, Preferences, Profile, now
 from app.services.errors import NeedsInput
 
-VERSION = "preference-v1"
+VERSION = "preference-v2"
 WEIGHTS = {"role": 20, "graduate": 25, "location": 20, "skills": 20, "experience": 10, "start_date": 5}
 SKILLS = ("python", "java", "javascript", "typescript", "c++", "c#", "rust", "golang", "sql", "react", "linux", "docker", "kubernetes", "terraform", "pytorch", "tensorflow", "aws", "azure", "git")
 
@@ -30,15 +32,29 @@ def graduate_level(title, description):
     return "UNVERIFIED"
 
 
-def inputs(session, job):
+def shared_inputs(session):
     profile = session.get(Profile, 1)
     preferences = session.get(Preferences, 1)
     facts = session.scalars(select(Fact).where(Fact.verified.is_(True)).order_by(Fact.id)).all()
     return {"version": VERSION,
-            "job": {key: getattr(job, key) for key in ("title", "company", "location", "description", "start_date", "eligibility_requirements")},
             "locations": profile.target_locations if profile else "", "graduation_year": profile.graduation_year if profile else None,
             "roles": preferences.target_roles if preferences else [], "weights": preferences.weights if preferences and preferences.weights else WEIGHTS,
             "facts": [{"id": fact.id, "category": fact.category, "content": fact.content} for fact in facts]}
+
+
+def inputs(session, job, shared=None):
+    job_data = {key: getattr(job, key) for key in ("title", "company", "location", "description", "start_date", "eligibility_requirements")}
+    job_data["description"] = job.description or job.notes
+    job_data["source_kind"] = "vacancy" if job.description else "notes_summary" if job.notes else "missing"
+    return {**(shared if shared is not None else shared_inputs(session)), "job": job_data}
+
+
+def active_for_matching(job, application):
+    if application.status not in {"DISCOVERED", "SHORTLISTED"}:
+        return False
+    if application.status == "DISCOVERED" and (job.tracker_status or "").strip().casefold() in {"applied", "rejected", "offer", "withdrawn"}:
+        return False
+    return job.deadline is None or job.deadline >= datetime.now(ZoneInfo("Europe/London")).date()
 
 
 def fingerprint(data):
@@ -72,13 +88,13 @@ def calculate(data):
 
 
 def ready(job):
-    return job.title != "Role not provided" and bool(job.description.strip() or job.eligibility_requirements.strip())
+    return job.title != "Role not provided" and bool(job.description.strip() or job.eligibility_requirements.strip() or job.notes.strip())
 
 
-def save_match(session, job):
+def save_match(session, job, shared=None, commit=True):
     if not ready(job):
         raise NeedsInput("Add the role title and vacancy description before calculating a preference match.")
-    data = inputs(session, job)
+    data = inputs(session, job, shared)
     result = calculate(data)
     row = session.get(MatchResult, job.id) or MatchResult(job_id=job.id)
     digest = fingerprint(data)
@@ -87,5 +103,6 @@ def save_match(session, job):
     row.score, row.breakdown, row.inputs_hash = result["score"], result["breakdown"], digest
     row.created_at = now()
     session.add(row)
-    session.commit()
+    if commit:
+        session.commit()
     return result

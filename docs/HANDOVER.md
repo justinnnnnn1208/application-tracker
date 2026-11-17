@@ -2,64 +2,61 @@
 
 ## Session
 
-Reviewed: 17 November 2026 (Europe/London). Branch dev/phase-1; previous published baseline 5e2e4af. Initial worktree clean. User resumed after publishing the environment and explicitly forbade reapplying/publishing settings; this instruction was respected. They reiterated pushing finished work and updating phase status.
+Reviewed: 17 November 2026 (Europe/London). Branch dev/phase-1, previous published baseline a330be9. Initial worktree clean. User asked to continue Phase 2, then prioritised fixing role titles/descriptions because all summaries are already in Sheet column E (Notes). They asked for existing jobs to be updated, then went to bed and allowed continuation tomorrow if needed. Standing instruction: push completed tested work and update phase status.
 
-Phase 2 is authorised. Owner agreed initial >=90% field accuracy (deadline/location/graduate-role/start date), with zero false sponsorship confirmations. Prioritise real graduate/junior UK tech; sponsorship is informational, not an exclusion/score penalty. No legal declarations changed. Phase 1 live Sheet write test deferred by owner; native Mac notification/operational restore checks remain outstanding. Sheets stays read-only.
+Phase 2 roughly 50%, incomplete. Phase 1 accepted for progression with live write test deferred and Mac notification/operational restore checks outstanding. Sheets stays read-only; original tracker remains blocked. No Google OAuth connection or private Mac DB is accessible from this cloud workspace. Do not claim Mac rows were directly changed here. Pull/restart applies the local startup repair automatically; no re-entry of the 20 rows or new Google permission is needed.
 
-## What changed
+## Changes completed
 
-- Confirmed applied/enforced Greenhouse network grants and fresh accessible robots/API/page responses. No configuration update or publication.
-- Collected and reviewed 30 genuine postings from Graphcore (14), Canonical (8), Monzo (4), Deliveroo (4). Excerpts retain original job metadata/logo/header/description; forms/scripts/tracking removed, no fabricated JSON-LD. Sources, dates, excerpt and raw hashes in manifest/provenance; raw HTML remains ignored. LABEL_REVIEW.md explains graduate/date/sponsorship decisions. Four employers/one ATS: development set, not held-out quality proof.
-- Added visible Greenhouse parser for live pages lacking JSON-LD. Consistent page URL/title/employer required; handles placeholder page titles using original logo + matching og:title, whitespace and identical repeated h1. Scripts/forms ignored. Full labelled dates parsed; incomplete dates remain null. Discovery reuses explicit date parsing.
-- Local DNS failed while proxy HTTPS worked. Added fallback only for the two fixed official HTTPS hosts with configured proxy, only on DNS OSError, never private/non-global results. Other URL/TLS/robots/rate/size guards retained. Decision docs explain rationale/tests.
-- Implemented local worker preference score, explained criteria/fact IDs, API/current-score feedback/stale detection and job-detail card. Six weights total 100, sponsorship absent. Reviewed facts only; no name/email/declarations used. Rating does not auto-tune weights.
-- Added missing-source-data guard: no score for imported stubs without title/vacancy text. Re-pasted supported URLs and discovery can fill only missing fields; preserve populated owner fields, Notes/tracker/app status/history and job ID.
-- Updated evaluation runner for optional role-classification mode, known-label counts/accuracy and positive sponsorship prediction/label counts to expose abstention. Reports explicitly do not accept Phase 2.
+- Added literal Notes role/location parsing and idempotent API startup repair of Sheet-linked jobs. It uses already-imported Job.notes, not live Google/network access. Clear first-sentence role text and explicit supported UK place names fill missing fields; company-only/opportunity entries stay unknown. Compare-and-swap protects concurrent owner edits.
+- Import/re-import fills missing details and refreshes only previously Notes-derived fields. Ownership markers use existing SheetLink.last_db_values JSON, no migration. Manual/official-source replacements are protected; later official listing extraction can replace still-auto-derived details. Notes/raw snapshots/formulas, IDs, company, dates and application/history statuses are preserved.
+- UI uses “Description from Notes” when full vacancy text is absent, without duplicating the same Notes section. Matching accepts a real role plus a Notes summary with an explicit limited-source notice. Notes changes invalidate stored scores (preference-v2).
+- Added batch Score active jobs, current-score column and highest-match sort in Jobs. API summaries hide stale/inactive/incomplete scores; actual current zero remains a real score. Batch snapshots up to 500 ready active jobs, excludes imported Applied/closed/past dates, rechecks at worker execution, reuses unchanged caches and deduplicates identical queued batches. No submissions/status changes/Sheet writes.
+- Shared matching context avoids repeatedly loading profile/facts for every batch/list row. Existing scores/explanations and individual feedback remain supported; no automatic weight tuning.
+- No dependencies, new tables, migrations, credentials, private settings, owner storage or environment configuration changed here.
 
-## Phase 1 checklist
+## Phase 1 acceptance record
 
-| Criterion | Result | Evidence / limits |
+| Criterion | Result | Evidence/remaining limit |
 |---|---|---|
-| 10 URL rows correct | PASSED — fixtures | Current API→worker→extractor; live ten-URL acceptance not claimed. |
-| Re-paste dedupe | PASSED | Fixtures and live disposable Monzo repeat: 60 jobs, 0 duplicates added. Cross-source fuzzy merge not implemented. |
-| All Sheet rows preserved | PASSED — owner report + fixtures | Owner confirmed 20/data/UI; no private Mac OAuth access here. |
-| Intended-cell-only write | NOT TESTED live — deferred | Existing guardrail tests pass; no write enabled. |
-| DB/storage restore | PASSED — disposable | Current service/browser/CLI checks; operational Mac restore outstanding. |
-| UNVERIFIED default | PASSED | Current API/DB/extraction/discovery tests, no automatic YES. |
+| 10 URL rows correct | PASSED — fixtures | Current real API/worker/extractor suite; live ten-URL acceptance not claimed. |
+| Re-paste dedupe | PASSED | Fixtures and earlier live Monzo repeat (60 jobs, zero added on repeat). Cross-source merge not implemented. |
+| All Sheet rows preserved | PASSED — owner report + fixtures | Owner previously confirmed 20/data/UI; current tests preserve 20 Notes rows and repeat import without writes/duplicates. Actual Mac backfill still needs pull/restart. |
+| Intended-cell-only write | NOT TESTED live — explicitly deferred | Existing guardrail tests pass; no write access enabled or Google cells edited. |
+| DB/storage restore | PASSED — disposable data | Current service/browser/CLI checks include exact CV bytes; Mac operational restore outstanding. |
+| UNVERIFIED default | PASSED | Current API/DB/extraction/discovery/import tests. Notes sponsorship claims do not affect confirmation or scores. |
 
-Native Mac notifications also outstanding. These are accepted progression deferrals, not passed laptop checks.
+Native Mac notification delivery also outstanding. Keep accepted deferrals recorded, not marked passed.
 
-## Verification
+## Verification this session
 
-- apps/api: UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short: **84 passed**, one existing deprecation warning.
-- apps/web: npm run typecheck; NEXT_TELEMETRY_DISABLED=1 npm run build: **PASSED**.
-- Production browser smoke: **PASSED** with final matching UI (real worker score/explanation/feedback) and existing security/CRUD/filter/link/imported-status/CV/backup/discovery/reminder/mobile checks. Discovery's final explicit-date parser adjustment is service/API-tested; no subsequent UI edits.
-- Live normal-app fetcher: Graphcore Graduate Software Engineer, DevOps 2027, Bristol, explicit 2026-11-29 deadline extracted. No form interaction.
-- Disposable live API/worker Monzo board import: first 60 read/60 added/0 invalid; second 60 read/0 added/60 duplicates/0 invalid; 60 stored jobs all DISCOVERED/UNVERIFIED. Temporary DB/storage removed, owner data untouched.
-- Offline extraction baseline and --role-classification report commands: **exit 0**, 30 cases, 0 extraction failures, basic fields 30/30, role mode graduate 30/30. Known deadlines 12/12. Start-date positives 0; all 30 null. Sponsorship 0 YES predictions, 0 false YES, 4 positive labels, 14 negative, 12 unknown; no finished evidence assessment.
-- Reports/labels reflect development using these cases, not independent held-out performance. Full Phase 2 accepted=false.
+- apps/api: UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short: **96 passed**, one existing Starlette/httpx deprecation warning.
+- apps/web: npm run typecheck and NEXT_TELEMETRY_DISABLED=1 npm run build: **PASSED** with final rank/summary UI.
+- Production browser smoke: **PASSED** on final application code. Simulates an old import, restarts the API, verifies automatic role/location repair and single visible Notes summary/limited-source notice; then scores a batch and checks highest-match sort. Existing security/CRUD/status/filter/link/imported Applied/CV/backup/discovery/reminder/responsive flows also pass. Uses disposable data and actual worker, no Google calls or owner data.
+- Notes fixture uses the 20 supplied public summaries with synthetic company names/URLs: 19 clear roles, company-only row stays unknown. Startup repair/restart idempotence, owner-field protection, Notes refresh, official-source enrichment and preserved historical statuses tested. This is not a claim the Mac DB has already been changed.
+- Batch tests cover current-score reuse, queued batch dedupe, missing/closed/applied/past exclusions, worker status recheck and stale/inactive numeric score hiding.
+- Real 30-page evaluation rerun with --role-classification: exit 0, 30 pages, zero extraction failures/false YES, unchanged development metrics. Four employers/one ATS, no held-out generalisation or exact start-date positives; sponsorship remains unverified/abstaining.
+- git diff --check passed before staging; generated next-env.d.ts drift excluded. Public-page fixtures/reports unchanged.
 
-An initial live app fetch was blocked by unavailable local DNS, despite successful normal proxied HTTP. The narrow fallback fixed the actual client, not environment permissions; no DNS/TLS/proxy bypass. Earlier root-directory uv test attempts were corrected to apps/api and final full checks passed. No test failure was hidden. Git whitespace check flagged preserved source HTML trailing spaces; .gitattributes permits only those trailing blanks for captured pages, preserving inline-node separators while keeping code checks. Generated next-env.d.ts drift excluded.
+An initial new test referenced an expired ORM object after closing its session; corrected the fixture ID capture. First extended browser run needed apps/api on Python's module path for its DB fixture; corrected and reran successfully. No application check or safety guard was bypassed.
 
-## Remaining / next actions
+## Remaining scope and next session
 
-Phase 2 roughly 40%, incomplete. Next useful work: cross-source identity/aliases and conservative fuzzy dedupe; ranked jobs view using current matches; source enrichment support beyond Greenhouse; manual weight editing/tuning feedback; evidence review/licence signal; held-out multi-ATS and exact-start-date examples. Current finite-keyword preference scoring is not LLM requirement extraction or personal eligibility. Do not infer sponsorship need from visa policy or send personal facts to hosted models.
+Continue Phase 2: cross-source identity/aliases and conservative fuzzy dedupe, more ATS/aggregator support, weight-editing/feedback tuning, evidence review/licence signal, held-out/multi-ATS and exact-start-date validation. Current scoring is a local finite-keyword heuristic, not an LLM requirement extractor or personal/legal eligibility. No automatic discovery schedule, hosted personal-data processing, forms/submissions or Sheets writes authorised.
 
-API matching routes: POST /tasks/match {job_id}, GET /jobs/{id}/match, POST /jobs/{id}/feedback {value: good|bad}. The worker uses only reviewed facts and fingerprints job/fact/preference inputs. Old scores become stale; current feedback only. Recalculating unchanged inputs preserves feedback. Matching insufficient imported rows returns 409; UI explains enrichment.
+Numerical initial targets already agreed: >=90% deadline/location/graduate-role/start-date accuracy and zero false YES; report unknown-label coverage separately. Do not ask for those targets, supplied headers/copy IDs or the 20 rows again. Network grants are already published/working; do not reapply or publish environment settings without a new request. App-level host opt-in is separate (SETUP.md).
 
-Network configuration is published and working on the current environment; do not ask user to publish the previous draft again. Do not modify or publish environment settings unless newly requested. App-level URL_FETCH_ALLOWED_HOSTS remains a separate opt-in; test commands used per-process approved hosts, never changed private .env. Original tracker blocked and Sheets readonly.
+Read AGENTS/context/spec/status/setup, inspect Git and preserve owner data/authorship. Check the actual environment rather than assuming processes/OAuth readiness. The user should see Notes-based titles/summaries after pulling/restarting; if not, diagnose locally with redacted app errors, never ask for secrets/client JSON/callback URLs.
 
-## Delivery / resume
+## Delivery / owner next step
 
-Application/tests/fixtures published as 903580f4ea4b732060d61dac46a0c402bef0ef38; full local SHA matched GitHub dev/phase-1. This documentation/data-lint follow-up records delivery; no unfinished runtime edits remain. No dependencies/migrations, owner credentials/configuration/storage or legal facts changed. Public posting data only is added to tracked fixtures; raw application-form HTML stays ignored.
+Notes repair/ranking code and docs prepared for owner-authored commit/push; publication recorded in follow-up/Git log. No uncommitted runtime work deliberately excluded except generated next-env.d.ts drift (restored).
 
-Read AGENTS/context/spec/status/setup, inspect Git and use latest confirmed state. Never assume an app process, published setting or private OAuth session is available from this handover alone.
-
-Mac after Control+C, from project root:
+After Control+C, from the Mac project root:
 
 ```sh
 git pull --ff-only origin dev/phase-1
 python3 scripts/dev.py
 ```
 
-No dependency/migration refresh needed. For discovery/URL fetching, merge boards-api.greenhouse.io and job-boards.greenhouse.io into the private approved host list as documented in SETUP.md, review source terms, and restart. Choose a source manually. Job details now show Calculate preference match and Why this score. Import stubs need a real title/description first; re-pasting a supported URL fills missing details without overwriting owner history. Google permission need not change.
+Startup repairs existing imported data automatically. No new migration/dependency/permission/re-import required for already stored Notes. Newer edits in Google after last import still need Import test copy. Jobs → Score active jobs → wait in Background tasks → Preference match (highest). One company-only entry may still need an actual role, but its full Notes summary is visible. Google account/original Sheet remain untouched by this delivery.

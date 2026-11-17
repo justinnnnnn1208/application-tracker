@@ -13,6 +13,7 @@ import secrets
 import shutil
 import signal
 import socket
+import sys
 import subprocess
 import tempfile
 import time
@@ -23,6 +24,7 @@ from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
 API = ROOT / "apps/api"
+sys.path.insert(0, str(API))
 
 
 def wait_for(url, processes):
@@ -280,6 +282,35 @@ def main():
                 expect(restarted.locator(".task-row").filter(has_text="Job URL extraction").get_by_text("succeeded", exact=True)).to_be_visible(timeout=20000)
                 restarted.get_by_role("button", name="Jobs", exact=True).click()
                 expect(restarted.get_by_role("table")).to_contain_text("Browser worker engineer")
+                # Simulate an earlier Sheet import and verify automatic repair on API restart.
+                from sqlalchemy import select
+                from sqlalchemy.orm import Session
+                from app.db.models import Job, SheetLink
+                from app.db.session import make_engine
+                notes = "Graduate Software Engineer, Leeds. Python relevant; sponsorship not confirmed."
+                fixture_engine = make_engine(environment["DATABASE_URL"])
+                with Session(fixture_engine) as session:
+                    imported = session.scalar(select(Job).where(Job.url == "https://example.org/worker-browser"))
+                    imported.title, imported.description, imported.location, imported.notes = "Role not provided", "", "", notes
+                    session.add(SheetLink(spreadsheet_id="fixture-development-copy", tab="Tracker", row_number=2, job_id=imported.id, row_hash="fixture", raw_values=[], raw_formulas=[], last_db_values={}))
+                    session.commit()
+                fixture_engine.dispose()
+                os.killpg(processes[0].pid, signal.SIGTERM)
+                processes[0].wait(timeout=5)
+                processes[0] = subprocess.Popen([str(API / ".venv/bin/uvicorn"), "app.main:create_app", "--factory", "--host", "127.0.0.1", "--port", "8001", "--no-access-log"], cwd=API, env=environment, stdout=log, stderr=log, start_new_session=True)
+                wait_for("http://127.0.0.1:8001/health", processes)
+                restarted.reload()
+                restarted.get_by_role("button", name="Jobs", exact=True).click()
+                restarted.get_by_role("button", name="View Graduate Software Engineer, Leeds at Worker fixture company", exact=True).click()
+                expect(restarted.get_by_role("heading", name="Description from Notes", exact=True)).to_be_visible()
+                expect(restarted.get_by_text(notes, exact=True)).to_have_count(1)
+                expect(restarted.get_by_text("Based on your Notes summary.", exact=False)).to_be_visible()
+                restarted.get_by_role("button", name="Jobs", exact=True).click()
+                restarted.get_by_role("button", name="Score active jobs", exact=True).click()
+                note_row = restarted.get_by_role("table").locator("tbody tr").filter(has_text="Worker fixture company")
+                expect(note_row).to_contain_text("/100", timeout=20000)
+                restarted.get_by_label("Sort jobs").select_option("match")
+                expect(restarted.get_by_role("table").locator("tbody tr").first).to_contain_text("Worker fixture company")
                 restarted.get_by_role("button", name="My Profile", exact=True).click()
                 cv_bytes = b"Skills\nPython fixture browser skill\n"
                 restarted.get_by_label("CV file", exact=True).set_input_files({"name": "fixture.txt", "mimeType": "text/plain", "buffer": cv_bytes})

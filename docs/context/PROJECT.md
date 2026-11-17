@@ -32,6 +32,10 @@ Question-driven brainstorming can be done in conversation. No interviewing plugi
 - No application submissions, auto-submit enablement, real application-portal runs, or hosted processing of personal data without the approvals specified in AGENTS.md and SPEC.md.
 - Run locally through Phases 1–5. No hosting, Docker, multi-user auth or Postgres work before Phase 6 unless explicitly requested. Phase 6 is optional.
 
+## Sheet Notes source
+
+The owner stores role titles, locations and job summaries in column E, Notes. Do not ask them to create a separate Role column or paste all rows again. Use literal Notes excerpts for missing role/location fields; display Notes as a labelled summary when no full vacancy text exists. Existing imports are repaired locally at API startup after pulling/restarting; Google OAuth lives in the owner’s Mac app and is not available as a cloud connector. Do not claim the Mac data was directly changed from this workspace. Preserve owner edits, application history and raw Sheet values.
+
 ## Discovery and ranking preference
 
 Prioritise genuine graduate/junior UK technology vacancies. Include roles regardless of sponsorship availability; treat sponsorship evidence and sponsor-licence data as informational. This preference does not establish immigration eligibility or modify legal declarations. The owner agreed initial targets of at least 90% accuracy for deadline, location, graduate-role classification and start date, with zero false sponsorship confirmations. Real postings are mandatory. Thirty reviewed snapshots now exist; current scores are development-set evidence, with no positive exact-start-date coverage.
