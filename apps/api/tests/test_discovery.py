@@ -60,3 +60,12 @@ def test_malformed_board_data_is_bounded_or_counted(monkeypatch, payload):
     else:
         with pytest.raises(NeedsInput):
             greenhouse.read_board("fixture")
+
+
+def test_discovery_preserves_explicit_dates_without_filling_partial_dates(monkeypatch):
+    payload = board_payload()
+    payload["jobs"][0]["content"] = "<p>Application deadline: Midnight, 29th November 2026</p><p>Start date: September 2027</p>"
+    monkeypatch.setattr(greenhouse, "fetch_page", lambda _: json.dumps(payload))
+    jobs, warnings = greenhouse.read_board("fixture")
+    assert warnings == 0 and jobs[0].deadline.isoformat() == "2026-11-29"
+    assert jobs[0].start_date is None

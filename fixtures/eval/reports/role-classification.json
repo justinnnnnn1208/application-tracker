@@ -1,0 +1,153 @@
+{
+  "pages": 30,
+  "dataset_ready": true,
+  "extraction_failures": 0,
+  "accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": 1.0,
+    "start_date": 1.0,
+    "graduate": 1.0,
+    "sponsorship": 0.4
+  },
+  "known_labels": {
+    "company": 30,
+    "title": 30,
+    "location": 30,
+    "deadline": 12,
+    "start_date": 0,
+    "graduate": 26,
+    "sponsorship": 18
+  },
+  "known_label_accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": 1.0,
+    "start_date": null,
+    "graduate": 1.0,
+    "sponsorship": 0.0
+  },
+  "predicted_confirmed_yes": 0,
+  "labelled_confirmed_yes": 4,
+  "false_confirmed_yes": 0,
+  "mismatches": [
+    {
+      "id": "graphcore-8843258002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894042002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894145002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894149002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894177002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894310002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894323002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894348002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894364002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894376002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894377002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894466002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894574002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894608002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-5018066",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-6036797",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-6369658",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-6394676",
+      "fields": [
+        "sponsorship"
+      ]
+    }
+  ],
+  "phase_2_accepted": false,
+  "limits": [
+    "Development set: four employers on Greenhouse; not a held-out multi-ATS benchmark.",
+    "Sponsorship remains UNVERIFIED; zero false YES is not proof of evidence-assessment quality.",
+    "Start-date precision: no reviewed page provides an exact day; null accuracy is not positive-date coverage.",
+    "Field targets: at least 0.9 for deadline/location/graduate/start_date; zero false confirmed YES. Full Phase 2 scope still incomplete."
+  ],
+  "mode": "role-classification"
+}

@@ -5,7 +5,7 @@ import re
 
 from app.schemas import JobData
 from app.services.errors import NeedsInput
-from app.services.extraction import plain_html
+from app.services.extraction import plain_html, labelled_date, parse_date
 from app.services.fetching import fetch_page
 
 
@@ -33,10 +33,13 @@ def read_board(board):
             if not isinstance(row, dict) or not row.get("id"):
                 raise ValueError("Missing posting identity")
             location = row.get("location") or {}
+            description = plain_html(html.unescape(row.get("content") or ""))
+            text = " ".join(description.split())
             jobs.append(JobData(url=row["absolute_url"], title=plain_html(row["title"]),
                 company=plain_html(row.get("company_name")) or "Employer not provided",
                 location=location.get("name", "") if isinstance(location, dict) else "",
-                description=plain_html(html.unescape(row.get("content") or ""))))
+                description=description, deadline=parse_date(row.get("application_deadline")) or labelled_date(text, r"Applications? deadline"),
+                start_date=labelled_date(text, r"Start date")))
         except (ValueError, KeyError, TypeError):
             invalid += 1
     return jobs, invalid

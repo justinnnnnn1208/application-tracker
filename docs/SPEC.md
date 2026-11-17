@@ -207,7 +207,7 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 **Phase 1 progression decision (9 November 2026):** the owner accepted progression with the live status-cell preservation test deferred and Mac notification/operational restore checks outstanding. These remain recorded limitations, not passed tests. The owner confirmed the delivered listing links and imported-status UI checks on their Mac.
 
 **Phase 2: Job intelligence**
-- Matching with explainable scores, informational sponsorship evidence and licensed-sponsor signal, discovery from ATS and aggregator APIs, fuzzy dedupe, match feedback (good/bad) to tune weights. Prioritise graduate/junior UK technology roles; do not exclude or penalise roles for sponsorship status. Matching awaits the real hand-labelled evaluation set; numerical field-accuracy thresholds are still to be agreed.
+- Matching with explainable scores, informational sponsorship evidence and licensed-sponsor signal, discovery from ATS and aggregator APIs, fuzzy dedupe, match feedback (good/bad) to tune weights. Prioritise graduate/junior UK technology roles; do not exclude or penalise roles for sponsorship status. Matching awaits the real hand-labelled evaluation set; the owner agreed initial field-accuracy targets of at least 90% for deadline, location, graduate-role classification and start date, with zero false CONFIRMED_YES. Unknown-label coverage and held-out performance must be reported separately.
 - Accept when: the eval set meets agreed thresholds and has zero false `CONFIRMED_YES`; the same job from two sources is merged.
 
 **Phase 3: Application preparation**
@@ -275,3 +275,13 @@ Desktop deadline reminders (owner clarification): opt-in browser notifications, 
 ### Current Phase 1 status presentation
 
 Show original Sheet statuses in job rows and details. Applied source rows use “Applied — imported from Sheet” and have a dedicated filter. Dashboard shows the imported count separately in the Applied metric explanation; the app’s confirmed Applied count remains zero until confirmation evidence is supported. Direct Open listing links are available in the job table and details. No imported claim creates a confirmed APPLIED state.
+
+### Phase 2 first matching delivery (17 November 2026)
+
+Thirty genuine reviewed posting snapshots now exist in fixtures/eval, from four employers on Greenhouse. Public application forms/scripts are excluded; original visible posting content is retained with source/capture/hash provenance. The initial parser/classifier was developed using this set, so report results as development evidence, not held-out generalisation. There are no exact-day start-date positives; matching null values does not prove positive-date extraction.
+
+Per-job matching runs locally in the task worker. It is an explained preference heuristic, not personal/legal eligibility or a probability of success. Default weights: role 20, graduate level 25, location 20, reviewed skill overlap 20, reviewed experience overlap 10 and start year 5. Existing configured weights/roles and profile locations/graduation year are used when present. Keyword overlap only uses reviewed facts and cites their IDs; it is not proof of proficiency. Source text never supplies applicant facts. Start-year comparison does not establish month/day availability.
+
+Sponsorship is not included in score inputs or weights. Source sponsorship statements, Notes and licences do not become confirmed states. Confirmation/evidence assessment and licensing signals remain unfinished. Good/Poor feedback is stored against a current score, but no automatic weight tuning is delivered yet. Job/reviewed-fact/preference changes invalidate stored scores; stale scores must not be used for feedback until recalculated.
+
+Imported rows without a real title/vacancy text require enrichment before scoring. Pasting an existing listing URL can fill missing title/company/location/description/requirements/dates, while preserving already populated owner content, Notes, tracker history, app status and identity. Repeated imports stay deduplicated. Non-Greenhouse source support remains subject to the existing host/terms and metadata/provider limits.

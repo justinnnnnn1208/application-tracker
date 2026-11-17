@@ -8,6 +8,7 @@ from sqlalchemy import text
 from app.core.config import Settings
 from app.core.security import require_access
 from app.db.session import make_engine
+from app.routers.matching import router as matching
 from app.routers.discovery import router as discovery
 from app.routers.tracker import router
 from app.routers.workflows import router as workflows, public_router
@@ -51,6 +52,7 @@ def create_app(settings: Settings | None = None):
 
     app.include_router(router, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(workflows, prefix="/api", dependencies=[Depends(require_access)])
+    app.include_router(matching, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(discovery, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(public_router)
     return app

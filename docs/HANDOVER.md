@@ -2,69 +2,64 @@
 
 ## Session
 
-Reviewed: 9 November 2026 (Europe/London). Branch `dev/phase-1`; previous published baseline `7b15bf9`. Initial worktree clean.
+Reviewed: 17 November 2026 (Europe/London). Branch dev/phase-1; previous published baseline 5e2e4af. Initial worktree clean. User resumed after publishing the environment and explicitly forbade reapplying/publishing settings; this instruction was respected. They reiterated pushing finished work and updating phase status.
 
-Owner explicitly accepted deferring Phase 1 live write verification with Mac notification/operational restore checks outstanding and authorised Phase 2. Later clarified: prioritise real graduate/junior UK technology roles; sponsorship is informational and should not exclude jobs. No legal/right-to-work declaration changed. Owner is away for a run and asked independent work to continue. Sheets stays read-only by default; no automatic discovery schedule or portal/submission runs authorised.
+Phase 2 is authorised. Owner agreed initial >=90% field accuracy (deadline/location/graduate-role/start date), with zero false sponsorship confirmations. Prioritise real graduate/junior UK tech; sponsorship is informational, not an exclusion/score penalty. No legal declarations changed. Phase 1 live Sheet write test deferred by owner; native Mac notification/operational restore checks remain outstanding. Sheets stays read-only.
 
-## Completed work
+## What changed
 
-| Work | State / evidence |
-|---|---|
-| Phase/selection preferences | Recorded in AGENTS/context/spec/status/setup; prior Phase 2 pause superseded by explicit owner approval. |
-| Offline real-page evaluation harness | Implemented/tested: manifest paths/checksums/unique URLs/labels/quotes, field accuracy, failures in denominators and separate false-YES metric. No hosted/fetch calls. Empty genuine manifest deliberately not ready. |
-| Public Greenhouse discovery | Implemented/tested with synthetic feed fixtures only. Fixed official API endpoint, validated slug, shared robots/host/rate/size guards, no redirects/bypass. Parses real-source fields without guessing missing dates/company or sponsorship. |
-| API/worker/Settings | Existing dormant DiscoverySource table reused; add/list/delete source and manual queued task. Default disabled, real worker dedupes URLs and reports counts. Browser checks source add/remove and disabled import control. No dependencies/migrations added. |
-| Cloud access proposal | Saved narrow two-domain draft, not applied. Startup guidance corrected to latest phase/selection decision. |
+- Confirmed applied/enforced Greenhouse network grants and fresh accessible robots/API/page responses. No configuration update or publication.
+- Collected and reviewed 30 genuine postings from Graphcore (14), Canonical (8), Monzo (4), Deliveroo (4). Excerpts retain original job metadata/logo/header/description; forms/scripts/tracking removed, no fabricated JSON-LD. Sources, dates, excerpt and raw hashes in manifest/provenance; raw HTML remains ignored. LABEL_REVIEW.md explains graduate/date/sponsorship decisions. Four employers/one ATS: development set, not held-out quality proof.
+- Added visible Greenhouse parser for live pages lacking JSON-LD. Consistent page URL/title/employer required; handles placeholder page titles using original logo + matching og:title, whitespace and identical repeated h1. Scripts/forms ignored. Full labelled dates parsed; incomplete dates remain null. Discovery reuses explicit date parsing.
+- Local DNS failed while proxy HTTPS worked. Added fallback only for the two fixed official HTTPS hosts with configured proxy, only on DNS OSError, never private/non-global results. Other URL/TLS/robots/rate/size guards retained. Decision docs explain rationale/tests.
+- Implemented local worker preference score, explained criteria/fact IDs, API/current-score feedback/stale detection and job-detail card. Six weights total 100, sponsorship absent. Reviewed facts only; no name/email/declarations used. Rating does not auto-tune weights.
+- Added missing-source-data guard: no score for imported stubs without title/vacancy text. Re-pasted supported URLs and discovery can fill only missing fields; preserve populated owner fields, Notes/tracker/app status/history and job ID.
+- Updated evaluation runner for optional role-classification mode, known-label counts/accuracy and positive sponsorship prediction/label counts to expose abstention. Reports explicitly do not accept Phase 2.
 
-## Phase 1 acceptance / remaining deferrals
+## Phase 1 checklist
 
-| Criterion | Result | Evidence and remaining limit |
+| Criterion | Result | Evidence / limits |
 |---|---|---|
-| 10 pasted URLs correct | PASSED — fixtures | Real queue/worker/extractor/DB with mocked fetch; live 10-page set untested. |
-| Re-paste dedupe | PASSED — fixtures | Canonical/tracking variants maintain IDs/count/history. |
-| Preserve Sheet rows | PASSED — owner report + fixtures | Owner reports 20 rows and matching data; cloud has no private Mac connection. |
-| Only intended status cell changes | NOT TESTED live — explicitly deferred | Exact RAW single-cell and safety/no-retry automated tests pass; live format/preservation comparison not performed. |
-| Backup restore | PASSED — disposable data | Service and real-worker browser→CLI checks include exact CV bytes; operational Mac restore outstanding. |
-| Default sponsorship UNVERIFIED | PASSED | API/DB/extraction/discovery fixture tests; no licence/Notes inference. |
+| 10 URL rows correct | PASSED — fixtures | Current API→worker→extractor; live ten-URL acceptance not claimed. |
+| Re-paste dedupe | PASSED | Fixtures and live disposable Monzo repeat: 60 jobs, 0 duplicates added. Cross-source fuzzy merge not implemented. |
+| All Sheet rows preserved | PASSED — owner report + fixtures | Owner confirmed 20/data/UI; no private Mac OAuth access here. |
+| Intended-cell-only write | NOT TESTED live — deferred | Existing guardrail tests pass; no write enabled. |
+| DB/storage restore | PASSED — disposable | Current service/browser/CLI checks; operational Mac restore outstanding. |
+| UNVERIFIED default | PASSED | Current API/DB/extraction/discovery tests, no automatic YES. |
 
-Phase 1 accepted for progression with limitations, not marked 100% tested. Native Mac notification delivery also remains outstanding. Owner confirmed listing links/imported-status UI checks on Mac. Do not request those checks again without a new relevant change.
+Native Mac notifications also outstanding. These are accepted progression deferrals, not passed laptop checks.
 
-## Verification this session
+## Verification
 
-- apps/api `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`: **67 passed**, one existing dependency deprecation warning.
-- apps/web `npm run typecheck`; `NEXT_TELEMETRY_DISABLED=1 npm run build`: **PASSED**.
-- apps/api `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen --group browser python ../../scripts/smoke_browser.py`: **PASSED**, discovery source UI add/disabled-run/remove and prior production security/CRUD/filter/link/imported-status/CV/backup/reminder/responsive workflows. Test records are synthetic/disposable, never owner data.
-- apps/api evaluation CLI with ../../fixtures/eval/manifest.json: **exit 2 expected**, empty dataset (NOT TESTED), not an accuracy/Phase 2 pass.
-- Failed root-directory uv pytest attempts were corrected to apps/api; final full suite passed. No test failure was bypassed.
+- apps/api: UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short: **84 passed**, one existing deprecation warning.
+- apps/web: npm run typecheck; NEXT_TELEMETRY_DISABLED=1 npm run build: **PASSED**.
+- Production browser smoke: **PASSED** with final matching UI (real worker score/explanation/feedback) and existing security/CRUD/filter/link/imported-status/CV/backup/discovery/reminder/mobile checks. Discovery's final explicit-date parser adjustment is service/API-tested; no subsequent UI edits.
+- Live normal-app fetcher: Graphcore Graduate Software Engineer, DevOps 2027, Bristol, explicit 2026-11-29 deadline extracted. No form interaction.
+- Disposable live API/worker Monzo board import: first 60 read/60 added/0 invalid; second 60 read/0 added/60 duplicates/0 invalid; 60 stored jobs all DISCOVERED/UNVERIFIED. Temporary DB/storage removed, owner data untouched.
+- Offline extraction baseline and --role-classification report commands: **exit 0**, 30 cases, 0 extraction failures, basic fields 30/30, role mode graduate 30/30. Known deadlines 12/12. Start-date positives 0; all 30 null. Sponsorship 0 YES predictions, 0 false YES, 4 positive labels, 14 negative, 12 unknown; no finished evidence assessment.
+- Reports/labels reflect development using these cases, not independent held-out performance. Full Phase 2 accepted=false.
 
-## Blockers and limits
+An initial live app fetch was blocked by unavailable local DNS, despite successful normal proxied HTTP. The narrow fallback fixed the actual client, not environment permissions; no DNS/TLS/proxy bypass. Earlier root-directory uv test attempts were corrected to apps/api and final full checks passed. No test failure was hidden. Generated next-env.d.ts drift excluded.
 
-Public Greenhouse robots probes were denied by enforced cloud proxy policy (403 tunnel denial). Runtime status: current observations true, restricted policy enforced, no custom permitted job hosts. Read cloud runtime skill/networking guide; no bypass attempted. Runtime skill applied: cloud-environment:cloud-environment-runtime.
+## Remaining / next actions
 
-Saved draft `cecfgdraft_ca60bddc6fc081998e5c4da96f887495` adds only boards-api.greenhouse.io and job-boards.greenhouse.io, and refreshes startup guidance. Existing install/repository/secret settings preserved. Tool confirmed saved, requires_publish true. Owner must review/save/publish in environment settings; draft save does not change running access. Refresh environment status and perform a fresh normal request after application before claiming readiness. No Google/portal credentials requested or added.
+Phase 2 roughly 40%, incomplete. Next useful work: cross-source identity/aliases and conservative fuzzy dedupe; ranked jobs view using current matches; source enrichment support beyond Greenhouse; manual weight editing/tuning feedback; evidence review/licence signal; held-out multi-ATS and exact-start-date examples. Current finite-keyword preference scoring is not LLM requirement extraction or personal eligibility. Do not infer sponsorship need from visa policy or send personal facts to hosted models.
 
-No real job pages saved: fixtures/eval/manifest.json remains empty. SPEC requires roughly 30 genuine hand-labelled postings before matching; no matching/scoring implementation was started. Numerical accuracy thresholds were proposed but the owner's reply clarified targeting rather than accepting numbers, so remain pending. Zero false CONFIRMED_YES is still mandatory, despite sponsorship being informational.
+API matching routes: POST /tasks/match {job_id}, GET /jobs/{id}/match, POST /jobs/{id}/feedback {value: good|bad}. The worker uses only reviewed facts and fingerprints job/fact/preference inputs. Old scores become stale; current feedback only. Recalculating unchanged inputs preserves feedback. Matching insufficient imported rows returns 409; UI explains enrichment.
 
-Discovery is the first manual Greenhouse slice only. It imports all records from the chosen board, not UK/junior-ranked results. Missing API company names use Employer not provided. Missing dates remain null. No automatic sources, schedules, fuzzy/cross-source merging, match scores, feedback, licensing signal, other ATS or aggregator support. Shared fetcher may reject large boards (>1 MB) or unavailable/disallowed robots. Live API behaviour remains unverified. Do not represent fixture jobs as actual vacancies.
+Network configuration is published and working on the current environment; do not ask user to publish the previous draft again. Do not modify or publish environment settings unless newly requested. App-level URL_FETCH_ALLOWED_HOSTS remains a separate opt-in; test commands used per-process approved hosts, never changed private .env. Original tracker blocked and Sheets readonly.
 
-## Resume in order
+## Delivery / resume
 
-1. Read AGENTS.md and linked current context/spec/status/setup. Inspect Git state; preserve owner data and Git authorship.
-2. Confirm the network draft was actually applied/published; refresh status and normal robots/API probes. If still denied, explain the precise missing host access rather than retrying/bypassing.
-3. Respect terms/robots, save genuine public individual postings under fixtures/eval, retain source/capture/review/hash provenance and hand labels. Include diverse positive/negative/unknown cases; never seed fake jobs into the app.
-4. Run baseline, review results and agree numeric thresholds. Only then build explainable matching, prioritising graduate/junior UK tech without sponsorship exclusion/penalty. No inferred legal declarations or hosted personal-data use.
-5. Extend discovery as evidence warrants; test public-source transport/worker/UI. Keep Sheets read-only and original blocked.
-6. Keep deferred Phase 1 checks in the record, update docs, commit/push checked work with owner's identity and verify remote SHA.
+Prepared for owner-authored commit/push; publication recorded in follow-up and Git log. No dependencies/migrations, owner credentials/configuration/storage or legal facts changed. Public posting data only is added to tracked fixtures; raw application-form HTML stays ignored.
 
-## Delivery
+Read AGENTS/context/spec/status/setup, inspect Git and use latest confirmed state. Never assume an app process, published setting or private OAuth session is available from this handover alone.
 
-Code/tests/docs published as `ba9c99e64f4e75b308054c51e8d15cee1b7e8a7d`; local SHA matched GitHub dev/phase-1. This follow-up records delivery only; no unfinished runtime edits remain. Generated next-env.d.ts drift excluded. No owner configuration, credentials, storage, dependencies or migrations changed. Publication recorded in Git log and follow-up delivery note.
-
-Mac update from project root after Control+C:
+Mac after Control+C, from project root:
 
 ```sh
 git pull --ff-only origin dev/phase-1
 python3 scripts/dev.py
 ```
 
-Settings → Job discovery shows new controls. No actual board is preconfigured. Configure only a source whose terms permit access; SETUP.md explains private URL_FETCH_ALLOWED_HOSTS and the separate cloud network draft. No Google permission update is needed. Matching is not available yet.
+No dependency/migration refresh needed. For discovery/URL fetching, merge boards-api.greenhouse.io and job-boards.greenhouse.io into the private approved host list as documented in SETUP.md, review source terms, and restart. Choose a source manually. Job details now show Calculate preference match and Why this score. Import stubs need a real title/description first; re-pasting a supported URL fills missing details without overwriting owner history. Google permission need not change.

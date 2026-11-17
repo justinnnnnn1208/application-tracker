@@ -87,7 +87,9 @@ def baseline(url, html):
 
 def evaluate(cases, predict=baseline):
     correct = {field: 0 for field in FIELDS}
-    errors, false_yes, mismatches = 0, 0, []
+    errors, false_yes, predicted_yes, mismatches = 0, 0, 0, []
+    known = {field: sum(getattr(case.labels, field) not in (None, "", "UNVERIFIED") for case, _ in cases) for field in FIELDS}
+    correct_known = {field: 0 for field in FIELDS}
     for case, html in cases:
         try:
             actual = predict(canonical_url(case.url), html)
@@ -99,8 +101,12 @@ def evaluate(cases, predict=baseline):
         for field in FIELDS:
             if normal(actual.get(field)) == normal(getattr(case.labels, field)):
                 correct[field] += 1
+                if getattr(case.labels, field) not in (None, "", "UNVERIFIED"):
+                    correct_known[field] += 1
             else:
                 wrong.append(field)
+        if actual.get("sponsorship") == "CONFIRMED_YES":
+            predicted_yes += 1
         if actual.get("sponsorship") == "CONFIRMED_YES" and case.labels.sponsorship != "CONFIRMED_YES":
             false_yes += 1
         if wrong:
@@ -108,6 +114,8 @@ def evaluate(cases, predict=baseline):
     total = len(cases)
     return {"pages": total, "dataset_ready": total >= 30, "extraction_failures": errors,
             "accuracy": {field: correct[field] / total if total else None for field in FIELDS},
+            "known_labels": known, "known_label_accuracy": {field: correct_known[field] / known[field] if known[field] else None for field in FIELDS},
+            "predicted_confirmed_yes": predicted_yes, "labelled_confirmed_yes": sum(case.labels.sponsorship == "CONFIRMED_YES" for case, _ in cases),
             "false_confirmed_yes": false_yes, "mismatches": mismatches,
             "phase_2_accepted": False,
             "limits": ["Baseline extraction only; matching/scoring and graduate inference are not implemented.",
@@ -117,9 +125,19 @@ def evaluate(cases, predict=baseline):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--role-classification", action="store_true", help="Include the local role-level classifier (not personal eligibility)")
     args = parser.parse_args()
     try:
-        report = evaluate(load_cases(args.manifest))
+        predict = baseline
+        if args.role_classification:
+            from app.services.matching import graduate_level
+            def predict(url, html):
+                data = baseline(url, html)
+                data["graduate"] = graduate_level(data["title"], data["description"])
+                return data
+        report = evaluate(load_cases(args.manifest), predict)
+        report["mode"] = "role-classification" if args.role_classification else "extraction-baseline"
+        report["limits"] = ["Development set: four employers on Greenhouse; not a held-out multi-ATS benchmark.", "Sponsorship remains UNVERIFIED; zero false YES is not proof of evidence-assessment quality.", "Start-date precision: no reviewed page provides an exact day; null accuracy is not positive-date coverage.", "Field targets: at least 0.9 for deadline/location/graduate/start_date; zero false confirmed YES. Full Phase 2 scope still incomplete."]
     except (OSError, ValueError):
         print("Evaluation could not load validated local fixtures. Check paths, labels, quotes and checksums.")
         return 2

@@ -76,7 +76,7 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 - Visa and graduate-route eligibility rules live in one configurable module with a "last verified" date. Do not hard-code rules elsewhere.
 - Prefer small, reversible changes and clear module boundaries. Explain non-obvious design decisions in `docs/decisions/`.
 - Push completed, tested work to the existing `dev/phase-1` GitHub branch and provide the owner with pull/restart instructions. Never commit or push credentials, `.env`, local data, or generated dependencies.
-- **UI:** follow section 13 of `docs/SPEC.md` and match `docs/design/dashboard.png` for layout and style. Build only the Phase 1 pages and elements listed there; the mockup also shows later-phase items that must not be built yet. If the image is missing, follow the written description and ask the owner for it.
+- **UI:** follow section 13 of `docs/SPEC.md` and match `docs/design/dashboard.png` for layout and style. Preserve the Phase 1 layout; the owner has now authorised Phase 2 discovery and preference-matching controls. Application preparation/review/submission pages remain gated by their later phases. If the image is missing, follow the written description and ask the owner for it.
 - Do not add dependencies, services, or infrastructure beyond the spec without asking.
 - Phase 1 includes a backup script (database and storage folder) with a tested restore. Keep it working as the data model changes.
 - Ask before: touching the live Google Sheet, enabling any adapter's auto-submit, sending personal data to a hosted LLM, or running against real application portals.
@@ -93,8 +93,8 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 # tests:  cd apps/api && uv run pytest
 # browser: cd apps/api && uv run --group browser python ../../scripts/smoke_browser.py
 #          Build apps/web first. Uses disposable data and loopback test services.
-# eval:   standalone real-page evaluation runner/set not yet implemented
-#         Extraction has synthetic fixture tests; matching and sponsorship inference are paused.
+# eval:   cd apps/api && uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest.json --role-classification
+#         30 real reviewed Greenhouse snapshots exist; reports are development-set evidence, not full Phase 2 acceptance.
 ```
 
 ## Definition of done for any change

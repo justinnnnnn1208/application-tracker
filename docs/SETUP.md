@@ -158,14 +158,30 @@ The owner authorised Phase 2 with the Phase 1 live write test deferred. Keep Goo
 
 For a permitted public API fetch, add `boards-api.greenhouse.io` to your existing comma-separated `URL_FETCH_ALLOWED_HOSTS` in the private root .env, preserving any hosts already approved. Restart the app. Add/enable the chosen source, click Discover jobs from that source, then inspect Background tasks and Jobs. Imports run in the worker, dedupe canonical URLs and leave sponsorship UNVERIFIED. This first adapter imports the whole chosen board; UK/junior preference ranking is not yet implemented. Unsupported/missing dates stay unknown, and absent API company names are explicitly shown as Employer not provided. No submissions, Sheets writes, profile data or hosted LLM calls are involved.
 
-The shared fetcher requires publicly resolving addresses, explicit host approval, accessible robots.txt and allowed crawl rules. It bounds responses to 1 MB, rate-limits, and stops on redirects, 401/403/429 or robots denial. Large boards may need a later bounded pagination/detail adapter; this version fails rather than silently truncating them. Live API behaviour is not verified yet.
+The shared fetcher requires publicly resolving addresses, explicit host approval, accessible robots.txt and allowed crawl rules. It bounds responses to 1 MB, rate-limits, and stops on redirects, 401/403/429 or robots denial. Large boards may need a later bounded pagination/detail adapter; this version fails rather than silently truncating them. Live verification on 17 November 2026 fetched a Graphcore vacancy and imported 60 Monzo postings twice through a disposable API/worker: first 60 added, then 0 added/60 duplicates. No owner storage was used.
 
-The cloud policy currently denies `boards-api.greenhouse.io` and `job-boards.greenhouse.io`. A saved environment draft adds only those two domains and updates stale startup guidance. **Saved is not applied**: review/save the draft in environment settings, then Publish as requested by the product. Recheck status and perform a fresh permitted fetch before claiming live discovery works. Local .env host permission and the cloud network policy are separate controls.
+The owner published the Greenhouse network policy. On 17 November 2026 current environment status reported both hosts permitted and the policy enforced; fresh robots/page/API fetches passed. No environment settings were changed or republished during this delivery. Local .env host permission and cloud network access remain separate controls. In a proxy-managed environment with unavailable local DNS, only these two fixed HTTPS sources may delegate DNS to the configured HTTPS proxy; arbitrary hosts, private DNS results, nonstandard ports and insecure HTTP remain blocked.
 
-Real-page evaluation instructions and manifest format are in `fixtures/eval/README.md`. The manifest is currently empty. From apps/api run:
+Real-page evaluation instructions and manifest format are in `fixtures/eval/README.md`. The manifest now contains 30 real, reviewed snapshots. From apps/api run:
 
 ```sh
 uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest.json
 ```
 
-An empty dataset exits 2 and reports NOT READY; it is not a benchmark pass. Matching waits for about 30 real reviewed postings. Synthetic parser/runner tests are only software tests, not real job postings or evaluation evidence. Proposed numerical thresholds were not accepted yet; zero false CONFIRMED_YES remains required regardless of whether sponsorship affects job selection.
+An empty dataset exits 2 and reports NOT READY; it is not a benchmark pass. That prerequisite is now met for the initial development set; separate held-out validation is still needed. Synthetic parser/runner tests are only software tests, not real job postings or evaluation evidence. The owner accepted initial 90% field-accuracy targets; zero false CONFIRMED_YES remains required regardless of whether sponsorship affects job selection.
+
+## Calculate a preference match
+
+Open a job's details and choose **Calculate preference match**. Keep the worker running; the card displays a score out of 100 and **Why this score?** explains every criterion and cites reviewed fact IDs. Add and explicitly review your facts in My Profile to make the skill/experience components useful. Use **Good match** or **Poor match** to save a rating; ratings do not automatically change weights yet.
+
+The score is a preference heuristic, not an eligibility decision, sponsorship check or probability of success. Changing source fields, reviewed facts or preferences makes old results stale; recalculate before relying on them. Source/Notes instructions never change legal declarations or application statuses.
+
+For imported Sheet stubs, fill the actual role title and vacancy description using Edit details, or paste the existing application URL on Dashboard to enrich missing details where extraction is supported. Existing Notes, statuses and populated fields are preserved. Matching is disabled until enough source content is present; a missing description is not presented as a low-quality match.
+
+To reproduce the development report from apps/api:
+
+```sh
+uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest.json --role-classification
+```
+
+Reports are stored under fixtures/eval/reports. No new dependency or migration is required for this delivery. Sheets remains read-only; no Google permission change is needed.

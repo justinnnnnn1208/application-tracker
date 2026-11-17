@@ -4,7 +4,7 @@ from pathlib import Path
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from app.db.models import DiscoverySource, Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
+from app.db.models import DiscoverySource, Job, Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
 from app.integrations.llm.provider import configured_provider
 from app.integrations.discovery.greenhouse import read_board
 from app.integrations.sheets.client import GoogleSheet
@@ -16,6 +16,7 @@ from app.services.errors import NeedsInput
 from app.services.extraction import extract_job
 from app.services.fetching import fetch_page
 from app.services.jobs import ensure_job
+from app.services.matching import save_match
 
 
 def catch_up(session, current=None):
@@ -37,6 +38,11 @@ def catch_up(session, current=None):
 
 
 def execute(session, task, settings):
+    if task.kind == "match_jobs":
+        job = session.get(Job, task.payload.get("job_id"))
+        if not job:
+            raise NeedsInput("The job no longer exists.")
+        return {"job_id": job.id, **save_match(session, job)}
     if task.kind == "discover":
         source = session.get(DiscoverySource, task.payload.get("source_id"))
         if not source or not source.enabled or source.provider != "greenhouse":
@@ -44,14 +50,14 @@ def execute(session, task, settings):
         jobs, warnings = read_board(source.board)
         created = 0
         for data in jobs:
-            _, added = ensure_job(session, data)
+            _, added = ensure_job(session, data, enrich=True)
             created += int(added)
         session.commit()
         return {"postings_read": len(jobs), "jobs_created": created, "duplicates": len(jobs) - created, "warnings": warnings}
     if task.kind == "extract_url":
         html = task.payload.get("page_html") or fetch_page(task.payload["url"])
         data = extract_job(task.payload["url"], html, configured_provider())
-        job, created = ensure_job(session, data)
+        job, created = ensure_job(session, data, enrich=True)
         session.commit()
         return {"job_id": job.id, "created": created}
     if task.kind == "parse_cv":

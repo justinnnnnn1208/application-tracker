@@ -10,6 +10,7 @@ from app.services.errors import NeedsInput
 from app.services.urls import canonical_url
 
 USER_AGENT = "GraduateTracker/0.1"
+PROXY_DNS_HOSTS = {"boards-api.greenhouse.io", "job-boards.greenhouse.io"}
 BLOCKED = ("linkedin.com", "indeed.com", "indeed.co.uk")
 _last_request = {}
 
@@ -25,7 +26,13 @@ def validate_public_url(url: str):
         addresses = socket.getaddrinfo(host, None)
         if not addresses or any(not ipaddress.ip_address(item[4][0]).is_global for item in addresses):
             raise ValueError("Private address")
-    except (OSError, ValueError):
+    except OSError:
+        # Managed proxy resolves these fixed official sources remotely. Never fall
+        # back for arbitrary hosts, HTTP, literal/private IPs or a private DNS result.
+        if host in PROXY_DNS_HOSTS and urlsplit(url).scheme == "https" and (os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")):
+            return url
+        raise NeedsInput("The job URL must resolve to a public Internet address.") from None
+    except ValueError:
         raise NeedsInput("The job URL must resolve to a public Internet address.") from None
     return url
 
