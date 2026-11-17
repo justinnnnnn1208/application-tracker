@@ -50,7 +50,7 @@ Read AGENTS/context/spec/status/setup, inspect Git and preserve owner data/autho
 
 ## Delivery / owner next step
 
-Notes repair/ranking code and docs prepared for owner-authored commit/push; publication recorded in follow-up/Git log. No uncommitted runtime work deliberately excluded except generated next-env.d.ts drift (restored).
+Notes repair/ranking code and docs published as dc6f0f3fba93d0f70b70b4a0198e4703f52d4c17; full local SHA matched GitHub dev/phase-1. This documentation-only follow-up records delivery; no unfinished runtime edits remain. No uncommitted runtime work deliberately excluded except generated next-env.d.ts drift (restored).
 
 After Control+C, from the Mac project root:
 
