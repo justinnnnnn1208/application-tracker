@@ -43,4 +43,4 @@ Cross-source/fuzzy dedupe and aliases; more sources/ATS; global ranked job list;
 
 On Mac: pull/restart, allow the approved public source host(s) in private URL_FETCH_ALLOWED_HOSTS per SETUP.md, and use Settings → Job discovery or paste a supported listing URL. Open job details → Calculate preference match. Missing Sheet descriptions must be filled/enriched first. No new dependencies or migrations. No credentials or personal facts were sent to hosted models.
 
-Code/tests/docs prepared for owner-authored commit/push; HANDOVER.md and Git log record final publication.
+Application/tests/real fixtures were published as 903580f; the full local SHA matched GitHub dev/phase-1. This delivery-record follow-up also records the narrow source-HTML whitespace rule. No runtime edits remain.

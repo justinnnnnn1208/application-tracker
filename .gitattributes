@@ -1,0 +1,3 @@
+# Public posting snapshots preserve source text spacing, including inline-node separators.
+# Keep normal whitespace checks for code; permit source data's trailing blanks only.
+fixtures/eval/pages/*.html whitespace=-blank-at-eol

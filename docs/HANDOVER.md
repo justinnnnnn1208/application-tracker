@@ -39,7 +39,7 @@ Native Mac notifications also outstanding. These are accepted progression deferr
 - Offline extraction baseline and --role-classification report commands: **exit 0**, 30 cases, 0 extraction failures, basic fields 30/30, role mode graduate 30/30. Known deadlines 12/12. Start-date positives 0; all 30 null. Sponsorship 0 YES predictions, 0 false YES, 4 positive labels, 14 negative, 12 unknown; no finished evidence assessment.
 - Reports/labels reflect development using these cases, not independent held-out performance. Full Phase 2 accepted=false.
 
-An initial live app fetch was blocked by unavailable local DNS, despite successful normal proxied HTTP. The narrow fallback fixed the actual client, not environment permissions; no DNS/TLS/proxy bypass. Earlier root-directory uv test attempts were corrected to apps/api and final full checks passed. No test failure was hidden. Generated next-env.d.ts drift excluded.
+An initial live app fetch was blocked by unavailable local DNS, despite successful normal proxied HTTP. The narrow fallback fixed the actual client, not environment permissions; no DNS/TLS/proxy bypass. Earlier root-directory uv test attempts were corrected to apps/api and final full checks passed. No test failure was hidden. Git whitespace check flagged preserved source HTML trailing spaces; .gitattributes permits only those trailing blanks for captured pages, preserving inline-node separators while keeping code checks. Generated next-env.d.ts drift excluded.
 
 ## Remaining / next actions
 
@@ -51,7 +51,7 @@ Network configuration is published and working on the current environment; do no
 
 ## Delivery / resume
 
-Prepared for owner-authored commit/push; publication recorded in follow-up and Git log. No dependencies/migrations, owner credentials/configuration/storage or legal facts changed. Public posting data only is added to tracked fixtures; raw application-form HTML stays ignored.
+Application/tests/fixtures published as 903580f4ea4b732060d61dac46a0c402bef0ef38; full local SHA matched GitHub dev/phase-1. This documentation/data-lint follow-up records delivery; no unfinished runtime edits remain. No dependencies/migrations, owner credentials/configuration/storage or legal facts changed. Public posting data only is added to tracked fixtures; raw application-form HTML stays ignored.
 
 Read AGENTS/context/spec/status/setup, inspect Git and use latest confirmed state. Never assume an app process, published setting or private OAuth session is available from this handover alone.
 
