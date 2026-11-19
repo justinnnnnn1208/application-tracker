@@ -135,9 +135,10 @@ def main():
                 data = baseline(url, html)
                 data["graduate"] = graduate_level(data["title"], data["description"])
                 return data
-        report = evaluate(load_cases(args.manifest), predict)
+        cases = load_cases(args.manifest)
+        report = evaluate(cases, predict)
         report["mode"] = "role-classification" if args.role_classification else "extraction-baseline"
-        report["limits"] = ["Development set: four employers on Greenhouse; not a held-out multi-ATS benchmark.", "Sponsorship remains UNVERIFIED; zero false YES is not proof of evidence-assessment quality.", "Start-date precision: no reviewed page provides an exact day; null accuracy is not positive-date coverage.", "Field targets: at least 0.9 for deadline/location/graduate/start_date; zero false confirmed YES. Full Phase 2 scope still incomplete."]
+        report["limits"] = [f"Saved-page evaluation: {len(cases)} postings and {len({case.labels.company for case, _ in cases})} employer labels. See accompanying review for development/held-out status and ATS coverage.", "Automatic sponsorship remains UNVERIFIED; zero false YES is not proof of evidence-assessment or manual-review quality.", f"Exact start-date labels: {report['known_labels']['start_date']}. Null matches do not demonstrate positive-date extraction; shared-template examples do not establish generalisation.", "Field targets: at least 0.9 for deadline/location/graduate/start_date; zero false confirmed YES. Full Phase 2 scope still incomplete."]
     except (OSError, ValueError):
         print("Evaluation could not load validated local fixtures. Check paths, labels, quotes and checksums.")
         return 2

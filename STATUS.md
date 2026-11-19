@@ -2,75 +2,57 @@
 
 Reviewed: 19 November 2026 (Europe/London).
 
-**Phase 2: in progress, roughly 70%.** Phase 1 was accepted for progression with explicit deferrals; its untested checks are not marked passed. Sheets remains read-only by default. Discovery/matching prioritises graduate/junior UK tech roles, with sponsorship informational and excluded from scores. No immigration eligibility or legal declarations changed.
+**Phase 2: in progress, roughly 75%.** This estimate is not acceptance. Phase 1 was accepted for progression with the explicit deferrals below. Sheets stays read-only by default; no Phase 3 work, submissions or environment publication.
 
-## Current delivery
+## Delivered
 
-- Published environment network grants verified as current/enforced, then both robots files returned 200 and allowed the source paths. No environment configuration was reapplied or published this session.
-- Saved 30 genuine posting excerpts from four employers on Greenhouse, with independently reviewed labels, source/capture/review dates, excerpt hashes and original-response hashes. Forms/scripts/tracking markup excluded; no generated job metadata added. Raw responses remain ignored locally. See fixtures/eval/LABEL_REVIEW.md and provenance.json.
-- Added Greenhouse visible-header/description extraction because live pages did not expose JobPosting JSON-LD. Validates source URL and consistent employer/title metadata; handles repeated headings and markup whitespace. Explicit full labelled dates are extracted; missing day/year remains unknown. Discovery reuses these date rules.
-- Added narrowly scoped proxy DNS fallback for the two fixed official HTTPS hosts when local DNS is unavailable and an HTTPS proxy is configured. Other hosts, private DNS results, nonstandard ports and insecure HTTP remain blocked. Existing TLS/robots/allowlist/rate/size guards retained (docs/decisions/proxy-dns.md).
-- Local per-job preference matching now runs in the worker: six explained criteria, reviewed fact citations, no sponsorship weight, current-score feedback and hash-based stale detection. It is a heuristic, not eligibility or a success probability. Feedback is stored but does not auto-tune weights.
-- The owner clarified column E Notes contains role/description summaries. Existing Sheet-linked jobs now auto-backfill missing literal role/location fields at API startup; Notes render as a labelled description fallback. In a fixture based on all 20 supplied summaries, 19 roles are identifiable; the company-only entry stays unknown. This code has not directly changed the private Mac database; pulling/restarting applies the local repair.
-- Notes-derived field ownership is kept in existing SheetLink JSON so repeat import refreshes generated fields but protects manual/official-source replacements. Matching supports summary-only input with an explicit notice. Notes changes invalidate scores.
-- Jobs now supports batch active-job scoring and highest-current-score sorting. Pending identical batches dedupe, current scores are reused, and closed/past-deadline/incomplete jobs are excluded. Old/stale/inactive values are hidden from numeric ranking. No schema/dependency changes.
+- Direct charcoal dashboard, job/deadline views, listing links, imported Sheet statuses, profile/CV fact review, worker tasks and opt-in tab-open reminders remain supported. Existing Sheet Notes locally repair missing literal role/location fields and provide a labelled summary fallback. Owner edits, raw snapshots, application history and Notes are preserved.
+- Source URLs/official ATS identities retain one job/application for known same-instance posting variants. Global/EU Greenhouse and Lever instances are separate ID scopes. Traceable aliases and conservative fuzzy review hints are visible; two existing histories are never destructively merged or automatically split.
+- Local explained preference scores use six criteria and reviewed facts. Active-job batch scoring, highest-current-score sorting, stale detection, Good/Poor feedback and Settings keywords/weights are delivered. Ratings guide manual weight adjustments; no automatic training, sponsorship penalty or legal eligibility inference.
+- Greenhouse public board imports were previously verified live with 60 Monzo postings, then zero new/60 duplicates on repeat. Lever global/EU discovery is fixture/integration/browser tested with explicit employer names, bounded pagination, strict listing identity and no partial import after later-page denial. **Live Lever is NOT TESTED:** this cloud proxy blocks its API host. No policy/DNS fallback was changed or bypassed.
+- Manual sponsorship findings require an owner-confirmed quote present in saved vacancy description/requirements, a saved listing source and a current context/content fingerprint. Changed role identity/content/location/dates return Unverified; previous evidence remains reviewable/clearable. Notes are not evidence. Validation checks provenance/confirmation, not semantic correctness: the owner reviews the full statement and conditions. Automatic policy assessment and sponsor-register matching remain unfinished.
+- Source/review/discovery migrations preserve existing records. `python3 scripts/dev.py --migrate` loads private configuration, refuses a running worker, creates and restores/verifies an existing SQLite DB/storage backup, upgrades the configured database and launches. Behind-schema startup fails with that instruction. No new dependencies; OAuth configuration/encryption keys remain private and unchanged.
 
 ## Phase 1 acceptance record
 
-| Criterion | Result | Evidence / limit |
+| Criterion | Result | Evidence / remaining limit |
 |---|---|---|
-| Ten URLs create correct rows | PASSED — fixtures | Current API/worker/extractor tests; no claim of a live ten-URL acceptance run. |
-| Re-pasting avoids duplicates | PASSED | Fixtures; live Monzo worker import/re-import also preserved 60 jobs. Cross-source fuzzy dedupe remains unfinished. |
-| Sheet preserves all rows | PASSED — owner report + fixtures | Owner confirmed 20 rows/data and UI checks on Mac; no independent cloud access to private OAuth session. |
-| Only intended status cell changes | NOT TESTED live — explicitly deferred | Existing single-cell/guardrail tests pass. No write access enabled. |
-| Backup restores | PASSED — disposable data | Service and browser/CLI restore check DB/facts/CV bytes. Mac operational restore outstanding. |
-| Defaults UNVERIFIED | PASSED | API/DB/extraction/discovery checks; source Notes/licences do not become confirmations. |
+| Ten pasted URLs create correct rows | PASSED — controlled fixtures | API → queue → worker → extractor tests. No claim of ten live sites. |
+| Re-pasting avoids duplicates | PASSED | Fixtures plus earlier live Monzo repeat; current same-instance aliases retain one application/history. Fuzzy hints do not merge existing records. |
+| Sheet preserves all rows | PASSED — owner report + fixtures | Owner confirmed all 20 development-copy rows/data/UI. Current Notes/import tests preserve rows and owner edits. Cloud has no private Mac OAuth session. |
+| Only intended status cell changes | NOT TESTED live — explicitly deferred | Single-cell/alias-row/guardrail fixtures pass. No write access enabled or actual Google cells edited this run. |
+| Backup restores | PASSED — disposable data | Service/browser/CLI verify DB/facts/CV bytes, including backup-before-migration and custom configured DB. Mac operational restore outstanding. |
+| Defaults Unverified unless reviewed evidence | PASSED | API/DB/import/extraction/discovery tests plus explicit review, provenance, stale/legacy rejection and clear tests. Source wording/licences cannot self-confirm. |
 
-Native Mac notification delivery is also outstanding. These accepted deferrals do not block the authorised Phase 2 work.
+Native Mac notification delivery is also outstanding. These accepted deferrals are not passed operational checks.
 
-## Current verification
+## Latest verification
 
-- API suite: **148 passed** (one existing Starlette/httpx deprecation warning), `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api.
-- Frontend: `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` passed.
-- Latest production browser smoke passed with a real disposable worker: simulated old Sheet import → API restart → automatic title/location repair, visible single Notes summary and summary-only warning, batch scoring/highest-score sort, plus existing match explanation/feedback, security/CRUD/filter/link/imported-status/CV/backup/reminder/discovery/responsive checks.
-- Earlier live check (not repeated for this local Notes update): normal application fetcher successfully fetched/extracted a Graphcore graduate vacancy (Bristol, deadline 29 November 2026).
-- Earlier disposable live API→queue→worker imported 60 Monzo postings, then re-imported: 0 added, 60 duplicates, 0 invalid rows, still 60 stored jobs. All remained DISCOVERED/UNVERIFIED. Temporary data removed; no owner DB/Sheet or portal form interaction.
-- Checked extraction and role reports committed under fixtures/eval/reports. All 30 development cases extract; company/title/location/deadline/start-date labels match 30/30; role classification matches 30/30. Twelve known deadlines match. All 30 start dates are null (no exact-day positive coverage). No held-out data or second ATS represented.
-- Sponsorship remains unverified: 0 YES predictions, 0 false YES, 4 labelled positives and 14 labelled negatives. Forty-percent sponsorship label accuracy reflects abstention, not a finished evidence classifier. Phase 2 accepted remains false in reports.
-- Owner agreed initial >=90% targets for deadline/location/graduate-role/start-date labels and zero false confirmed YES. Development targets meet the numeric aggregate; start-date positive coverage and generalisation remain unverified.
+- API: **169 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
+- Frontend: `npm run typecheck` and production build passed on the latest frontend code; subsequent changes were backend/evaluation only.
+- Final production browser smoke passed on the latest backend/frontend: real disposable worker, Notes repair/restart, identity aliases, score/feedback/weights persistence, evidence save/filter/source/stale/clear, Lever EU source configuration, origin/auth guards, CRUD/history, CV review/download, backup/CLI restore, reminders and 1440/390/320px layouts. No owner data/Google/Lever calls.
+- Alembic schema-drift and upgrade/downgrade tests pass; legacy source settings, evidence and job/history preservation covered. Latest head a74cd158ef43.
+- Initial new browser failures: ambiguous select labels and an overly exact existing textarea test locator. Corrected; final full runs passed. The first real month-first date failure is retained as evaluation evidence, below.
+
+## Real-page evaluation
+
+Original 30 development snapshots remain frozen. Added five genuine Marshall Wace excerpts, with original visible metadata/header/description and raw/excerpt hashes; forms/scripts/buttons/tracking data excluded. All 35 are on Greenhouse, across five employer labels. Overseas postings are controls, not UK recommendations.
+
+Labels were frozen before the five-case initial held-out prediction at aaebca9. It missed all three explicit “September 6th 2027” start dates (0/3 positive accuracy); the report is retained. Month-first full-date support fixed this and rejects partial/impossible/range dates. The new five cases are now consumed regression/development data, not fresh independent validation.
+
+Both the original 30 and expanded 35 regressions match basic fields and role-level labels. Expanded known coverage: 12 deadlines, 3 exact start dates, 29 graduate-level YES/NO labels. The three date positives share one employer/template. Automatic sponsorship abstains: zero YES/false YES, 4 YES labels, 14 NO labels, zero known-policy accuracy. Unknown matches do not prove evidence quality. Manual-review quality is not measured by this extractor report. **Phase 2 accepted remains false.** See fixtures/eval/REVIEW_NOV19.md and reports/nov19-*.
 
 ## Remaining Phase 2 work
 
-Broader cross-provider dedupe and reviewed resolution of existing duplicates; live Lever verification, additional ATS/aggregators; automatic tuning from feedback; automatic evidence assessment and licensed-sponsor signal; held-out and multi-ATS evaluation including exact start dates. LLM structured requirement extraction has not been introduced; current matching is a transparent local heuristic with a finite technology vocabulary. No automatic discovery scheduling added. Phase 2 is not complete.
+Real Lever verification and further ATS/aggregator coverage; automatic structured requirement extraction beyond the finite-keyword heuristic; automatic policy evidence assessment and official sponsor-register provenance; independent multi-ATS/positive-date evaluation; supervised existing-duplicate resolution preserving histories. Existing manual feedback/weight editing is supported, automatic tuning is not. No automatic discovery schedule added.
 
-On Mac: pull/restart, allow the approved public source host(s) in private URL_FETCH_ALLOWED_HOSTS per SETUP.md, and use Settings → Job discovery or paste a supported listing URL. Open job details → Calculate preference match. Already-imported Notes repair locally on restart; company-only rows still need a real role. Notes summaries are explicitly marked when used for scoring. No new dependencies. This delivery requires migration 7419a825bc10: use `python3 scripts/dev.py --migrate` after pulling. No credentials or personal facts were sent to hosted models.
+## Owner start
 
-Previous published baseline was a330be9. The checked Notes repair/ranked-list delivery was pushed with owner-configured authorship as dc6f0f3; its full local SHA matched GitHub dev/phase-1. The documentation-only follow-up records delivery; no unfinished runtime edits remain. No owner configuration/data, Google cells or environment settings were changed from this cloud workspace.
+Stop with Control+C, then from the Mac project root:
 
-## Night-shift checkpoint — 19 November 2026, step 1
+```sh
+git pull --ff-only origin dev/phase-1
+python3 scripts/dev.py --migrate
+```
 
-Source identity/alias intake, traceable source UI and conservative fuzzy-review hints are implemented. New migration 7419a825bc10 creates/backfills source records without combining old jobs or rewriting histories. Known posting identifiers across official URL variants retain one job/application; ambiguous existing identities reject intake. The Sheet row guard compares the actual row alias URL, so approved copy status checks remain one-cell only (writes still disabled by default).
-
-Migration helper `python3 scripts/dev.py --migrate` loads private settings, refuses a running worker, backs up/restores-verifies existing SQLite data and applies the correct configured DB migration before launching. Memory/URI/non-SQLite DBs are rejected by this helper. Behind-schema API startup fails with the update instruction. Migration round-trip/no-drift, legacy data/history, backup bytes/custom DB and worker-lock tests pass.
-
-Step 1 API suite: 113 passed; build/typecheck passed; source-alias browser flow passed, final helper/head-check browser run passed. Next step is owner-controlled matching weights/feedback controls. No real Google write, portal form, personal hosted processing or environment publication performed.
-
-## Night-shift checkpoint — 19 November 2026, step 2
-
-Settings → Matching preferences now exposes role keywords and all six existing weights (integer 0–100, total 100). Effective defaults are returned for previously unset weights. Saving preserves backup settings, invalidates changed scores and distinguishes current Good/Poor ratings from ratings on changed inputs. Recalculation clears an outdated rating; no automatic training or sponsorship penalty is added. No new schema/dependencies in step 2.
-
-Verified on final code: 115 API tests; TypeScript and production build; production browser smoke including invalid-total save blocking, saving and persistence after reload, existing batch/ranking/feedback and source-alias workflows. Thirty-page development evaluation rerun: zero extraction failures/false YES, known deadline/location/graduate labels match; no positive exact start dates, second ATS or held-out acceptance. Full Phase 2 remains incomplete.
-
-## Night step 3 — manual sponsorship evidence
-
-Implemented owner-reviewed role quote/source/confirmation, fingerprint-bound UTC review, stale evidence returning Unverified, clearing, and traceable findings/filter links. Notes are excluded as evidence. Quote provenance checks do not interpret policy meaning: the owner must review all conditions. This is not automatic classification; licences remain unchecked and ranking/legal declarations unchanged. Migration 852ab936cd21 adds nullable review fingerprint/time columns without trusting legacy unbound records. See docs/decisions/manual-sponsorship-evidence.md.
-
-API suite 127 passed; migration upgrade/downgrade/schema drift and backup-helper checks included. Final typecheck/build and production browser verification passed, including evidence consent/save/source link, confirmed filtering, changed-content invalidation and clear; existing core flows still pass. Existing 30-page development evaluation rerun: zero extraction failures/false YES, Phase 2 accepted false. Initial browser exposed ambiguous select labels; explicit accessible labels added before rerun. Direct api.lever.co robots request blocked by cloud proxy (CONNECT 403); no network policy changed or bypass attempted.
-
-## Night step 4 — Lever public API adapter
-
-Global/EU provider selection, explicit employer name, bounded complete-board pagination, official listing/board/UUID validation and existing source-identity dedupe are implemented. Saved source migration 963bc047de32 preserves existing Greenhouse sources. No new dependencies or automatic scheduling. 144 API tests and final typecheck/build passed; extended production browser passed, including Lever EU source creation/removal/disabled import and narrow layout, plus evidence review and all previous flows. Synthetic adapter fixtures are clearly separated from genuine evaluation data. Live Lever remains NOT TESTED because its API host is blocked here; no network changes or bypasses. Phase estimate stays ~70% until broader real-source/evaluation evidence exists.
-
-## Night follow-up — regional identity isolation
-
-Greenhouse/Lever global and EU instances now have distinct identity scopes, preventing coincident board/ID values from merging unrelated postings. Migration a74cd158ef43 refreshes cached EU keys without rewriting job/application/history relationships. Same-instance listing/apply/legacy URL aliases still dedupe. API suite 148 passed; production browser regression passed on the final regional identity code. Previously combined records are not automatically split.
+Open http://127.0.0.1:3000. Later regular starts use `python3 scripts/dev.py`. No new Google scope/reconnection is needed for these changes. Optional Lever host approval instructions are in docs/SETUP.md; do not send credentials. No owner input is needed for completed work. Live external-source coverage and the deferred Mac checks remain outstanding.

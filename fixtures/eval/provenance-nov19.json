@@ -1,0 +1,36 @@
+{
+  "capture_date": "2026-11-19",
+  "method": "Fetched via existing fetcher and already-approved Greenhouse robots/API/page hosts. Preserve original title/og metadata/logo and job header/description; remove forms, buttons, scripts, SVG and assets. No generated metadata added. Raw originals remain ignored locally. Labels frozen before predictor execution; date-parser changes consume the new cases as regression data afterwards.",
+  "postings": [
+    {
+      "id": "mw-8645263002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8645263002",
+      "raw_sha256": "477af7b92c9ee793809c23b5db4e9034e85397f88ae456cee44da7eb2bf34e3a",
+      "excerpt_sha256": "0a545970e53e40a3806d66e9273f9b3e14b068ddd16fbf533f9a17685c7b80cd"
+    },
+    {
+      "id": "mw-8646984002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646984002",
+      "raw_sha256": "239d2d1b97b9390ad3a9512b66c91d24fdcb2e19b66757c2407024a5b424222e",
+      "excerpt_sha256": "a6f5c1209e3d36506c680930777baf6f06b5bd304e5da1cf044f184a84cada9a"
+    },
+    {
+      "id": "mw-8646976002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646976002",
+      "raw_sha256": "2245b9528e2d06e4e37b4b3c87f6eb205de1481e0c76016b376e49ba4a451b98",
+      "excerpt_sha256": "8f7e53a6d8fb75ca805c0374bf66fd668d8c73fbc240362915e217ca1fec5c38"
+    },
+    {
+      "id": "mw-8646947002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646947002",
+      "raw_sha256": "d74700f7eab035299c42a85ba1a085c3512326e29f35eb1d0b38a228820b499d",
+      "excerpt_sha256": "73d751b47667bc7530dfd5b646545c1b174b7e577df3ec9a0e278860541b1afd"
+    },
+    {
+      "id": "mw-8636830002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8636830002",
+      "raw_sha256": "5f5e61520c16878f047bfcc4d4641d190a9c05dad23ffc474c90b36bd373a43d",
+      "excerpt_sha256": "f8deac8c451fc47c9efda1c123aa8612ef295b07d357370e8e477d525cf81b71"
+    }
+  ]
+}

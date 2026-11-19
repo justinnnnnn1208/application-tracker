@@ -1,0 +1,64 @@
+{
+  "pages": 5,
+  "dataset_ready": false,
+  "extraction_failures": 0,
+  "accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": 1.0,
+    "start_date": 0.4,
+    "graduate": 1.0,
+    "sponsorship": 1.0
+  },
+  "known_labels": {
+    "company": 5,
+    "title": 5,
+    "location": 5,
+    "deadline": 0,
+    "start_date": 3,
+    "graduate": 3,
+    "sponsorship": 0
+  },
+  "known_label_accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": null,
+    "start_date": 0.0,
+    "graduate": 1.0,
+    "sponsorship": null
+  },
+  "predicted_confirmed_yes": 0,
+  "labelled_confirmed_yes": 0,
+  "false_confirmed_yes": 0,
+  "mismatches": [
+    {
+      "id": "mw-8645263002",
+      "fields": [
+        "start_date"
+      ]
+    },
+    {
+      "id": "mw-8646984002",
+      "fields": [
+        "start_date"
+      ]
+    },
+    {
+      "id": "mw-8646976002",
+      "fields": [
+        "start_date"
+      ]
+    }
+  ],
+  "phase_2_accepted": false,
+  "limits": [
+    "Five postings from one new employer on the existing Greenhouse ATS; not a full or multi-ATS benchmark.",
+    "Three exact-start-date positives share one template.",
+    "Labels frozen before prediction; subsequent fixes consume these cases as regression data.",
+    "Sponsorship automatic prediction abstains; manual review is not evaluated here."
+  ],
+  "stage": "Initial held-out check, before date-parser fix",
+  "prediction_revision": "aaebca9"
+}

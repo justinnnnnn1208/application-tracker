@@ -1,6 +1,6 @@
 # Stable project context
 
-Reviewed: 17 November 2026 (Europe/London). Keep this file short and stable; changing progress belongs in [STATUS.md](../../STATUS.md) and [HANDOVER.md](../HANDOVER.md).
+Reviewed: 19 November 2026 (Europe/London). Keep this file short and stable; changing progress belongs in [STATUS.md](../../STATUS.md) and [HANDOVER.md](../HANDOVER.md).
 
 ## Purpose and source of truth
 
@@ -38,7 +38,7 @@ The owner stores role titles, locations and job summaries in column E, Notes. Do
 
 ## Discovery and ranking preference
 
-Prioritise genuine graduate/junior UK technology vacancies. Include roles regardless of sponsorship availability; treat sponsorship evidence and sponsor-licence data as informational. This preference does not establish immigration eligibility or modify legal declarations. The owner agreed initial targets of at least 90% accuracy for deadline, location, graduate-role classification and start date, with zero false sponsorship confirmations. Real postings are mandatory. Thirty reviewed snapshots now exist; current scores are development-set evidence, with no positive exact-start-date coverage.
+Prioritise genuine graduate/junior UK technology vacancies. Include roles regardless of sponsorship availability; treat sponsorship evidence and sponsor-licence data as informational. This preference does not establish immigration eligibility or modify legal declarations. The owner agreed initial targets of at least 90% accuracy for deadline, location, graduate-role classification and start date, with zero false sponsorship confirmations. Real postings are mandatory. Keep dataset provenance, field coverage and development/held-out status explicit; current counts/results belong in STATUS.md and the fixture review notes.
 
 ## UI direction
 

@@ -235,7 +235,7 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 
 ## 12. Open items
 
-- Development-copy spreadsheet ID, exact tab name and header-row number. Column names have already been supplied; see [SETUP.md](SETUP.md).
+- Development-copy configuration and columns were supplied and the owner confirmed all 20 rows imported. Live single-cell write verification is deferred; do not ask for settled configuration again. See [SETUP.md](SETUP.md).
 - Confirm the LLM provider and model name for the default configuration.
 - Confirm the Leeds international student advice check on current visa rules.
 
@@ -313,3 +313,7 @@ Read-only public Lever postings API supports explicit global/EU region, owner-en
 ### Regional source-identity isolation (19 November 2026)
 
 Treat Greenhouse and Lever global/EU instances as separate provider-ID scopes. Equal board/ID text across instances is insufficient evidence for automatic merging. Legacy/current URL variants within one instance may still dedupe. Cached-key migrations preserve existing jobs and histories; existing combined records are not automatically split.
+
+### Exact start-date regression coverage (19 November 2026)
+
+Five additional genuine Marshall Wace snapshots expose three month-first exact start dates and two flexible ranges. The initial held-out failure is retained. Full labelled dates accept day-first/month-first order; partial, impossible or range dates stay unknown. These cases become regression data after the fix; report this consumption and shared-template limitation. The original 30-page manifest stays frozen; expanded 35-page results do not constitute independent multi-ATS or Phase 2 acceptance.

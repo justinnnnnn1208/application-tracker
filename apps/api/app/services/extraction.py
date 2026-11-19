@@ -80,15 +80,26 @@ def postings(value, depth=0):
 
 
 def labelled_date(text, label):
-    """An explicit day/month/year next to the label; partial dates stay unknown."""
+    """An explicit labelled day/month/year in either order; ranges stay unknown."""
     months = "January February March April May June July August September October November December".split()
-    match = re.search(rf"{label}\s*:?\s*(?:Midnight,?\s*)?(\d{{1,2}})\s*(?:st|nd|rd|th)?\s+(" + "|".join(months) + r")\s+(\d{4})\b", text, re.I)
-    if not match:
-        return None
-    try:
-        return date(int(match[3]), next(index for index, month in enumerate(months, 1) if month.casefold() == match[2].casefold()), int(match[1]))
-    except ValueError:
-        return None
+    names = "|".join(months)
+    prefix = rf"\b{label}\s*:?\s*(?:Midnight,?\s*)?"
+    patterns = [
+        rf"(?P<day>\d{{1,2}})\s*(?:st|nd|rd|th)?\s+(?P<month>{names})\s+(?P<year>\d{{4}})\b",
+        rf"(?P<month>{names})\s+(?P<day>\d{{1,2}})(?:st|nd|rd|th)?(?:\s*,\s*|\s+)(?P<year>\d{{4}})\b",
+    ]
+    for pattern in patterns:
+        match = re.search(prefix + pattern, text, re.I)
+        if not match:
+            continue
+        # One precise date must not stand in for an alternative or interval.
+        if re.match(rf"\s*(?:(?:or|to|through|and)\b|[-–/]\s*(?:\d|(?:{names})\b))", text[match.end():], re.I):
+            return None
+        try:
+            return date(int(match['year']), next(index for index, month in enumerate(months, 1) if month.casefold() == match['month'].casefold()), int(match['day']))
+        except ValueError:
+            return None
+    return None
 
 
 class GreenhouseParser(HTMLParser):
