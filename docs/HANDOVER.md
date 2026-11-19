@@ -64,3 +64,9 @@ Open **http://127.0.0.1:3000**. The launcher backs up/restores-verifies existing
 Try Settings → Matching preferences; job details → Review role-specific evidence. Leave unclear policy Unverified. Lever source setup is optional and requires the correct API host/region/employer; live coverage is not yet verified. Existing imported Notes are preserved and repair locally on restart, without another Sheet import.
 
 Owner input: **none needed for delivered work**. Future live-source access and deferred Mac operational checks remain outstanding. Date/parser/evaluation delivery eb212d9fcd70f43b363ec0071ea9557213b0598b was pushed and its full SHA matched GitHub dev/phase-1. Final UI clear-message polish passed typecheck/build and a full production browser rerun that saves, clears immediately, checks removal of the old saved message/confirmation, and saves again. Included in the final delivery commit. Ignored raw captures/logs/screenshots remain local; generated next-env.d.ts drift is excluded. No credentials, private data or source forms/scripts are committed.
+
+## Final delivery checkpoint
+
+Final application commit **f18023bc2619c83b2a7838b716c73b35e0be00bf** was pushed to dev/phase-1 and its full SHA matched the GitHub branch. This documentation-only follow-up records that verification. The final application checks are 169 API tests, frontend typecheck/build and the full extended production browser flow, all passed. New-page sanitisation and staged private-value checks passed without printing credentials. No Sheets/OAuth/core-security files changed from faff611 during this run; read-only scope and guards remain intact. No unfinished runtime edits remain; ignored raw public captures/logs/screenshots are local only.
+
+Cutoff requested by owner: 02:45 London time on 19 November 2026. No further feature work is planned before that summary. Resume with the five steps above; full Phase 2 acceptance remains incomplete.
