@@ -2,9 +2,9 @@
 
 These instructions describe the current code. Run on the owner's own computer; the project remains local through Phases 1–5. Use the existing checkout and preserve `.env`, `.local/` and `storage/`.
 
-## Latest update: source-identity migration (19 November 2026)
+## Latest update: source identity and evidence-review migrations (19 November 2026)
 
-This release adds a job_sources table. Stop the app with Control+C, pull the branch, then use `python3 scripts/dev.py --migrate` from the project root. The launcher loads your existing private .env, creates and restores/verifies a backup of an existing SQLite database/storage into ignored `.local/migration-backups`, applies migrations to that configured DB and starts services. It refuses when the worker is running or backup verification fails. Regular later starts still use `python3 scripts/dev.py`. Keep the encryption key separately. No new dependencies. The API now fails early with this instruction if the schema is behind.
+This release adds a job_sources table and content-bound manual sponsorship reviews. Stop the app with Control+C, pull the branch, then use `python3 scripts/dev.py --migrate` from the project root. The launcher loads your existing private .env, creates and restores/verifies a backup of an existing SQLite database/storage into ignored `.local/migration-backups`, applies migrations to that configured DB and starts services. It refuses when the worker is running or backup verification fails. Regular later starts still use `python3 scripts/dev.py`. Keep the encryption key separately. No new dependencies. The API now fails early with this instruction if the schema is behind.
 
 ## Start on macOS in VS Code
 
@@ -210,3 +210,7 @@ On Jobs, choose **Score active jobs**, wait for Background tasks, then select **
 The same recognised Greenhouse, Lever or Ashby posting ID across supported official URL forms links to one existing job/application. Original/additional URLs are retained under Sources and possible duplicates in job details. Existing job IDs, owner edits, application events, Notes and Sheet snapshots are not merged or deleted. Duplicate identity conflicts among existing records stop intake for review (Sheet rows still preserved). Aliases retain old URLs after a manual primary-URL edit, and cannot be reassigned to a different tracked job.
 
 Close titles with the same normalized employer/location can appear as review-only hints. Different programme numbers/years and different known requisitions within the same ATS board are excluded from these hints. Text similarity never automatically combines existing records or confirms that two openings are the same. Current intake identity support is not a claim of live Lever/Ashby discovery support.
+
+## Manual sponsorship evidence review
+
+In job details, expand Review role-specific evidence. Read the source and save a complete quote from the saved vacancy description/requirements, choose its saved listing URL, select an explicit Offered/Not offered finding, and confirm your review. Notes alone cannot establish policy. Leave unclear or conditional policy Unverified. The app checks quote provenance and your confirmation, not the statement’s meaning or immigration eligibility. Editing vacancy identity/content/location/dates invalidates the review. Previous evidence remains visible until reviewed again or cleared. Findings do not affect preference scores; sponsor licences remain unchecked.

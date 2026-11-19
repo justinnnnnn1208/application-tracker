@@ -61,7 +61,8 @@ class JobData(StrictModel):
 
 class JobOut(JobData):
     id: str
-    sponsorship: Literal["UNVERIFIED"]
+    sponsorship_snapshot: str
+    sponsorship: Literal["UNVERIFIED", "CONFIRMED_YES", "CONFIRMED_NO"]
     licensed_sponsor: bool | None
     status: Status
     created_at: UtcTimestamp

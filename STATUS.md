@@ -2,7 +2,7 @@
 
 Reviewed: 19 November 2026 (Europe/London).
 
-**Phase 2: in progress, roughly 65%.** Phase 1 was accepted for progression with explicit deferrals; its untested checks are not marked passed. Sheets remains read-only by default. Discovery/matching prioritises graduate/junior UK tech roles, with sponsorship informational and excluded from scores. No immigration eligibility or legal declarations changed.
+**Phase 2: in progress, roughly 70%.** Phase 1 was accepted for progression with explicit deferrals; its untested checks are not marked passed. Sheets remains read-only by default. Discovery/matching prioritises graduate/junior UK tech roles, with sponsorship informational and excluded from scores. No immigration eligibility or legal declarations changed.
 
 ## Current delivery
 
@@ -30,7 +30,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals d
 
 ## Current verification
 
-- API suite: **115 passed** (one existing Starlette/httpx deprecation warning), `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api.
+- API suite: **127 passed** (one existing Starlette/httpx deprecation warning), `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api.
 - Frontend: `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` passed.
 - Latest production browser smoke passed with a real disposable worker: simulated old Sheet import → API restart → automatic title/location repair, visible single Notes summary and summary-only warning, batch scoring/highest-score sort, plus existing match explanation/feedback, security/CRUD/filter/link/imported-status/CV/backup/reminder/discovery/responsive checks.
 - Earlier live check (not repeated for this local Notes update): normal application fetcher successfully fetched/extracted a Graphcore graduate vacancy (Bristol, deadline 29 November 2026).
@@ -41,7 +41,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals d
 
 ## Remaining Phase 2 work
 
-Broader cross-provider dedupe and reviewed resolution of existing duplicates; more sources/ATS; automatic tuning from feedback; evidence review and licensed-sponsor signal; held-out and multi-ATS evaluation including exact start dates. LLM structured requirement extraction has not been introduced; current matching is a transparent local heuristic with a finite technology vocabulary. No automatic discovery scheduling added. Phase 2 is not complete.
+Broader cross-provider dedupe and reviewed resolution of existing duplicates; more sources/ATS; automatic tuning from feedback; automatic evidence assessment and licensed-sponsor signal; held-out and multi-ATS evaluation including exact start dates. LLM structured requirement extraction has not been introduced; current matching is a transparent local heuristic with a finite technology vocabulary. No automatic discovery scheduling added. Phase 2 is not complete.
 
 On Mac: pull/restart, allow the approved public source host(s) in private URL_FETCH_ALLOWED_HOSTS per SETUP.md, and use Settings → Job discovery or paste a supported listing URL. Open job details → Calculate preference match. Already-imported Notes repair locally on restart; company-only rows still need a real role. Notes summaries are explicitly marked when used for scoring. No new dependencies. This delivery requires migration 7419a825bc10: use `python3 scripts/dev.py --migrate` after pulling. No credentials or personal facts were sent to hosted models.
 
@@ -60,3 +60,9 @@ Step 1 API suite: 113 passed; build/typecheck passed; source-alias browser flow 
 Settings → Matching preferences now exposes role keywords and all six existing weights (integer 0–100, total 100). Effective defaults are returned for previously unset weights. Saving preserves backup settings, invalidates changed scores and distinguishes current Good/Poor ratings from ratings on changed inputs. Recalculation clears an outdated rating; no automatic training or sponsorship penalty is added. No new schema/dependencies in step 2.
 
 Verified on final code: 115 API tests; TypeScript and production build; production browser smoke including invalid-total save blocking, saving and persistence after reload, existing batch/ranking/feedback and source-alias workflows. Thirty-page development evaluation rerun: zero extraction failures/false YES, known deadline/location/graduate labels match; no positive exact start dates, second ATS or held-out acceptance. Full Phase 2 remains incomplete.
+
+## Night step 3 — manual sponsorship evidence
+
+Implemented owner-reviewed role quote/source/confirmation, fingerprint-bound UTC review, stale evidence returning Unverified, clearing, and traceable findings/filter links. Notes are excluded as evidence. Quote provenance checks do not interpret policy meaning: the owner must review all conditions. This is not automatic classification; licences remain unchecked and ranking/legal declarations unchanged. Migration 852ab936cd21 adds nullable review fingerprint/time columns without trusting legacy unbound records. See docs/decisions/manual-sponsorship-evidence.md.
+
+API suite 127 passed; migration upgrade/downgrade/schema drift and backup-helper checks included. Final typecheck/build and production browser verification passed, including evidence consent/save/source link, confirmed filtering, changed-content invalidation and clear; existing core flows still pass. Existing 30-page development evaluation rerun: zero extraction failures/false YES, Phase 2 accepted false. Initial browser exposed ambiguous select labels; explicit accessible labels added before rerun. Direct api.lever.co robots request blocked by cloud proxy (CONNECT 403); no network policy changed or bypass attempted.

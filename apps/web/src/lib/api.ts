@@ -1,7 +1,7 @@
 export type Profile = { display_name: string; email: string; target_locations: string; graduation_year: number | null };
 export type Fact = { id: string; category: string; content: string; source: string; verified: boolean; created_at: string };
 export type Status = "DISCOVERED" | "SHORTLISTED" | "SKIPPED" | "EXPIRED" | "WITHDRAWN";
-export type Job = { id: string; url: string; company: string; title: string; location: string; description: string; deadline: string | null; start_date: string | null; eligibility_requirements: string; tracker_status: string | null; notes: string; sponsorship: "UNVERIFIED"; licensed_sponsor: boolean | null; status: Status; created_at: string };
+export type Job = { id: string; url: string; company: string; title: string; location: string; description: string; deadline: string | null; start_date: string | null; eligibility_requirements: string; tracker_status: string | null; notes: string; sponsorship_snapshot: string; sponsorship: "UNVERIFIED" | "CONFIRMED_YES" | "CONFIRMED_NO"; licensed_sponsor: boolean | null; status: Status; created_at: string };
 export type JobInput = Pick<Job, "url" | "company" | "title" | "location" | "description" | "deadline" | "notes" | "start_date" | "eligibility_requirements">;
 export type HistoryEvent = { id: string; from_status: string | null; to_status: string; created_at: string };
 export const statuses: Status[] = ["DISCOVERED", "SHORTLISTED", "SKIPPED", "EXPIRED", "WITHDRAWN"];

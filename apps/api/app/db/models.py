@@ -179,6 +179,8 @@ class JobEligibility(Base):
     status: Mapped[str] = mapped_column(String(30), default="UNVERIFIED")
     evidence_quote: Mapped[str | None] = mapped_column(Text, nullable=True)
     source_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    source_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     licensed_sponsor: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
 

@@ -301,3 +301,7 @@ Link repeat intake using canonical URLs and recognized provider/board/posting id
 ### Owner-controlled matching preferences (19 November 2026)
 
 Settings exposes the existing six weights and preferred role keywords. Require all six integer weights, each 0–100, summing to 100; sponsorship is never a weight. Blank keywords use the existing technology defaults. Changes invalidate cached scores; recalculation is explicit. Display current Good/Poor counts separately from ratings on changed inputs. Ratings support manual adjustments only, with no automatic training; recalculating changed inputs requires a new rating. Preserve other saved settings.
+
+### Manual sponsorship evidence review (19 November 2026)
+
+Role-specific findings may be saved only after explicit owner confirmation, a quote present in saved vacancy description/requirements and a saved listing source for the same job. Notes/company history/licences are insufficient. Bind the review to URL, employer, title, location, dates and vacancy content; changed inputs display Unverified with stale evidence retained for review. Old unbound records remain Unverified. Display traceable quote/source/review time and allow clearing. Quote validation checks provenance, not semantic correctness: the owner reviews all conditions and leaves ambiguity Unverified. No automatic evidence classifier, licence matching, eligibility determination, score change or legal declaration change is introduced.

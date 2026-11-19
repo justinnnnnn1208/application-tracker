@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.models import Application, ApplicationEvent, Fact, Job, Profile
 from app.db.session import get_session
 from app.services.jobs import ensure_job
+from app.services.sponsorship import effective_status, snapshot
 from app.services.identity import find_existing, remember_source, possible_duplicates, AmbiguousIdentity
 from app.db.models import JobSource
 from app.schemas import EventOut, FactData, FactOut, JobData, JobOut, ProfileData, StatusChange
@@ -23,10 +24,12 @@ def require(session, model, id):
     return item
 
 
-def job_out(job, application):
+def job_out(job, application, session):
     return JobOut.model_validate({
-        **{key: getattr(job, key) for key in JobOut.model_fields if key != "status"},
+        **{key: getattr(job, key) for key in JobOut.model_fields if key not in {"status", "sponsorship_snapshot"}},
         "status": application.status,
+        "sponsorship": effective_status(session, job),
+        "sponsorship_snapshot": snapshot(job),
     })
 
 
@@ -92,7 +95,7 @@ def delete_fact(id: str, session: DB):
 
 @router.get("/jobs", response_model=list[JobOut])
 def jobs(session: DB):
-    return [job_out(j, a) for j, a in session.execute(
+    return [job_out(j, a, session) for j, a in session.execute(
         select(Job, Application).join(Application).order_by(Job.created_at.desc(), Job.id)
     )]
 
@@ -107,13 +110,13 @@ def add_job(data: JobData, session: DB, response: Response):
         raise HTTPException(409, "A source URL or ATS identity is already linked; refresh and review the existing jobs") from None
     if not created:
         response.status_code = 200
-    return job_out(item, session.scalar(select(Application).where(Application.job_id == item.id)))
+    return job_out(item, session.scalar(select(Application).where(Application.job_id == item.id)), session)
 
 
 @router.get("/jobs/{id}", response_model=JobOut)
 def get_job(id: str, session: DB):
     item = require(session, Job, id)
-    return job_out(item, session.scalar(select(Application).where(Application.job_id == id)))
+    return job_out(item, session.scalar(select(Application).where(Application.job_id == id)), session)
 
 
 @router.put("/jobs/{id}", response_model=JobOut)
@@ -135,7 +138,7 @@ def update_job(id: str, data: JobData, session: DB):
         session.rollback()
         raise HTTPException(409, "A job with that URL already exists")
     session.refresh(item)
-    return job_out(item, session.scalar(select(Application).where(Application.job_id == id)))
+    return job_out(item, session.scalar(select(Application).where(Application.job_id == id)), session)
 
 
 @router.patch("/jobs/{id}/status", response_model=JobOut)
@@ -157,7 +160,7 @@ def change_status(id: str, data: StatusChange, session: DB):
         session.add(ApplicationEvent(application_id=application.id, from_status=old, to_status=data.status))
         session.commit()
         session.refresh(application)
-    return job_out(item, application)
+    return job_out(item, application, session)
 
 
 @router.get("/jobs/{id}/events", response_model=list[EventOut])
