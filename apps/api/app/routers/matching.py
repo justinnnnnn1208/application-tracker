@@ -67,3 +67,17 @@ def feedback(id: str, data: Feedback, session: DB):
     row.feedback = data.value
     session.commit()
     return {"saved": True}
+
+
+@router.get("/matches/feedback")
+def feedback_counts(session: DB):
+    shared = shared_inputs(session)
+    counts = {"good": 0, "bad": 0, "stale": 0}
+    for job, result in session.execute(select(Job, MatchResult).join(MatchResult)):
+        if result.feedback not in {"good", "bad"}:
+            continue
+        if result.inputs_hash != fingerprint(inputs(session, job, shared)):
+            counts["stale"] += 1
+        else:
+            counts[result.feedback] += 1
+    return counts

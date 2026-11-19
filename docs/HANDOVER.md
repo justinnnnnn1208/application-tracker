@@ -8,9 +8,15 @@ The user authorised continued Phase 2 work in tested steps, routine decisions do
 
 Step 1 implements source aliases, official ATS-ID intake dedupe, source/possible-duplicate detail UI and review-only fuzzy hints. It does not merge two existing jobs/histories. Migration 7419a825bc10 backfills primary sources. `python3 scripts/dev.py --migrate` now backs up and restores/verifies existing configured SQLite data, holds the worker lock, upgrades and starts. API rejects a behind schema with clear instructions. No dependencies added. API tests 113 passed; build/typecheck and source-alias browser passed, latest helper/head-check browser run passed.
 
-Next planned step: owner-controlled weight/feedback controls. Phase 2 ~60%; original Phase 1 deferrals remain below. Preserve Notes backfill, read-only Sheets and owner Git identity.
+Step 2 completed: Settings matching keywords/six validated weights and current-versus-stale feedback counts. Final verification: 115 API tests, typecheck/build, extended production browser (invalid total blocked, saved weights/keywords survive reload), 30-page development evaluation with unchanged limitations. No automatic training or sponsorship score. Phase 2 ~65%; original Phase 1 deferrals remain below. Preserve Notes backfill, read-only Sheets and owner Git identity.
 
 Morning start: Control+C, `git pull --ff-only origin dev/phase-1`, then **`python3 scripts/dev.py --migrate`**. This update needs the new migration; older no-migration instructions below apply only to the previous delivery.
+
+## Remaining work / resume
+
+Continue Phase 2 evidence review/licence signal, more ATS/aggregators and held-out multi-ATS evaluation with positive exact start dates. Known-ID source aliases and fuzzy hints are delivered; merging two existing histories remains intentionally unimplemented. No critical question or failed check at this checkpoint. No Phase 3, Google writes or environment publication. Uploaded skills remain unapplied reference files.
+
+Step 1 is published as f062f018a78b4b73e48dc7e6e129c2d25ec73a2e. Step 2 is included in this commit; verify HEAD against GitHub dev/phase-1 after push. Excluded generated next-env.d.ts drift is restored. No private data or credentials staged. No owner input needed for completed scope; Mac operational checks remain outstanding.
 
 ## Previous completed delivery (17 November)
 

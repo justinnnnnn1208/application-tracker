@@ -210,6 +210,22 @@ def main():
                     expect(page.get_by_role("heading", name=name, exact=True)).to_be_visible()
                     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), name
                 page.get_by_role("button", name="Settings", exact=True).click()
+                preferences_panel = page.locator("details").filter(has=page.locator("summary", has_text="Matching preferences")).first
+                preferences_panel.locator("summary").click()
+                preferences_panel.get_by_label("Role preference weight", exact=True).fill("30")
+                expect(preferences_panel.get_by_role("button", name="Save matching preferences", exact=True)).to_be_disabled()
+                preferences_panel.get_by_label("Graduate/junior level weight", exact=True).fill("15")
+                preferences_panel.get_by_label("Preferred role keywords", exact=True).fill("software engineer, data")
+                preferences_panel.get_by_role("button", name="Save matching preferences", exact=True).click()
+                expect(preferences_panel.get_by_text("Matching preferences saved.", exact=False)).to_be_visible()
+                page.reload()
+                page.get_by_role("button", name="Settings", exact=True).click()
+                preferences_panel = page.locator("details").filter(has=page.locator("summary", has_text="Matching preferences")).first
+                preferences_panel.locator("summary").click()
+                expect(preferences_panel.get_by_label("Role preference weight", exact=True)).to_have_value("30")
+                expect(preferences_panel.get_by_label("Graduate/junior level weight", exact=True)).to_have_value("15")
+                expect(preferences_panel.get_by_label("Preferred role keywords", exact=True)).to_have_value("software engineer, data")
+                preferences_panel.locator("summary").click()
                 discovery = page.locator("details").filter(has=page.locator("summary", has_text="Job discovery")).first
                 discovery.locator("summary").click()
                 discovery.get_by_label("Greenhouse board slug", exact=True).fill("fixture-board")

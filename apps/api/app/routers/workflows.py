@@ -19,6 +19,7 @@ from app.routers.tracker import DB, require
 from app.schemas import FactData, StrictModel, UtcTimestamp
 from app.services.errors import NeedsInput
 from app.services.urls import canonical_url
+from app.services.matching import WEIGHTS
 
 router = APIRouter()
 public_router = APIRouter()
@@ -196,7 +197,11 @@ class PreferencesData(StrictModel):
 
 @router.get("/settings", response_model=PreferencesData)
 def settings(session: DB):
-    return session.get(Preferences, 1) or PreferencesData()
+    row = session.get(Preferences, 1)
+    result = PreferencesData.model_validate(row) if row else PreferencesData()
+    if not result.weights:
+        result.weights = WEIGHTS.copy()
+    return result
 
 
 @router.put("/settings", response_model=PreferencesData)

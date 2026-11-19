@@ -297,3 +297,7 @@ Matching may use available Notes summaries, with an explicit summary-only notice
 ### Source-identity rollout (19 November 2026)
 
 Link repeat intake using canonical URLs and recognized provider/board/posting identifiers, retaining alias URLs and one application/event history. Supported official Greenhouse/Lever/Ashby URL variants can share a record. Do not trust an arbitrary employer URL's job-ID query parameter without provider/board scope. Conflicting pre-existing identity records require review, not destructive historical merging. Fuzzy same-employer/location close-title matches are hints only; distinct known requisitions/years are excluded. This conservative first stage prioritises avoiding false merges over aggressive cleanup. Source URLs remain traceable in the UI. Migration must preserve existing records and have a verified backup/restore path.
+
+### Owner-controlled matching preferences (19 November 2026)
+
+Settings exposes the existing six weights and preferred role keywords. Require all six integer weights, each 0–100, summing to 100; sponsorship is never a weight. Blank keywords use the existing technology defaults. Changes invalidate cached scores; recalculation is explicit. Display current Good/Poor counts separately from ratings on changed inputs. Ratings support manual adjustments only, with no automatic training; recalculating changed inputs requires a new rating. Preserve other saved settings.
