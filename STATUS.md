@@ -29,7 +29,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals a
 ## Latest verification
 
 - API: **169 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
-- Frontend: `npm run typecheck` and production build passed on the latest frontend code; subsequent changes were backend/evaluation only.
+- Frontend: `npm run typecheck` and production build passed on the final evidence-clear UI code.
 - Final production browser smoke passed on the latest backend/frontend: real disposable worker, Notes repair/restart, identity aliases, score/feedback/weights persistence, evidence save/filter/source/stale/clear, Lever EU source configuration, origin/auth guards, CRUD/history, CV review/download, backup/CLI restore, reminders and 1440/390/320px layouts. No owner data/Google/Lever calls.
 - Alembic schema-drift and upgrade/downgrade tests pass; legacy source settings, evidence and job/history preservation covered. Latest head a74cd158ef43.
 - Initial new browser failures: ambiguous select labels and an overly exact existing textarea test locator. Corrected; final full runs passed. The first real month-first date failure is retained as evaluation evidence, below.
@@ -56,3 +56,5 @@ python3 scripts/dev.py --migrate
 ```
 
 Open http://127.0.0.1:3000. Later regular starts use `python3 scripts/dev.py`. No new Google scope/reconnection is needed for these changes. Optional Lever host approval instructions are in docs/SETUP.md; do not send credentials. No owner input is needed for completed work. Live external-source coverage and the deferred Mac checks remain outstanding.
+
+Final UI polish: clearing sponsorship evidence resets the old save acknowledgement and confirmation. Typecheck/build and full production browser rerun passed, including immediate save → clear → confirm again → save. API suite remains 169 passed; no backend change in this polish.

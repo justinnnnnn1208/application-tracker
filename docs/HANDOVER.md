@@ -22,7 +22,7 @@ Earlier deliveries f062f01 and faff611 provide aliases/fuzzy hints, backup-verif
 ## Checks
 
 - **169 API tests passed**, one existing Starlette/httpx deprecation warning. Run from apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
-- Latest frontend typecheck/build passed; later edits were backend/evaluation only.
+- Latest frontend typecheck/build passed on the final UI code.
 - Final production browser smoke passed with disposable DB/storage and a real worker, including evidence consent/save/source/filter/invalidation/clear, weights persistence, Lever EU source settings, source aliases, Notes repair/restart, core security/CRUD/history, CV, backup/CLI restore, reminders and responsive layouts.
 - Migrations/schema drift pass. Latest head **a74cd158ef43**. Upgrade/downgrade preserves legacy data/settings/evidence; cached EU-key repair does not rewrite histories. New startup must use `--migrate` below.
 - Original 30-case regression unchanged; expanded 35-case regression matches basic/role labels and 3/3 exact start dates. Five employer labels, one ATS; all three date positives share one template. Source/form stripping and raw/excerpt SHA provenance recorded.
@@ -63,4 +63,4 @@ Open **http://127.0.0.1:3000**. The launcher backs up/restores-verifies existing
 
 Try Settings → Matching preferences; job details → Review role-specific evidence. Leave unclear policy Unverified. Lever source setup is optional and requires the correct API host/region/employer; live coverage is not yet verified. Existing imported Notes are preserved and repair locally on restart, without another Sheet import.
 
-Owner input: **none needed for delivered work**. Future live-source access and deferred Mac operational checks remain outstanding. Delivery SHA/remote verification will be recorded after the final push. Ignored raw captures/logs/screenshots remain local; generated next-env.d.ts drift is excluded. No credentials, private data or source forms/scripts are committed.
+Owner input: **none needed for delivered work**. Future live-source access and deferred Mac operational checks remain outstanding. Date/parser/evaluation delivery eb212d9fcd70f43b363ec0071ea9557213b0598b was pushed and its full SHA matched GitHub dev/phase-1. Final UI clear-message polish passed typecheck/build and a full production browser rerun that saves, clears immediately, checks removal of the old saved message/confirmation, and saves again. Included in the final delivery commit. Ignored raw captures/logs/screenshots remain local; generated next-env.d.ts drift is excluded. No credentials, private data or source forms/scripts are committed.
