@@ -214,3 +214,11 @@ Close titles with the same normalized employer/location can appear as review-onl
 ## Manual sponsorship evidence review
 
 In job details, expand Review role-specific evidence. Read the source and save a complete quote from the saved vacancy description/requirements, choose its saved listing URL, select an explicit Offered/Not offered finding, and confirm your review. Notes alone cannot establish policy. Leave unclear or conditional policy Unverified. The app checks quote provenance and your confirmation, not the statement’s meaning or immigration eligibility. Editing vacancy identity/content/location/dates invalidates the review. Previous evidence remains visible until reviewed again or cleared. Findings do not affect preference scores; sponsor licences remain unchecked.
+
+## Lever public discovery (Phase 2)
+
+After pulling, use `python3 scripts/dev.py --migrate` to preserve/upgrade existing source settings. In Settings → Job discovery choose Lever, enter the board slug and the exact employer name shown on that board, then choose Global (`jobs.lever.co`) or EU (`jobs.eu.lever.co`). Review source terms before enabling manual imports.
+
+For Global add `api.lever.co`, or for EU add `api.eu.lever.co`, to your existing comma-separated private `URL_FETCH_ALLOWED_HOSTS`, preserving other entries. Restart afterwards. Do not share that file. Network access/robots approval is also required; this cloud currently blocks the Lever API, so its live import is not verified here. No broader network grants were published. No credentials or application-form access are required.
+
+Imports use bounded pagination and fail before saving a partial board if later pages are denied, repeated or exceed the limit. Invalid individual postings are counted. Duplicate ATS posting IDs preserve one application and traceable source URLs. Missing/partial dates stay unknown; sponsorship stays Unverified until separate explicit evidence review. Sources are never seeded and automatic discovery is not scheduled. Synthetic contract fixtures are test-only, not real job recommendations.

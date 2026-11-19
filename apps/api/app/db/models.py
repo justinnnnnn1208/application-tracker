@@ -199,6 +199,8 @@ class DiscoverySource(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     provider: Mapped[str] = mapped_column(String(30))
     board: Mapped[str] = mapped_column(String(150))
+    employer: Mapped[str] = mapped_column(String(200), default="", server_default="")
+    region: Mapped[str] = mapped_column(String(10), default="global", server_default="global")
     enabled: Mapped[bool] = mapped_column(Boolean, default=False)
 
 

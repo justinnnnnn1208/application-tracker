@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import field_validator
+from typing import Literal
+from pydantic import Field, field_validator, model_validator
 from sqlalchemy import select
 
 from app.db.models import DiscoverySource
@@ -13,6 +14,9 @@ router = APIRouter()
 
 class SourceData(StrictModel):
     board: str
+    provider: Literal["greenhouse", "lever"] = "greenhouse"
+    employer: str = Field(default="", max_length=200)
+    region: Literal["global", "eu"] = "global"
     enabled: bool = False
 
     @field_validator("board")
@@ -21,8 +25,17 @@ class SourceData(StrictModel):
         return validate_board(value)
 
 
+    @model_validator(mode="after")
+    def provider_settings(self):
+        if self.provider == "lever" and not self.employer.strip():
+            raise ValueError("Lever needs the employer name shown on its board")
+        if self.provider == "greenhouse" and self.region != "global":
+            raise ValueError("Region applies only to Lever")
+        return self
+
+
 def source_out(source):
-    return {"id": source.id, "provider": source.provider, "board": source.board, "enabled": source.enabled}
+    return {"id": source.id, "provider": source.provider, "board": source.board, "enabled": source.enabled, "employer": source.employer, "region": source.region}
 
 
 @router.get("/discovery")
@@ -32,9 +45,9 @@ def sources(session: DB):
 
 @router.post("/discovery", status_code=201)
 def add_source(data: SourceData, session: DB):
-    if session.scalar(select(DiscoverySource).where(DiscoverySource.provider == "greenhouse", DiscoverySource.board == data.board)):
+    if session.scalar(select(DiscoverySource).where(DiscoverySource.provider == data.provider, DiscoverySource.board == data.board, DiscoverySource.region == data.region)):
         raise HTTPException(409, "This board is already configured")
-    source = DiscoverySource(provider="greenhouse", **data.model_dump())
+    source = DiscoverySource(**data.model_dump())
     session.add(source)
     session.commit()
     return source_out(source)

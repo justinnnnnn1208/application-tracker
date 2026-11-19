@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.db.models import Application, MatchResult, DiscoverySource, Job, Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
 from app.integrations.llm.provider import configured_provider
 from app.integrations.discovery.greenhouse import read_board
+from app.integrations.discovery.lever import read_board as read_lever_board
 from app.integrations.sheets.client import GoogleSheet
 from app.integrations.sheets.sync import import_sheet
 from app.schemas import as_utc
@@ -64,9 +65,13 @@ def execute(session, task, settings):
         return {"job_id": job.id, **save_match(session, job)}
     if task.kind == "discover":
         source = session.get(DiscoverySource, task.payload.get("source_id"))
-        if not source or not source.enabled or source.provider != "greenhouse":
+        if not source or not source.enabled or source.provider not in {"greenhouse", "lever"}:
             raise NeedsInput("The discovery source is missing, disabled or unsupported.")
-        jobs, warnings = read_board(source.board)
+        jobs, warnings = read_lever_board(source.board, source.employer, source.region) if source.provider == "lever" else read_board(source.board)
+        if source.provider == "greenhouse" and source.employer:
+            for data in jobs:
+                if data.company == "Employer not provided":
+                    data.company = source.employer
         created = 0
         for data in jobs:
             _, added = ensure_job(session, data, enrich=True)

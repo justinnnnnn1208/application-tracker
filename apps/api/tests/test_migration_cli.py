@@ -48,7 +48,8 @@ def test_helper_backs_up_and_restore_verifies_legacy_database_before_upgrade(tmp
         assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == '5103adc629a6'
     assert (restored / 'storage' / 'fixture.txt').read_bytes() == b'private-fixture-bytes'
     with sqlite3.connect(database) as db:
-        assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == '852ab936cd21'
+        from alembic.script import ScriptDirectory
+        assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == ScriptDirectory.from_config(Config('alembic.ini')).get_current_head()
 
 
 def test_helper_refuses_running_worker_and_does_not_attempt_upgrade(tmp_path, monkeypatch):

@@ -305,3 +305,7 @@ Settings exposes the existing six weights and preferred role keywords. Require a
 ### Manual sponsorship evidence review (19 November 2026)
 
 Role-specific findings may be saved only after explicit owner confirmation, a quote present in saved vacancy description/requirements and a saved listing source for the same job. Notes/company history/licences are insufficient. Bind the review to URL, employer, title, location, dates and vacancy content; changed inputs display Unverified with stale evidence retained for review. Old unbound records remain Unverified. Display traceable quote/source/review time and allow clearing. Quote validation checks provenance, not semantic correctness: the owner reviews all conditions and leaves ambiguity Unverified. No automatic evidence classifier, licence matching, eligibility determination, score change or legal declaration change is introduced.
+
+### Lever discovery delivery (19 November 2026)
+
+Read-only public Lever postings API supports explicit global/EU region, owner-entered employer label and bounded complete-board pagination through the existing fetch/worker guards. Posting URLs must match region, board and UUID. No application endpoint is called. Source-ID intake dedupe preserves one application; malformed/denied/repeated/incomplete pagination saves no partial board. Fixture-tested support is delivered; live Lever and real multi-ATS evaluation remain unverified because cloud API access is blocked. No environment policy changes are authorised by this delivery.
