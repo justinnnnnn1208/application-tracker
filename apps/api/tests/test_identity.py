@@ -24,7 +24,8 @@ def test_same_posting_across_official_source_forms_keeps_one_application(client)
 
 
 @pytest.mark.parametrize('provider,first,second', [
-    ('lever', 'https://jobs.lever.co/fixture/12345678-1234-1234-1234-123456789abc', 'https://jobs.eu.lever.co/fixture/12345678-1234-1234-1234-123456789abc/apply'),
+    ('lever', 'https://jobs.lever.co/fixture/12345678-1234-1234-1234-123456789abc', 'https://jobs.lever.co/fixture/12345678-1234-1234-1234-123456789abc/apply'),
+    ('lever-eu', 'https://jobs.eu.lever.co/fixture/12345678-1234-1234-1234-123456789abc', 'https://jobs.eu.lever.co/fixture/12345678-1234-1234-1234-123456789abc/apply'),
     ('ashby', 'https://jobs.ashbyhq.com/fixture/12345678-1234-1234-1234-123456789abc', 'https://jobs.ashbyhq.com/fixture/12345678-1234-1234-1234-123456789abc/application'),
 ])
 def test_supported_identity_forms(provider, first, second):
@@ -148,3 +149,39 @@ def test_sheet_alias_row_writes_only_its_status_cell(client, monkeypatch):
         assert result['cells_written'] == 1 and sheet.writes == [(2, 4, 'Shortlisted')]
         assert sheet.values[1][4] == 'Owner notes' and sheet.formulas[1][-1] == '=B2-TODAY()'
         assert len(session.scalars(select(Job)).all()) == 1
+
+
+@pytest.mark.parametrize('first,second', [
+    ('https://job-boards.greenhouse.io/fixture/jobs/123', 'https://job-boards.eu.greenhouse.io/fixture/jobs/123'),
+    ('https://jobs.lever.co/fixture/12345678-1234-1234-1234-123456789abc', 'https://jobs.eu.lever.co/fixture/12345678-1234-1234-1234-123456789abc'),
+])
+def test_same_identifier_in_separate_provider_regions_never_auto_merges(client, first, second):
+    assert ats_identity(first) != ats_identity(second)
+    one = client.post('/api/jobs', json=payload(first)).json()
+    two = client.post('/api/jobs', json=payload(second))
+    assert two.status_code == 201 and two.json()['id'] != one['id']
+    assert len(client.get('/api/jobs').json()) == 2
+
+
+def test_cached_eu_keys_migrate_without_changing_jobs_or_histories(tmp_path, monkeypatch):
+    from alembic import command
+    from alembic.config import Config
+    from app.db.session import make_engine
+    from sqlalchemy import text
+    url = f'sqlite:///{tmp_path}/region-keys.db'
+    monkeypatch.setenv('DATABASE_URL', url)
+    config = Config('alembic.ini')
+    command.upgrade(config, '963bc047de32')
+    engine = make_engine(url)
+    with engine.begin() as connection:
+        connection.execute(text("INSERT INTO jobs (id,url,company,title,location,description,notes,sponsorship,created_at) VALUES ('owner','https://jobs.eu.lever.co/fixture/12345678-1234-1234-1234-123456789abc','Owner','Engineer','','','Keep','UNVERIFIED','2026-11-19')"))
+        connection.execute(text("INSERT INTO job_sources (id,job_id,url,identity_key,method,created_at) VALUES ('source','owner','https://jobs.eu.lever.co/fixture/12345678-1234-1234-1234-123456789abc','lever:fixture:12345678-1234-1234-1234-123456789abc','primary','2026-11-19')"))
+    command.upgrade(config, 'head')
+    with engine.connect() as connection:
+        assert connection.execute(text("SELECT identity_key FROM job_sources WHERE id='source'")).scalar().startswith('lever-eu:')
+        assert connection.execute(text("SELECT notes FROM jobs WHERE id='owner'")).scalar() == 'Keep'
+    command.downgrade(config, '963bc047de32')
+    with engine.connect() as connection:
+        assert connection.execute(text("SELECT identity_key FROM job_sources WHERE id='source'")).scalar().startswith('lever:fixture:')
+    command.upgrade(config, 'head')
+    engine.dispose()

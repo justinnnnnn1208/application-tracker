@@ -30,7 +30,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals d
 
 ## Current verification
 
-- API suite: **144 passed** (one existing Starlette/httpx deprecation warning), `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api.
+- API suite: **148 passed** (one existing Starlette/httpx deprecation warning), `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api.
 - Frontend: `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` passed.
 - Latest production browser smoke passed with a real disposable worker: simulated old Sheet import → API restart → automatic title/location repair, visible single Notes summary and summary-only warning, batch scoring/highest-score sort, plus existing match explanation/feedback, security/CRUD/filter/link/imported-status/CV/backup/reminder/discovery/responsive checks.
 - Earlier live check (not repeated for this local Notes update): normal application fetcher successfully fetched/extracted a Graphcore graduate vacancy (Bristol, deadline 29 November 2026).
@@ -70,3 +70,7 @@ API suite 127 passed; migration upgrade/downgrade/schema drift and backup-helper
 ## Night step 4 — Lever public API adapter
 
 Global/EU provider selection, explicit employer name, bounded complete-board pagination, official listing/board/UUID validation and existing source-identity dedupe are implemented. Saved source migration 963bc047de32 preserves existing Greenhouse sources. No new dependencies or automatic scheduling. 144 API tests and final typecheck/build passed; extended production browser passed, including Lever EU source creation/removal/disabled import and narrow layout, plus evidence review and all previous flows. Synthetic adapter fixtures are clearly separated from genuine evaluation data. Live Lever remains NOT TESTED because its API host is blocked here; no network changes or bypasses. Phase estimate stays ~70% until broader real-source/evaluation evidence exists.
+
+## Night follow-up — regional identity isolation
+
+Greenhouse/Lever global and EU instances now have distinct identity scopes, preventing coincident board/ID values from merging unrelated postings. Migration a74cd158ef43 refreshes cached EU keys without rewriting job/application/history relationships. Same-instance listing/apply/legacy URL aliases still dedupe. API suite 148 passed; production browser regression passed on the final regional identity code. Previously combined records are not automatically split.

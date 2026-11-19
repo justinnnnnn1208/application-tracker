@@ -20,7 +20,8 @@ def posting(row, board, employer, region):
     url = row['hostedUrl']
     host = 'jobs.eu.lever.co' if region == 'eu' else 'jobs.lever.co'
     parts = urlsplit(url)
-    if parts.scheme != "https" or parts.hostname != host or len(parts.path.strip("/").split("/")) != 2 or ats_identity(url) != f"lever:{board}:{row['id'].lower()}":
+    provider = "lever-eu" if region == "eu" else "lever"
+    if parts.scheme != "https" or parts.hostname != host or len(parts.path.strip("/").split("/")) != 2 or ats_identity(url) != f"{provider}:{board}:{row['id'].lower()}":
         raise ValueError('Posting URL must match provider, board and ID')
     categories = row.get('categories') or {}
     if not isinstance(categories, dict):

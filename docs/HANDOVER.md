@@ -14,6 +14,8 @@ Step 3 completed: manual sponsorship evidence with owner-confirmed quote/source 
 
 Step 4 completed: bounded read-only Lever global/EU discovery, explicit employer name (never guessed from slug), strict hosted listing/board/UUID checks, no partial import on later-page failure and ATS dedupe against pasted apply links. Existing Greenhouse source settings migrate intact via 963bc047de32. Final API suite 144 passed, build/typecheck/browser passed including Lever EU configuration/removal, disabled source and responsive controls. Contract fixtures are synthetic and not part of the real eval set. Live Lever remains blocked/unverified; no policy or DNS fallback changes. API docs fetched from public GitHub only. See docs/decisions/lever-discovery.md. Continue real-source evaluation within existing access; do not claim full Phase 2 acceptance.
 
+Regional identity follow-up completed: global/EU IDs are isolated for Greenhouse and Lever. Migration a74cd158ef43 refreshes cached EU keys; relationships and histories are untouched. Same-instance aliases still dedupe; existing combined records are not split. API suite 148 passed, production browser regression passed. This avoids assuming ID namespaces are shared across separate instances.
+
 Morning start: Control+C, `git pull --ff-only origin dev/phase-1`, then **`python3 scripts/dev.py --migrate`**. This update needs the new migration; older no-migration instructions below apply only to the previous delivery.
 
 ## Remaining work / resume

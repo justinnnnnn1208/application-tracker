@@ -21,11 +21,13 @@ def ats_identity(url):
     path = parts.path.strip('/').split('/')
     if parts.hostname in {'boards.greenhouse.io', 'job-boards.greenhouse.io', 'boards.eu.greenhouse.io', 'job-boards.eu.greenhouse.io'}:
         if len(path) == 3 and re.fullmatch(r'[A-Za-z0-9_-]{1,100}', path[0]) and path[1] == 'jobs' and re.fullmatch(r'[0-9]{1,30}', path[2]):
-            return f'greenhouse:{path[0]}:{path[2]}'
+            provider = 'greenhouse-eu' if '.eu.greenhouse.io' in parts.hostname else 'greenhouse'
+            return f'{provider}:{path[0]}:{path[2]}'
         query = parse_qs(parts.query)
         if parts.path == '/embed/job_app' and len(query.get('for', [])) == len(query.get('token', [])) == 1 and re.fullmatch(r'[A-Za-z0-9_-]{1,100}', query['for'][0]) and re.fullmatch(r'[0-9]{1,30}', query['token'][0]):
-            return f"greenhouse:{query['for'][0]}:{query['token'][0]}"
-    providers = {'jobs.lever.co': 'lever', 'jobs.eu.lever.co': 'lever', 'jobs.ashbyhq.com': 'ashby'}
+            provider = "greenhouse-eu" if ".eu.greenhouse.io" in parts.hostname else "greenhouse"
+            return f"{provider}:{query['for'][0]}:{query['token'][0]}"
+    providers = {'jobs.lever.co': 'lever', 'jobs.eu.lever.co': 'lever-eu', 'jobs.ashbyhq.com': 'ashby'}
     if parts.hostname in providers and len(path) in {2, 3} and re.fullmatch(r'[A-Za-z0-9_-]{1,100}', path[0]) and (len(path) == 2 or path[2] in {'apply', 'application'}):
         if re.fullmatch(r'[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}', path[1]):
             return f'{providers[parts.hostname]}:{path[0]}:{path[1].lower()}'

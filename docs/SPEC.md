@@ -309,3 +309,7 @@ Role-specific findings may be saved only after explicit owner confirmation, a qu
 ### Lever discovery delivery (19 November 2026)
 
 Read-only public Lever postings API supports explicit global/EU region, owner-entered employer label and bounded complete-board pagination through the existing fetch/worker guards. Posting URLs must match region, board and UUID. No application endpoint is called. Source-ID intake dedupe preserves one application; malformed/denied/repeated/incomplete pagination saves no partial board. Fixture-tested support is delivered; live Lever and real multi-ATS evaluation remain unverified because cloud API access is blocked. No environment policy changes are authorised by this delivery.
+
+### Regional source-identity isolation (19 November 2026)
+
+Treat Greenhouse and Lever global/EU instances as separate provider-ID scopes. Equal board/ID text across instances is insufficient evidence for automatic merging. Legacy/current URL variants within one instance may still dedupe. Cached-key migrations preserve existing jobs and histories; existing combined records are not automatically split.
