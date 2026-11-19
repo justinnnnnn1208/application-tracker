@@ -282,6 +282,22 @@ def main():
                 expect(restarted.locator(".task-row").filter(has_text="Job URL extraction").get_by_text("succeeded", exact=True)).to_be_visible(timeout=20000)
                 restarted.get_by_role("button", name="Jobs", exact=True).click()
                 expect(restarted.get_by_role("table")).to_contain_text("Browser worker engineer")
+                # An alternate official ATS URL must retain one job and expose both sources.
+                base = "http://127.0.0.1:3001/api"
+                fixture_job = next(job for job in restarted.request.get(base + "/jobs").json() if job["url"] == "https://example.org/worker-browser")
+                original_data = {key: fixture_job[key] for key in ["url", "company", "title", "location", "description", "deadline", "start_date", "eligibility_requirements", "notes"]}
+                ats_data = {**original_data, "url": "https://job-boards.greenhouse.io/fixture/jobs/456"}
+                origin = {"Origin": "http://127.0.0.1:3001"}
+                assert restarted.request.put(base + f"/jobs/{fixture_job['id']}", headers=origin, data=ats_data).status == 200
+                alias = {**ats_data, "url": "https://boards.greenhouse.io/fixture/jobs/456"}
+                repeated = restarted.request.post(base + "/jobs", headers=origin, data=alias)
+                assert repeated.status == 200 and repeated.json()["id"] == fixture_job["id"]
+                assert len(restarted.request.get(base + "/jobs").json()) == 4
+                assert restarted.request.put(base + f"/jobs/{fixture_job['id']}", headers=origin, data=original_data).status == 200
+                restarted.get_by_role("button", name="View Browser worker engineer at Worker fixture company", exact=True).click()
+                expect(restarted.get_by_role("heading", name="Sources and possible duplicates", exact=True)).to_be_visible()
+                expect(restarted.get_by_role("link", name="https://boards.greenhouse.io/fixture/jobs/456", exact=True)).to_have_attribute("rel", "noopener noreferrer")
+                restarted.get_by_role("button", name="Jobs", exact=True).click()
                 # Simulate an earlier Sheet import and verify automatic repair on API restart.
                 from sqlalchemy import select
                 from sqlalchemy.orm import Session

@@ -57,6 +57,16 @@ class Job(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
+class JobSource(Base):
+    __tablename__ = "job_sources"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    job_id: Mapped[str] = mapped_column(ForeignKey("jobs.id"), index=True)
+    url: Mapped[str] = mapped_column(String(2048), unique=True)
+    identity_key: Mapped[str | None] = mapped_column(String(300), nullable=True, index=True)
+    method: Mapped[str] = mapped_column(String(30))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
 class Application(Base):
     __tablename__ = "applications"
     __table_args__ = (CheckConstraint("status IN ('DISCOVERED', 'SHORTLISTED', 'SKIPPED', 'EXPIRED', 'WITHDRAWN')", name="foundation_status"),)

@@ -1,5 +1,20 @@
 # Latest session handover
 
+**Critical question: none at this checkpoint.**
+
+## Night shift — 19 November 2026
+
+The user authorised continued Phase 2 work in tested steps, routine decisions documented, passing commits pushed, critical/irreversible or plan-change questions at the top before pausing. Uploaded academic-feedback skill files had no explicit task; treated as reference material and not installed/applied as project instructions.
+
+Step 1 implements source aliases, official ATS-ID intake dedupe, source/possible-duplicate detail UI and review-only fuzzy hints. It does not merge two existing jobs/histories. Migration 7419a825bc10 backfills primary sources. `python3 scripts/dev.py --migrate` now backs up and restores/verifies existing configured SQLite data, holds the worker lock, upgrades and starts. API rejects a behind schema with clear instructions. No dependencies added. API tests 113 passed; build/typecheck and source-alias browser passed, latest helper/head-check browser run passed.
+
+Next planned step: owner-controlled weight/feedback controls. Phase 2 ~60%; original Phase 1 deferrals remain below. Preserve Notes backfill, read-only Sheets and owner Git identity.
+
+Morning start: Control+C, `git pull --ff-only origin dev/phase-1`, then **`python3 scripts/dev.py --migrate`**. This update needs the new migration; older no-migration instructions below apply only to the previous delivery.
+
+## Previous completed delivery (17 November)
+
+
 ## Session
 
 Reviewed: 17 November 2026 (Europe/London). Branch dev/phase-1, previous published baseline a330be9. Initial worktree clean. User asked to continue Phase 2, then prioritised fixing role titles/descriptions because all summaries are already in Sheet column E (Notes). They asked for existing jobs to be updated, then went to bed and allowed continuation tomorrow if needed. Standing instruction: push completed tested work and update phase status.

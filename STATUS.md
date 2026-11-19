@@ -2,7 +2,7 @@
 
 Reviewed: 17 November 2026 (Europe/London).
 
-**Phase 2: in progress, roughly 50%.** Phase 1 was accepted for progression with explicit deferrals; its untested checks are not marked passed. Sheets remains read-only by default. Discovery/matching prioritises graduate/junior UK tech roles, with sponsorship informational and excluded from scores. No immigration eligibility or legal declarations changed.
+**Phase 2: in progress, roughly 60%.** Phase 1 was accepted for progression with explicit deferrals; its untested checks are not marked passed. Sheets remains read-only by default. Discovery/matching prioritises graduate/junior UK tech roles, with sponsorship informational and excluded from scores. No immigration eligibility or legal declarations changed.
 
 ## Current delivery
 
@@ -30,7 +30,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals d
 
 ## Current verification
 
-- API suite: **96 passed** (one existing Starlette/httpx deprecation warning), `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api.
+- API suite: **113 passed** (one existing Starlette/httpx deprecation warning), `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` in apps/api.
 - Frontend: `npm run typecheck` and `NEXT_TELEMETRY_DISABLED=1 npm run build` passed.
 - Latest production browser smoke passed with a real disposable worker: simulated old Sheet import → API restart → automatic title/location repair, visible single Notes summary and summary-only warning, batch scoring/highest-score sort, plus existing match explanation/feedback, security/CRUD/filter/link/imported-status/CV/backup/reminder/discovery/responsive checks.
 - Earlier live check (not repeated for this local Notes update): normal application fetcher successfully fetched/extracted a Graphcore graduate vacancy (Bristol, deadline 29 November 2026).
@@ -46,3 +46,11 @@ Cross-source/fuzzy dedupe and aliases; more sources/ATS; manual weight controls/
 On Mac: pull/restart, allow the approved public source host(s) in private URL_FETCH_ALLOWED_HOSTS per SETUP.md, and use Settings → Job discovery or paste a supported listing URL. Open job details → Calculate preference match. Already-imported Notes repair locally on restart; company-only rows still need a real role. Notes summaries are explicitly marked when used for scoring. No new dependencies or migrations. No credentials or personal facts were sent to hosted models.
 
 Previous published baseline was a330be9. The checked Notes repair/ranked-list delivery was pushed with owner-configured authorship as dc6f0f3; its full local SHA matched GitHub dev/phase-1. The documentation-only follow-up records delivery; no unfinished runtime edits remain. No owner configuration/data, Google cells or environment settings were changed from this cloud workspace.
+
+## Night-shift checkpoint — 19 November 2026, step 1
+
+Source identity/alias intake, traceable source UI and conservative fuzzy-review hints are implemented. New migration 7419a825bc10 creates/backfills source records without combining old jobs or rewriting histories. Known posting identifiers across official URL variants retain one job/application; ambiguous existing identities reject intake. The Sheet row guard compares the actual row alias URL, so approved copy status checks remain one-cell only (writes still disabled by default).
+
+Migration helper `python3 scripts/dev.py --migrate` loads private settings, refuses a running worker, backs up/restores-verifies existing SQLite data and applies the correct configured DB migration before launching. Memory/URI/non-SQLite DBs are rejected by this helper. Behind-schema API startup fails with the update instruction. Migration round-trip/no-drift, legacy data/history, backup bytes/custom DB and worker-lock tests pass.
+
+Step 1 API suite: 113 passed; build/typecheck passed; source-alias browser flow passed, final helper/head-check browser run passed. Next step is owner-controlled matching weights/feedback controls. No real Google write, portal form, personal hosted processing or environment publication performed.

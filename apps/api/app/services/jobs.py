@@ -1,10 +1,11 @@
 from sqlalchemy import select
 from app.db.models import Application, ApplicationEvent, Job, SheetLink
 from app.schemas import JobData
+from app.services.identity import find_existing, remember_source
 
 
 def ensure_job(session, data: JobData, enrich=False):
-    existing = session.scalar(select(Job).where(Job.url == data.url))
+    existing = find_existing(session, data.url)
     if existing:
         if enrich:
             # Fill imported stubs, never overwrite existing owner content/history.
@@ -22,6 +23,7 @@ def ensure_job(session, data: JobData, enrich=False):
     job = Job(**data.model_dump())
     session.add(job)
     session.flush()
+    remember_source(session, job, data.url, "primary")
     application = Application(job_id=job.id, status="DISCOVERED")
     session.add(application)
     session.flush()

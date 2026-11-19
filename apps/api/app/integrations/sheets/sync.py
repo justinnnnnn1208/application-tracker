@@ -8,6 +8,7 @@ from app.db.models import Application, ApplicationEvent, Job, SheetLink
 from app.schemas import JobData
 from app.integrations.sheets.oauth import write_enabled
 from app.services.errors import NeedsInput
+from app.services.identity import AmbiguousIdentity
 from app.services.jobs import ensure_job
 from app.services.sheet_notes import fill_sheet_details
 from app.services.urls import canonical_url
@@ -132,7 +133,7 @@ def import_sheet(session, config, sheet, write=False):
                     if at(raw_formula, index).startswith("="):
                         warning = "A system-managed cell contains a formula; it was left untouched."
                         continue
-                    if canonical_url(sheet.cell(number, columns["url"] + 1)) != job.url:
+                    if canonical_url(sheet.cell(number, columns["url"] + 1)) != canonical_url(content["url"]):
                         raise NeedsInput("Sheet rows moved during sync. No further writes were attempted; import again before syncing.")
                     if str(sheet.cell(number, index + 1, formula=True)) != at(raw_formula, index):
                         raise NeedsInput("A target cell changed during sync. No further writes were attempted; review the test copy.")
@@ -151,6 +152,9 @@ def import_sheet(session, config, sheet, write=False):
             link.job_id = job.id
             # Preserve pending DB changes when an import, rather than sync, is run.
             link.last_db_values = {**baseline, "_notes_fields": note_fields}
+        except AmbiguousIdentity:
+            warning = "Row preserved but not imported: multiple existing records share this source identity; review duplicates."
+            link.job_id = None
         except (ValueError, TypeError):
             warning = "Row preserved but not imported: check its company, HTTP(S) URL and DD/MM/YYYY deadline."
             link.job_id = None

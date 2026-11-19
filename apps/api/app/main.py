@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from app.services.sheet_notes import backfill_sheet_details
+from app.services.migration_cli import require_current_schema
 
 from app.core.config import Settings
 from app.core.security import require_access
@@ -22,6 +23,7 @@ def create_app(settings: Settings | None = None):
 
     @asynccontextmanager
     async def lifespan(app):
+        require_current_schema(engine)
         with engine.connect() as conn:
             conn.execute(text("SELECT version_num FROM alembic_version"))
         with Session(engine) as session:

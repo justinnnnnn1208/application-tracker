@@ -1,4 +1,5 @@
 """Run localhost API and UI together; terminate both on Ctrl+C or child failure."""
+import argparse
 import os
 from pathlib import Path
 import signal
@@ -10,6 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--migrate", action="store_true", help="Back up/verify existing SQLite data, apply migrations, then start")
+    args = parser.parse_args()
     os.umask(0o077)
     environment = os.environ.copy()
     environment.setdefault("NEXT_TELEMETRY_DISABLED", "1")
@@ -21,6 +25,10 @@ def main():
                 environment.setdefault(key.strip(), value.strip())
     if len(environment.get("APP_ACCESS_TOKEN", "")) < 32:
         sys.exit("Run python scripts/init_local.py or configure APP_ACCESS_TOKEN (32+ characters).")
+    if args.migrate:
+        migration = subprocess.run([str(ROOT / "apps/api/.venv/bin/python"), "-m", "app.services.migration_cli"], cwd=ROOT / "apps/api", env=environment)
+        if migration.returncode:
+            return migration.returncode
     commands = [
         ([str(ROOT / "apps/api/.venv/bin/uvicorn"), "app.main:create_app", "--factory", "--host", "127.0.0.1", "--port", "8000", "--no-access-log"], ROOT / "apps/api"),
         ([str(ROOT / "apps/api/.venv/bin/python"), "-m", "app.worker.main"], ROOT / "apps/api"),

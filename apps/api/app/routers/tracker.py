@@ -7,6 +7,9 @@ from sqlalchemy.orm import Session
 
 from app.db.models import Application, ApplicationEvent, Fact, Job, Profile
 from app.db.session import get_session
+from app.services.jobs import ensure_job
+from app.services.identity import find_existing, remember_source, possible_duplicates, AmbiguousIdentity
+from app.db.models import JobSource
 from app.schemas import EventOut, FactData, FactOut, JobData, JobOut, ProfileData, StatusChange
 
 router = APIRouter()
@@ -96,24 +99,15 @@ def jobs(session: DB):
 
 @router.post("/jobs", response_model=JobOut, status_code=201)
 def add_job(data: JobData, session: DB, response: Response):
-    existing = session.scalar(select(Job).where(Job.url == data.url))
-    if existing:
-        response.status_code = 200
-        return job_out(existing, session.scalar(select(Application).where(Application.job_id == existing.id)))
-    item = Job(**data.model_dump())
-    session.add(item)
     try:
-        session.flush()
-        application = Application(job_id=item.id, status="DISCOVERED")
-        session.add(application)
-        session.flush()
-        session.add(ApplicationEvent(application_id=application.id, from_status=None, to_status="DISCOVERED"))
+        item, created = ensure_job(session, data)
         session.commit()
-    except IntegrityError:
+    except (IntegrityError, AmbiguousIdentity):
         session.rollback()
-        raise HTTPException(409, "This job was added concurrently; refresh the list")
-    session.refresh(item)
-    return job_out(item, application)
+        raise HTTPException(409, "A source URL or ATS identity is already linked; refresh and review the existing jobs") from None
+    if not created:
+        response.status_code = 200
+    return job_out(item, session.scalar(select(Application).where(Application.job_id == item.id)))
 
 
 @router.get("/jobs/{id}", response_model=JobOut)
@@ -125,6 +119,14 @@ def get_job(id: str, session: DB):
 @router.put("/jobs/{id}", response_model=JobOut)
 def update_job(id: str, data: JobData, session: DB):
     item = require(session, Job, id)
+    try:
+        linked = find_existing(session, data.url)
+        if linked and linked.id != id:
+            raise HTTPException(409, "This source URL belongs to another tracked job")
+        remember_source(session, item, data.url, "primary")
+    except (AmbiguousIdentity, IntegrityError):
+        session.rollback()
+        raise HTTPException(409, "Ambiguous source identity; review before changing this URL") from None
     for key, value in data.model_dump().items():
         setattr(item, key, value)
     try:
@@ -165,3 +167,14 @@ def events(id: str, session: DB):
     return session.scalars(select(ApplicationEvent).where(
         ApplicationEvent.application_id == application.id
     ).order_by(ApplicationEvent.created_at, ApplicationEvent.id)).all()
+
+
+@router.get("/jobs/{id}/sources")
+def sources(id: str, session: DB):
+    require(session, Job, id)
+    return [{"url": row.url, "method": row.method} for row in session.scalars(select(JobSource).where(JobSource.job_id == id).order_by(JobSource.created_at, JobSource.id))]
+
+
+@router.get("/jobs/{id}/duplicates")
+def duplicates(id: str, session: DB):
+    return possible_duplicates(session, require(session, Job, id))

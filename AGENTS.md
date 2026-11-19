@@ -74,6 +74,7 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 - Write tests with the code. Portal adapters are tested against saved HTML fixtures, not live sites.
 - Maintain the evaluation set in `fixtures/eval/` (hand-labelled job pages). Run it after any change to extraction, matching, or sponsorship logic. A false `CONFIRMED_YES` is a blocking failure.
 - Visa and graduate-route eligibility rules live in one configurable module with a "last verified" date. Do not hard-code rules elsewhere.
+- For the authorised night shift: follow Phase 2 in tested steps, document routine choices, commit/push passing work. Put any critical irreversible-action or actual plan-change question at the top of HANDOVER.md and wait; do not start Phase 3 or enable Sheets writes/submissions.
 - Prefer small, reversible changes and clear module boundaries. Explain non-obvious design decisions in `docs/decisions/`.
 - Push completed, tested work to the existing `dev/phase-1` GitHub branch and provide the owner with pull/restart instructions. Never commit or push credentials, `.env`, local data, or generated dependencies.
 - **UI:** follow section 13 of `docs/SPEC.md` and match `docs/design/dashboard.png` for layout and style. Preserve the Phase 1 layout; the owner has now authorised Phase 2 discovery and preference-matching controls. Application preparation/review/submission pages remain gated by their later phases. If the image is missing, follow the written description and ask the owner for it.

@@ -2,6 +2,10 @@
 
 These instructions describe the current code. Run on the owner's own computer; the project remains local through Phases 1–5. Use the existing checkout and preserve `.env`, `.local/` and `storage/`.
 
+## Latest update: source-identity migration (19 November 2026)
+
+This release adds a job_sources table. Stop the app with Control+C, pull the branch, then use `python3 scripts/dev.py --migrate` from the project root. The launcher loads your existing private .env, creates and restores/verifies a backup of an existing SQLite database/storage into ignored `.local/migration-backups`, applies migrations to that configured DB and starts services. It refuses when the worker is running or backup verification fails. Regular later starts still use `python3 scripts/dev.py`. Keep the encryption key separately. No new dependencies. The API now fails early with this instruction if the schema is behind.
+
 ## Start on macOS in VS Code
 
 Requirements: Python 3.12+, uv, Node.js 24 and npm. The owner uses a Mac and has already run the published app. If `uv` is missing, install it with `brew install uv` when Homebrew is available, then reopen the terminal and check `uv --version`. Dependency/runtime failures are setup work, not a reason to recreate or discard private data.
@@ -200,3 +204,9 @@ No dependency/migration update is required. API startup fills missing fields fro
 In tests using all 20 supplied public summaries, 19 have clear role titles. The company-only startup opportunity has no actual title, so it remains Role not provided while its Notes are visible. Supported explicit locations are copied literally; no location/eligibility is guessed. Full original Notes and imported statuses are preserved. Fields manually edited or replaced by official listing data are protected from later Notes refreshes. Newer edits made in Google after the last import still require Import test copy (read-only).
 
 On Jobs, choose **Score active jobs**, wait for Background tasks, then select **Preference match (highest)**. Current scores appear in the table; stale, inactive and incomplete records show text labels. Batch scoring excludes already applied/closed/past-deadline jobs and handles up to 500 ready active rows. Existing unchanged scores are reused; job details still explain scores and accept individual ratings. Scores based on Notes are explicitly limited summaries, not verified requirements or application eligibility. Google write permission is not needed.
+
+## Source identities and duplicate review
+
+The same recognised Greenhouse, Lever or Ashby posting ID across supported official URL forms links to one existing job/application. Original/additional URLs are retained under Sources and possible duplicates in job details. Existing job IDs, owner edits, application events, Notes and Sheet snapshots are not merged or deleted. Duplicate identity conflicts among existing records stop intake for review (Sheet rows still preserved). Aliases retain old URLs after a manual primary-URL edit, and cannot be reassigned to a different tracked job.
+
+Close titles with the same normalized employer/location can appear as review-only hints. Different programme numbers/years and different known requisitions within the same ATS board are excluded from these hints. Text similarity never automatically combines existing records or confirms that two openings are the same. Current intake identity support is not a claim of live Lever/Ashby discovery support.
