@@ -1,4 +1,22 @@
-# Latest session handover
+# Latest session handover — 20 November 2026
+
+**Critical irreversible-action/plan-change question: none.** A network-only draft approval question is pending; do not change settings or publish while it is unanswered. Continue independent work. Owner selected local Ollama and asked to work until **05:00 London time on 20 November** using yesterday's night-shift rules: tested steps, routine decisions documented, working commits pushed; stop early only for critical irreversible action/actual plan change, then write the question at the top.
+
+## Current run
+
+Started at 0a9a1bb on dev/phase-1, clean tree. Environment current/enforced, only the two Greenhouse hosts custom-approved; fresh api.lever.co robots check still CONNECT 403. No network/draft/runtime config was mutated. Read current AGENTS/context/SPEC/STATUS and runtime networking guidance. Pending question proposes adding exact Lever/global-EU, EU Greenhouse and official gov.uk register hosts while preserving existing hosts; no approval received. Local Ollama selected; recommend qwen2.5:3b, real installation/quality untested.
+
+Completed step: local structured requirement extraction. See docs/decisions/local-requirements.md. New migration b85de269f054 adds source-bound public-term cache. Source-only native Ollama /api/chat, no tools, only loopback, schema/quote/token-boundary validation, bounded context/output/retries, concurrency/tamper/stale guards. Never send Notes/profile/CV/legal inputs. Per-job UI task displays terms/quotes; deterministic scoring uses current technology candidates or labelled finite-keyword fallback. No automatic 500-job model batch. Education/experience are candidates, not inferred personal qualifications. Score version changes invalidate old results until recalculation; unrelated-job analysis does not invalidate other scores.
+
+Verification: **184 API tests passed**, one existing deprecation warning; typecheck/build passed; production browser passed through a synthetic loopback Ollama HTTP fixture and real worker (queue, quotes, stale scores/recalc), with all prior security/CRUD/Notes/CV/backup/evidence/discovery/responsive flows. New tests cover privacy, remote endpoint denial, term substrings/ungrounded output, max-three attempts, partial response/input limits, per-job stale/cache behaviour and concurrent source edits. Real 35-page field/classification regression unchanged; zero extraction errors/false YES, Phase 2 accepted false. This does NOT establish real model semantic quality. No new dependencies/private config changes. Phase 2 roughly **80% implementation**, incomplete acceptance.
+
+## Continue next
+
+Finish/push this checked step, verify remote SHA, then continue independent official-register and evaluation work. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling this migration; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+
+## Prior run / Phase 1 acceptance record
+
+## Previous session handover
 
 **Critical question: none.** No irreversible action or plan change is required for the completed work. Live Lever remains blocked by this cloud's proxy; no network grants were changed/published or bypassed.
 

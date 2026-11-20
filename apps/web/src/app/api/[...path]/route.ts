@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-const ALLOWED = /^(profile|settings|matches(?:\/feedback)?|declarations(?:\/[a-f0-9-]{36})?|facts(?:\/[a-f0-9-]{36})?|jobs(?:\/[a-f0-9-]{36}(?:\/(?:status|events|eligibility|match|feedback|sources|duplicates))?)?|tasks(?:\/(?:extract|backup|match|discover|sheets\/(?:import|sync)))?|documents(?:\/[a-f0-9-]{36}\/download)?|candidates(?:\/[a-f0-9-]{36}\/(?:accept|reject))?|sheets\/(?:config|rows|oauth\/start)|discovery(?:\/[a-f0-9-]{36})?)$/;
+const ALLOWED = /^(profile|settings|matches(?:\/feedback)?|declarations(?:\/[a-f0-9-]{36})?|facts(?:\/[a-f0-9-]{36})?|jobs(?:\/[a-f0-9-]{36}(?:\/(?:status|events|eligibility|match|feedback|sources|duplicates|requirements))?)?|tasks(?:\/(?:extract|backup|match|discover|requirements|sheets\/(?:import|sync)))?|documents(?:\/[a-f0-9-]{36}\/download)?|candidates(?:\/[a-f0-9-]{36}\/(?:accept|reject))?|sheets\/(?:config|rows|oauth\/start)|discovery(?:\/[a-f0-9-]{36})?)$/;
 async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const path = (await context.params).path.join("/");
   if (!ALLOWED.test(path)) return Response.json({ detail: "Not found" }, { status: 404 });

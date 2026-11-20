@@ -4,6 +4,9 @@ From apps/api: uv run --group browser python ../../scripts/smoke_browser.py
 Requires apps/web to be built and Chromium installed (system Chromium is supported).
 """
 import os
+from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from threading import Thread
 import json
 import sqlite3
 from datetime import datetime, timedelta
@@ -40,6 +43,34 @@ def wait_for(url, processes):
     raise RuntimeError("Test service did not become ready")
 
 
+@contextmanager
+def ollama_fixture():
+    """Synthetic local HTTP contract only; never claim this is real model evaluation."""
+    captured = []
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *_):
+            pass
+        def do_POST(self):
+            body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            assert self.path == '/api/chat' and 'tools' not in body
+            captured.append(body)
+            text = body['messages'][-1]['content']
+            assert 'Updated fixture note' not in text and 'Fixture-only test record' not in text
+            skills = [{'value': 'Elixir', 'quote': 'Elixir required.'}] if 'Elixir required.' in text else []
+            data = json.dumps({'done': True, 'done_reason': 'stop', 'message': {'content': json.dumps({'skills': skills, 'education': [], 'experience': []})}}).encode()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+    server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+    thread = Thread(target=server.serve_forever, daemon=True);thread.start()
+    try:
+        yield server.server_port, captured
+    finally:
+        server.shutdown();server.server_close();thread.join(timeout=3)
+
+
 def main():
     os.umask(0o077)
     (ROOT / ".local").mkdir(exist_ok=True)
@@ -50,9 +81,9 @@ def main():
                 probe.bind(("127.0.0.1", port))
             except OSError as exc:
                 raise RuntimeError(f"Test port {port} is already in use; stop its service first") from exc
-    with tempfile.TemporaryDirectory(prefix="tracker-browser-") as temp, (ROOT / ".local/browser-services.log").open("w") as log:
+    with ollama_fixture() as (model_port, model_calls), tempfile.TemporaryDirectory(prefix="tracker-browser-") as temp, (ROOT / ".local/browser-services.log").open("w") as log:
         token = secrets.token_urlsafe(48)
-        environment = {**os.environ, "APP_ACCESS_TOKEN": token, "DATABASE_URL": f"sqlite:///{temp}/test.db", "STORAGE_DIR": f"{temp}/storage", "API_BASE_URL": "http://127.0.0.1:8001", "NEXT_TELEMETRY_DISABLED": "1"}
+        environment = {**os.environ, "APP_ACCESS_TOKEN": token, "DATABASE_URL": f"sqlite:///{temp}/test.db", "STORAGE_DIR": f"{temp}/storage", "API_BASE_URL": "http://127.0.0.1:8001", "NEXT_TELEMETRY_DISABLED": "1", "LLM_PROVIDER": "ollama", "LLM_MODEL": "fixture-contract-only", "LLM_BASE_URL": f"http://127.0.0.1:{model_port}/v1"}
         subprocess.run([str(API / ".venv/bin/alembic"), "upgrade", "head"], cwd=API, env=environment, check=True)
         processes = []
         try:
@@ -97,7 +128,7 @@ def main():
                 page.get_by_label("Role title").fill("Fixture graduate engineer")
                 page.get_by_label("Location", exact=True).fill("Leeds")
                 page.get_by_label("Application deadline").fill((datetime.now(ZoneInfo("Europe/London")).date() + timedelta(days=3)).isoformat())
-                page.get_by_label("Job description").fill("Fixture job description. We offer visa sponsorship for this role.")
+                page.get_by_label("Job description").fill("Fixture job description. Elixir required. We offer visa sponsorship for this role.")
                 page.get_by_label("Your notes").fill("Fixture-only test record")
                 with page.expect_response(lambda response: response.url.endswith("/api/jobs") and response.request.method == "POST") as saved:
                     page.get_by_role("button", name="Save opportunity").click()
@@ -118,6 +149,15 @@ def main():
                 page.get_by_label("Your notes").fill("Updated fixture note")
                 page.get_by_role("button", name="Save opportunity").click()
                 expect(page.get_by_text("Updated fixture note", exact=True)).to_be_visible()
+                source_requirements = page.get_by_role("region", name="Source requirements", exact=True)
+                source_requirements.get_by_role("button", name="Extract requirements locally", exact=True).click()
+                source_requirements.get_by_text("View extracted terms and quotes", exact=True).click(timeout=20000)
+                expect(source_requirements.get_by_text("Elixir", exact=True)).to_be_visible()
+                expect(source_requirements.get_by_text("Elixir required.", exact=True)).to_be_visible()
+                expect(page.get_by_text("Job, reviewed facts or preferences changed.", exact=False)).to_be_visible()
+                page.get_by_role("button", name="Calculate preference match", exact=True).click()
+                expect(page.get_by_text("/100", exact=False)).to_be_visible(timeout=20000)
+                assert len(model_calls) == 1
                 # Only the owner review, not the source wording, establishes a finding.
                 sponsorship_panel = page.get_by_role("region", name="Sponsorship evidence")
                 expect(sponsorship_panel.get_by_text("Unverified", exact=True)).to_be_visible()

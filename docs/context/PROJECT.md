@@ -1,6 +1,6 @@
 # Stable project context
 
-Reviewed: 19 November 2026 (Europe/London). Keep this file short and stable; changing progress belongs in [STATUS.md](../../STATUS.md) and [HANDOVER.md](../HANDOVER.md).
+Reviewed: 20 November 2026 (Europe/London). Keep this file short and stable; changing progress belongs in [STATUS.md](../../STATUS.md) and [HANDOVER.md](../HANDOVER.md).
 
 ## Purpose and source of truth
 
@@ -58,3 +58,7 @@ Later-phase screenshot elements such as Match, Application Review and applicatio
 | [Session template](../templates/SESSION_HANDOVER.md) | Repeatable handover structure | The handover process changes |
 
 Do not read private data merely to fill out a context file. Record configuration names and missing requirements, never secret values. Record personal-data approvals narrowly; approval for one task is not a blanket permission for future hosted use.
+
+## Model preference
+
+On 20 November the owner selected local Ollama for structured vacancy requirements. Recommend qwen2.5:3b as an initial small model, with real quality evaluated before relying on it. Local task input excludes Notes, applicant facts, CVs and legal declarations. Do not infer that selecting a model means it is installed, configured or verified. Hosted personal-data permissions remain unchanged.

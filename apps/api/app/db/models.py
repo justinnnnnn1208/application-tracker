@@ -217,3 +217,14 @@ class SensitiveDeclaration(Base):
 @event.listens_for(ApplicationEvent, "before_delete")
 def immutable_event(*_):
     raise ValueError("Application events are append-only")
+
+
+class JobRequirements(Base):
+    __tablename__ = "job_requirements"
+    job_id: Mapped[str] = mapped_column(ForeignKey("jobs.id"), primary_key=True)
+    payload: Mapped[dict] = mapped_column(JSON)
+    inputs_hash: Mapped[str] = mapped_column(String(64))
+    model: Mapped[str] = mapped_column(String(200))
+    source_chars: Mapped[int] = mapped_column(Integer)
+    truncated: Mapped[bool] = mapped_column(Boolean)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)

@@ -317,3 +317,7 @@ Treat Greenhouse and Lever global/EU instances as separate provider-ID scopes. E
 ### Exact start-date regression coverage (19 November 2026)
 
 Five additional genuine Marshall Wace snapshots expose three month-first exact start dates and two flexible ranges. The initial held-out failure is retained. Full labelled dates accept day-first/month-first order; partial, impossible or range dates stay unknown. These cases become regression data after the fix; report this consumption and shared-template limitation. The original 30-page manifest stays frozen; expanded 35-page results do not constitute independent multi-ATS or Phase 2 acceptance.
+
+### Local requirement extraction (owner decision, 20 November 2026)
+
+The owner selected local Ollama. Explicit per-job tasks may extract technology/education/experience candidates and verbatim quotes from actual vacancy text only. No Notes, applicant facts, CVs or declarations. Schema/quote validation, local endpoint restriction, bounded retries/context and stale-source protection are required. Current validated technology terms may feed deterministic reviewed-fact overlap; the model never supplies scores, sponsorship confirmation or personal eligibility. Without current extraction the labelled finite-keyword fallback remains. qwen2.5:3b is recommended initially; actual model quality remains unverified and must not be inferred from synthetic protocol tests. No Phase 3 permission is implied.

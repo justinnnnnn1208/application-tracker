@@ -1,5 +1,6 @@
 from datetime import date, datetime, timezone
 from typing import Annotated, Literal
+import re
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, StringConstraints, field_validator
 from app.services.urls import canonical_url
@@ -79,3 +80,25 @@ class EventOut(StrictModel):
     from_status: str | None
     to_status: str
     created_at: UtcTimestamp
+
+
+class RequirementTerm(StrictModel):
+    value: Nonempty = Field(max_length=200)
+    quote: Nonempty = Field(max_length=2000)
+
+
+class RequirementsData(StrictModel):
+    skills: list[RequirementTerm] = Field(default_factory=list, max_length=50)
+    education: list[RequirementTerm] = Field(default_factory=list, max_length=20)
+    experience: list[RequirementTerm] = Field(default_factory=list, max_length=20)
+
+    def grounded(self, text):
+        source = ' '.join(text.split()).casefold()
+        for terms in (self.skills, self.education, self.experience):
+            seen = set()
+            for term in terms:
+                value, quote = ' '.join(term.value.split()).casefold(), ' '.join(term.quote.split()).casefold()
+                if quote not in source or not re.search(r"(?<![\w+#])" + re.escape(value) + r"(?![\w+#])", quote) or value in seen:
+                    raise ValueError('Requirements must quote the supplied vacancy, with unique verbatim terms')
+                seen.add(value)
+        return self

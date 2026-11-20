@@ -7,10 +7,11 @@ from zoneinfo import ZoneInfo
 
 from sqlalchemy import select
 
-from app.db.models import Fact, MatchResult, Preferences, Profile, now
+from app.db.models import Fact, JobRequirements, MatchResult, Preferences, Profile, now
+from app.services.requirements import validated as validated_requirements
 from app.services.errors import NeedsInput
 
-VERSION = "preference-v2"
+VERSION = "preference-v3-grounded-requirements"
 WEIGHTS = {"role": 20, "graduate": 25, "location": 20, "skills": 20, "experience": 10, "start_date": 5}
 SKILLS = ("python", "java", "javascript", "typescript", "c++", "c#", "rust", "golang", "sql", "react", "linux", "docker", "kubernetes", "terraform", "pytorch", "tensorflow", "aws", "azure", "git")
 
@@ -36,7 +37,8 @@ def shared_inputs(session):
     profile = session.get(Profile, 1)
     preferences = session.get(Preferences, 1)
     facts = session.scalars(select(Fact).where(Fact.verified.is_(True)).order_by(Fact.id)).all()
-    return {"version": VERSION,
+    analyses = {row.job_id: row for row in session.scalars(select(JobRequirements))}
+    return {"version": VERSION, "analyses": analyses,
             "locations": profile.target_locations if profile else "", "graduation_year": profile.graduation_year if profile else None,
             "roles": preferences.target_roles if preferences else [], "weights": preferences.weights if preferences and preferences.weights else WEIGHTS,
             "facts": [{"id": fact.id, "category": fact.category, "content": fact.content} for fact in facts]}
@@ -46,7 +48,11 @@ def inputs(session, job, shared=None):
     job_data = {key: getattr(job, key) for key in ("title", "company", "location", "description", "start_date", "eligibility_requirements")}
     job_data["description"] = job.description or job.notes
     job_data["source_kind"] = "vacancy" if job.description else "notes_summary" if job.notes else "missing"
-    return {**(shared if shared is not None else shared_inputs(session)), "job": job_data}
+    context = shared if shared is not None else shared_inputs(session)
+    row = context["analyses"].get(job.id)
+    validated = validated_requirements(job, row)
+    requirements = validated.model_dump() if validated is not None else None
+    return {**{key: value for key, value in context.items() if key != "analyses"}, "job": job_data, "requirements": requirements}
 
 
 def active_for_matching(job, application):
@@ -76,12 +82,13 @@ def calculate(data):
     uk = bool(re.search(r"\b(UK|United Kingdom|England|Scotland|Wales|Northern Ireland|London|Manchester|Leeds|Bristol|Cambridge|Cardiff|Edinburgh|Glasgow|Belfast)\b", job["location"], re.I))
     preferred = [target for target in targets if contains(job["location"], target)]
     add("location", 1 if preferred or (not targets and uk) else .5 if uk else 0, "Preferred location appears in source: " + ", ".join(preferred) if preferred else "Explicit UK location; preferred-city match not established." if uk else "UK/preferred location not established; worldwide/EMEA is not assumed UK-eligible.")
-    required = {term for term in SKILLS if contains(text, term)}
+    analysis = data.get("requirements")
+    required = {term["value"] for term in analysis["skills"]} if analysis is not None else {term for term in SKILLS if contains(text, term)}
     for field, categories in [("skills", {"skill", "education", "project", "experience"}), ("experience", {"experience"})]:
         evidence = {term: [fact["id"] for fact in data["facts"] if fact["category"] in categories and contains(fact["content"], term)] for term in required}
         matched = sorted(term for term, ids in evidence.items() if ids)
         ids = sorted({id for term in matched for id in evidence[term]})
-        add(field, len(matched) / len(required) if required else 0, f"Reviewed fact overlap: {', '.join(matched) or 'none'}; {len(matched)}/{len(required)} recognised source technologies. Keyword overlap is not proof of proficiency." if required else "No recognised source technologies; this criterion needs review.", ids)
+        add(field, len(matched) / len(required) if required else 0, f"Reviewed fact overlap: {', '.join(matched) or 'none'}; {len(matched)}/{len(required)} source technologies ({"local extraction" if analysis is not None else "finite-keyword fallback"}). Keyword overlap is not proof of proficiency." if required else "No recognised source technologies; this criterion needs review.", ids)
     start, year = job["start_date"], data["graduation_year"]
     add("start_date", bool(start and year and start.year >= year), f"Source start year {start.year} is not before profile graduation year {year}; month/day availability still needs review." if start and year and start.year >= year else "Start date or graduation year is unknown, or the role starts earlier; review availability.")
     return {"score": round(sum(item["points"] for item in breakdown)), "breakdown": breakdown, "graduate": level}
