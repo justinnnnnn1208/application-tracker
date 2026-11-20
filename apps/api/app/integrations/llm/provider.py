@@ -40,7 +40,7 @@ class OpenAICompatible:
         try:
             for _ in range(3):  # Initial attempt plus at most two invalid-output retries.
                 try:
-                    response = client.post(f"{self.base_url}/chat/completions", headers={"Authorization": f"Bearer {self.key}"}, json={"model": self.model, "messages": messages, "response_format": {"type": "json_object"}})
+                    response = client.post(f"{self.base_url}/chat/completions", headers={"Authorization": f"Bearer {self.key}"} if self.key else {}, json={"model": self.model, "messages": messages, "response_format": {"type": "json_object"}})
                     response.raise_for_status()
                     output = json.loads(response.json()["choices"][0]["message"]["content"])
                     data = JobData.model_validate({**output, "url": url})

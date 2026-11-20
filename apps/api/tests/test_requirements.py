@@ -188,7 +188,8 @@ def test_misclassified_sponsorship_terms_never_penalise_preference_scores(client
     assert client.get('/api/jobs').json()[0]['sponsorship']=='UNVERIFIED'
 
 
-def test_native_loopback_connection_ignores_shell_proxy_settings(monkeypatch):
+@pytest.mark.parametrize('protocol',['native','compatible'])
+def test_native_loopback_connection_ignores_shell_proxy_settings(monkeypatch,protocol):
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
     from threading import Thread
     configure(monkeypatch)
@@ -199,8 +200,9 @@ def test_native_loopback_connection_ignores_shell_proxy_settings(monkeypatch):
     received=[]
     class Handler(BaseHTTPRequestHandler):
         def do_POST(self):
-            received.append(json.loads(self.rfile.read(int(self.headers['Content-Length']))))
-            body=json.dumps({'done':True,'message':{'content':json.dumps(output())}}).encode()
+            received.append((self.headers.get('Authorization'),json.loads(self.rfile.read(int(self.headers['Content-Length'])))))
+            payload={'done':True,'message':{'content':json.dumps(output())}} if protocol=='native' else {'choices':[{'message':{'content':json.dumps({'title':'Engineer','company':'Fixture'})}}]}
+            body=json.dumps(payload).encode()
             self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
         def log_message(self,*_):
             pass
@@ -208,8 +210,15 @@ def test_native_loopback_connection_ignores_shell_proxy_settings(monkeypatch):
     thread=Thread(target=server.serve_forever,daemon=True);thread.start()
     monkeypatch.setenv('LLM_BASE_URL',f'http://127.0.0.1:{server.server_port}/v1')
     try:
-        data,*_=requirements.extract('Elixir and PostgreSQL required.')
-        assert data.skills[0].value=='Elixir' and len(received)==1
+        source='Fixture Engineer. Elixir and PostgreSQL required.'
+        if protocol=='native':
+            data,*_=requirements.extract(source)
+            assert data.skills[0].value=='Elixir'
+        else:
+            from app.integrations.llm.provider import Ollama
+            data=Ollama('fixture',base_url=f'http://127.0.0.1:{server.server_port}/v1').extract('https://example.org/job',source)
+            assert data.title=='Engineer' and data.description==source
+        assert len(received)==1 and received[0][0] is None
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
 
