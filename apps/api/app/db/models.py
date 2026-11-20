@@ -228,3 +228,24 @@ class JobRequirements(Base):
     source_chars: Mapped[int] = mapped_column(Integer)
     truncated: Mapped[bool] = mapped_column(Boolean)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class SponsorRegister(Base):
+    __tablename__ = "sponsor_register"
+    __table_args__ = (CheckConstraint("id = 1", name="singleton_sponsor_register"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, default=1)
+    source_url: Mapped[str] = mapped_column(String(2048))
+    as_of: Mapped[date] = mapped_column(Date)
+    sha256: Mapped[str] = mapped_column(String(64))
+    rows_read: Mapped[int] = mapped_column(Integer)
+    organisations: Mapped[int] = mapped_column(Integer)
+    imported_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class SponsorOrganisation(Base):
+    __tablename__ = "sponsor_organisations"
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(500))
+    normalized: Mapped[str] = mapped_column(String(1000))
+    routes: Mapped[list] = mapped_column(JSON)
+    towns: Mapped[list] = mapped_column(JSON)

@@ -17,6 +17,7 @@ from app.services.errors import NeedsInput
 from app.services.extraction import extract_job
 from app.services.fetching import fetch_page
 from app.services.jobs import ensure_job
+from app.services.sponsor_register import import_register
 from app.services.requirements import save as save_requirements
 from app.services.sponsorship import snapshot
 from app.services.matching import save_match, shared_inputs, inputs, fingerprint, ready, active_for_matching
@@ -41,6 +42,8 @@ def catch_up(session, current=None):
 
 
 def execute(session, task, settings):
+    if task.kind == "import_sponsor_register":
+        return import_register(session, settings, task.payload)
     if task.kind == "extract_requirements":
         job = session.get(Job, task.payload.get("job_id"))
         if not job or snapshot(job) != task.payload.get("snapshot"):

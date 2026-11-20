@@ -2,7 +2,7 @@
 
 Reviewed: 20 November 2026 (Europe/London).
 
-**Phase 2: in progress, roughly 80%.** This estimate is not acceptance. Phase 1 was accepted for progression with the explicit deferrals below. Sheets stays read-only by default; no Phase 3 work, submissions or environment publication.
+**Phase 2: in progress, roughly 85%.** This estimate is not acceptance. Phase 1 was accepted for progression with the explicit deferrals below. Sheets stays read-only by default; no Phase 3 work, submissions or environment publication.
 
 ## Delivered
 
@@ -28,7 +28,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals a
 
 ## Latest verification
 
-- API: **184 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
+- API: **207 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
 - Frontend: `npm run typecheck` and production build passed on the final evidence-clear UI code.
 - Final production browser smoke passed on the latest backend/frontend: real disposable worker, Notes repair/restart, identity aliases, score/feedback/weights persistence, evidence save/filter/source/stale/clear, Lever EU source configuration, origin/auth guards, CRUD/history, CV review/download, backup/CLI restore, reminders and 1440/390/320px layouts. No owner data/Google/Lever calls.
 - Alembic schema-drift and upgrade/downgrade tests pass; legacy source settings, evidence and job/history preservation covered. Latest head a74cd158ef43.
@@ -64,3 +64,9 @@ Final UI polish: clearing sponsorship evidence resets the old save acknowledgeme
 Owner selected local Ollama; qwen2.5:3b recommended as an initial small Mac model, not a verified quality choice. Explicit per-job extraction now produces schema/source-validated technology/education/experience terms with quotes, no tools and no Notes/profile/CV/legal inputs. Only loopback Ollama URLs; bounded context/output/input and three invalid-output attempts. Cached terms are source-bound and revalidated; concurrency/tamper/stale guards fail closed. Current technology terms extend deterministic matching beyond the fixed vocabulary; fallback stays labelled. Education/experience terms are review candidates, not personal qualification decisions.
 
 184 API tests, final frontend typecheck/build and production browser with synthetic loopback Ollama HTTP passed. Browser covers queue → actual worker → schema HTTP contract → quotes → stale score → recalculation. Real 35-page field/classification regression unchanged, zero false YES, phase_2_accepted=false. Actual Ollama execution/semantic quality remain NOT TESTED. Migration b85de269f054 covered by schema/backup/upgrade checks; no new dependencies or private configuration changes. Network-only draft approval is pending; applied settings are unchanged. See docs/decisions/local-requirements.md and SETUP.md.
+
+## 20 November checkpoint — sponsor-register signal
+
+Owner-confirmed, dated CSV import and conservative exact-name signal implemented. Full parsing precedes transactional replacement of public cache only; source/date/hash/raw files retained. Cases/spacing/Unicode composition match, but brands/punctuation/accents/suffixes are not guessed. Policy sponsorship, legal declarations, scores and job/history records remain unchanged. Legacy boolean flags without register provenance are not treated as checks. The UI links the dated source and clearly labels owner-confirmed upload; real official-file/network verification remains NOT TESTED.
+
+207 API tests; frontend typecheck/build; production browser upload through the protected proxy → real worker → separate job signal with Unverified policy; backup/CLI restore including new tables/raw CSV bytes passed. Added migration c96ef370a165. No new dependencies; Sheets/read-only scope and environment settings unchanged. Expanded real-page regression still reports zero extraction failures/false YES and Phase 2 accepted false. Local real-model and live multi-ATS/official-register acceptance remain unverified. Phase estimate ~85% implementation, not acceptance.

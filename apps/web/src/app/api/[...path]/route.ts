@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-const ALLOWED = /^(profile|settings|matches(?:\/feedback)?|declarations(?:\/[a-f0-9-]{36})?|facts(?:\/[a-f0-9-]{36})?|jobs(?:\/[a-f0-9-]{36}(?:\/(?:status|events|eligibility|match|feedback|sources|duplicates|requirements))?)?|tasks(?:\/(?:extract|backup|match|discover|requirements|sheets\/(?:import|sync)))?|documents(?:\/[a-f0-9-]{36}\/download)?|candidates(?:\/[a-f0-9-]{36}\/(?:accept|reject))?|sheets\/(?:config|rows|oauth\/start)|discovery(?:\/[a-f0-9-]{36})?)$/;
+const ALLOWED = /^(profile|settings|matches(?:\/feedback)?|declarations(?:\/[a-f0-9-]{36})?|facts(?:\/[a-f0-9-]{36})?|jobs(?:\/[a-f0-9-]{36}(?:\/(?:status|events|eligibility|match|feedback|sources|duplicates|requirements|sponsor-register))?)?|tasks(?:\/(?:extract|backup|match|discover|requirements|sheets\/(?:import|sync)))?|documents(?:\/[a-f0-9-]{36}\/download)?|candidates(?:\/[a-f0-9-]{36}\/(?:accept|reject))?|sheets\/(?:config|rows|oauth\/start)|sponsors\/register|discovery(?:\/[a-f0-9-]{36})?)$/;
 async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const path = (await context.params).path.join("/");
   if (!ALLOWED.test(path)) return Response.json({ detail: "Not found" }, { status: 404 });
@@ -24,14 +24,17 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   }
   const token = process.env.APP_ACCESS_TOKEN;
   if (!token || token.length < 32) return Response.json({ detail: "Local server access is not configured. Start the app using scripts/dev.py." }, { status: 503 });
-  const limit = path === "documents" ? 7_100_000 : 1_100_000;
+  const registerUpload = path === "sponsors/register" && request.method === "POST";
+  const limit = registerUpload ? 50_000_000 : path === "documents" ? 7_100_000 : 1_100_000;
+  const metadata = registerUpload ? request.headers.get("X-Register-Metadata") ?? "" : "";
+  if (metadata.length > 8000) return Response.json({ detail: "Register metadata is too large" }, { status: 422 });
   if (Number(request.headers.get("content-length") ?? 0) > limit) return new Response(null, { status: 413 });
   try {
     const body = ["GET", "HEAD"].includes(request.method) ? undefined : await request.arrayBuffer();
     if (body && body.byteLength > limit) return new Response(null, { status: 413 });
     const result = await fetch(`${process.env.API_BASE_URL ?? "http://127.0.0.1:8000"}/api/${path}`, {
       method: request.method,
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": registerUpload ? "text/csv" : "application/json", ...(registerUpload ? { "X-Register-Metadata": metadata } : {}) },
       body, cache: "no-store", redirect: "error", signal: AbortSignal.timeout(15000),
     });
     return new Response(result.body, { status: result.status, headers: { "Content-Type": result.headers.get("content-type") ?? "application/json", "Cache-Control": "no-store", ...(result.headers.get("content-disposition") ? { "Content-Disposition": result.headers.get("content-disposition")! } : {}) } });

@@ -9,6 +9,7 @@ from app.db.models import Application, ApplicationEvent, Fact, Job, Profile
 from app.db.session import get_session
 from app.services.jobs import ensure_job
 from app.services.sponsorship import effective_status, snapshot
+from app.services.sponsor_register import match as register_match
 from app.services.identity import find_existing, remember_source, possible_duplicates, AmbiguousIdentity
 from app.db.models import JobSource
 from app.schemas import EventOut, FactData, FactOut, JobData, JobOut, ProfileData, StatusChange
@@ -30,6 +31,7 @@ def job_out(job, application, session):
         "status": application.status,
         "sponsorship": effective_status(session, job),
         "sponsorship_snapshot": snapshot(job),
+        "licensed_sponsor": register_match(session, job.company)[0],
     })
 
 

@@ -319,6 +319,23 @@ def main():
                 discovery.get_by_role("button", name="Remove fixture-lever", exact=True).click()
                 expect(discovery.get_by_role("button", name="Remove fixture-lever", exact=True)).to_have_count(0)
                 discovery.locator("summary").click()
+                register_panel = page.locator("details").filter(has=page.locator("summary", has_text="Sponsor register")).first
+                register_panel.locator("summary").first.click()
+                register_csv = b"Organisation Name,Town/City,Route\nFixture employer,Leeds,Skilled Worker\n"
+                register_panel.get_by_label("Sponsor register CSV", exact=True).set_input_files({"name":"fixture-register.csv","mimeType":"text/csv","buffer":register_csv})
+                register_panel.get_by_label("Official register CSV URL", exact=True).fill("https://assets.publishing.service.gov.uk/media/fixture/register.csv")
+                register_panel.get_by_label("Register publication date", exact=True).fill(today.isoformat())
+                expect(register_panel.get_by_role("button", name="Import sponsor register", exact=True)).to_be_disabled()
+                register_panel.get_by_role("checkbox").check()
+                register_panel.get_by_role("button", name="Import sponsor register", exact=True).click()
+                expect(register_panel.get_by_text("Current file:", exact=False)).to_be_visible(timeout=20000)
+                page.get_by_role("button", name="Jobs", exact=True).click()
+                page.get_by_role("button", name="View Fixture graduate engineer at Fixture employer", exact=True).click()
+                register_signal = page.get_by_role("region", name="Sponsor register signal", exact=True)
+                expect(register_signal.get_by_text("Exact name found in imported register", exact=True)).to_be_visible()
+                expect(register_signal.get_by_text("Routes: Skilled Worker", exact=True)).to_be_visible()
+                expect(page.get_by_role("region", name="Sponsorship evidence").get_by_text("Unverified", exact=True)).to_be_visible()
+                page.get_by_role("button", name="Settings", exact=True).click()
                 backups = page.locator("details").filter(has_text="Backup and restore").first
                 expect(backups).to_have_attribute("open", "")
                 backups.locator("summary").first.click()
@@ -459,8 +476,11 @@ def main():
                 subprocess.run([str(API / ".venv/bin/python"), "-m", "app.services.backup_cli", "restore", "--archive", str(archives[-1]), "--destination", str(destination)], cwd=API, env=environment, check=True, stdout=log, stderr=log)
                 with sqlite3.connect(destination / "database.sqlite3") as restored:
                     assert restored.execute("SELECT count(*) FROM jobs").fetchone()[0] == 4
+                    assert restored.execute("SELECT organisations FROM sponsor_register").fetchone()[0] == 1
+                    assert restored.execute("SELECT name FROM sponsor_organisations").fetchone()[0] == "Fixture employer"
                     assert restored.execute("SELECT count(*) FROM facts WHERE content = ?", ("Python fixture browser skill reviewed",)).fetchone()[0] == 1
                 assert any(path.read_bytes() == cv_bytes for path in (destination / "storage").rglob("*") if path.is_file())
+                assert any(path.read_bytes() == register_csv for path in (destination / "storage/registers").glob("*.csv"))
                 assert not errors, errors
                 browser.close()
                 print("Browser smoke passed: direct dashboard on initial load/reload/new browser/server restart, server-only credential, local origin guards, backend authentication, job CRUD/history, profile/fact review, deadlines, filters/sorting, native disclosures, real-worker HTML extraction, CV upload/review/download, UI backup plus CLI restore, opt-in desktop reminders with session dedupe, charcoal theme and 1440/390/320px layouts. Disposable data removed.")

@@ -10,9 +10,15 @@ Completed step: local structured requirement extraction. See docs/decisions/loca
 
 Verification: **184 API tests passed**, one existing deprecation warning; typecheck/build passed; production browser passed through a synthetic loopback Ollama HTTP fixture and real worker (queue, quotes, stale scores/recalc), with all prior security/CRUD/Notes/CV/backup/evidence/discovery/responsive flows. New tests cover privacy, remote endpoint denial, term substrings/ungrounded output, max-three attempts, partial response/input limits, per-job stale/cache behaviour and concurrent source edits. Real 35-page field/classification regression unchanged; zero extraction errors/false YES, Phase 2 accepted false. This does NOT establish real model semantic quality. No new dependencies/private config changes. Phase 2 roughly **80% implementation**, incomplete acceptance.
 
+## Register checkpoint (same run)
+
+Local requirements step pushed as 2b9e6a81052a4505894abb05cc37abe65ae85fcc, remote SHA verified. Next step now complete locally: dated owner-confirmed sponsor CSV cache, exact case/whitespace/Unicode-name lookup, route/town/source/date/hash display, preserved jobs/history/policy/scores. Source provenance is an owner-attested download, not actual online verification. No brand/punctuation/accent/suffix guessing. Uploaded snapshots retained and backed up. Migration c96ef370a165; no dependencies or settings changes.
+
+Checks: **207 API tests passed**; typecheck/build passed; full production browser passed through protected metadata/body upload → real worker → separate register signal, Unverified role policy, and backup/CLI restore of metadata/entries/raw CSV. Final two added legacy/unicode unit cases pass; no runtime changes after browser run. Real 35-page regression unchanged with zero false YES and phase_2_accepted=false. Actual official CSV/live model quality still NOT TESTED. See docs/decisions/sponsor-register.md. Phase 2 ~85% implementation; acceptance incomplete. Network draft approval remains unanswered; do not mutate it.
+
 ## Continue next
 
-Finish/push this checked step, verify remote SHA, then continue independent official-register and evaluation work. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling this migration; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked register step and verify the remote SHA, then continue the independent real-model evaluation runner/public-source adapter work. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling this migration; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 

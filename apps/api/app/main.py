@@ -12,6 +12,7 @@ from app.core.config import Settings
 from app.core.security import require_access
 from app.db.session import make_engine
 from app.routers.matching import router as matching
+from app.routers.sponsors import router as sponsors
 from app.routers.requirements import router as requirements
 from app.routers.sponsorship import router as sponsorship
 from app.routers.discovery import router as discovery
@@ -62,6 +63,7 @@ def create_app(settings: Settings | None = None):
     app.include_router(workflows, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(sponsorship, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(requirements, prefix="/api", dependencies=[Depends(require_access)])
+    app.include_router(sponsors, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(matching, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(discovery, prefix="/api", dependencies=[Depends(require_access)])
     app.include_router(public_router)
