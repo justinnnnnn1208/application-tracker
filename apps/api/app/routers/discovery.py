@@ -16,7 +16,7 @@ router = APIRouter()
 class SourceData(StrictModel):
     board: str = ""
     search_query: str = Field(default="", max_length=300)
-    provider: Literal["greenhouse", "lever", "ashby", "reed"] = "greenhouse"
+    provider: Literal["greenhouse", "lever", "ashby", "smartrecruiters", "reed"] = "greenhouse"
     employer: str = Field(default="", max_length=200)
     region: Literal["global", "eu"] = "global"
     enabled: bool = False
@@ -35,7 +35,7 @@ class SourceData(StrictModel):
             self.board = "search"
         elif not self.board or self.search_query:
             raise ValueError("Boards require a slug, not search keywords")
-        if self.provider in {"lever", "ashby"} and not self.employer.strip():
+        if self.provider in {"lever", "ashby", "smartrecruiters"} and not self.employer.strip():
             raise ValueError("Supply the employer name shown on this board")
         if self.provider != "lever" and self.region != "global":
             raise ValueError("Region applies only to Lever")

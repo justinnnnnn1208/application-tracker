@@ -32,9 +32,13 @@ Ashby/scoring step pushed as 9bc3e1f1f9159356f599bd9bad02a24e821d1fef, remote ve
 
 Fresh allowed Greenhouse live API/worker check also passed in temporary storage: pre-seeded/shortlisted genuine MW London posting → 4 new/1 duplicate → repeat 0 new/5 duplicate; one application per job, seed status/two events preserved, all Unverified. No facts/profile/model/Google/portal forms. London grad preference score 65, overseas controls 45 with no applicant facts. Saved public metadata report fixtures/eval/reports/nov20-live-intake.json; raw API responses ignored .local/live-nov20. Temp script's module path fixed with PYTHONPATH before execution; no app regression. Phase 2 ~90% implementation, acceptance still incomplete; real Ollama/blocked-source/official register verification remains pending. Next work can harden proof/remaining source scope while waiting; do not publish the unanswered network draft.
 
+## SmartRecruiters checkpoint
+
+Reed/live step pushed as 35bb6cb5d98a5c1f9bb879e34f755a7a0bcd5f93, remote verified. Fourth public ATS now implemented: bounded first-20 company page plus detailed text, strict company/public numeric listing identity distinct from opaque API ID, no arbitrary ref/form URLs. Migration eb81a592c387 backfills cached identities, preserving jobs/history. 262 API tests, typecheck/build, full production browser passed; expanded 35-real-page regression unchanged. Fixtures are synthetic; official live compatibility remains NOT TESTED. No settings/private config/dependencies changed. See decisions/smartrecruiters-discovery.md.
+
 ## Continue next
 
-Push the checked Reed/live-proof step, verify remote SHA, then continue remaining Phase 2 scope/tests until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling this migration; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked SmartRecruiters step, verify remote SHA, then continue focused Phase 2 hardening/readiness until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 

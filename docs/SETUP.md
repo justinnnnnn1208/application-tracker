@@ -282,3 +282,11 @@ Settings → Job discovery → Reed search takes keywords instead of an employer
 Each run reads the **first 20 matching ads**, then detailed API text. It is not all search results; change the query to explore other matches. Existing rate/robots/size/denial guards apply, so detailed imports can take several minutes while the app stays open. No automatic discovery/retry is scheduled. Posting date/advert expiry are not guessed as application deadlines. No sponsorship filter or score penalty. Known Reed IDs dedupe hostname/title-slug variants while preserving histories; conflicts among existing records need review.
 
 Live Reed credentials/official responses were unavailable in cloud. Current verification is synthetic contract/worker/auth-scope/migration/browser coverage. No Google/OAuth changes are needed. Use the existing `--migrate` backup-verifying launcher; old sources keep empty search-query defaults.
+
+## SmartRecruiters public discovery
+
+Settings → Job discovery → SmartRecruiters takes the company identifier from its public board URL (for example the `CompanyIdentifier` in `https://jobs.smartrecruiters.com/CompanyIdentifier/...`) and the employer name exactly as displayed. Review its terms, then add `api.smartrecruiters.com` to your existing private URL_FETCH_ALLOWED_HOSTS without removing other approved hosts. No API key is used. Cloud policy is separate; no grant was changed here.
+
+Imports read the **first 20 company postings**, then their detailed public API text. This is not the entire board, and repeated runs revisit the page. Existing robots/rate/size/access guards apply, so detail requests can take several minutes. The configured company and public listing ID must match; unsupported links/data are skipped instead of guessed. Publication dates do not become deadlines; sponsorship stays informational. No automatic schedule or portal form interaction.
+
+Pull and start with `python3 scripts/dev.py --migrate`; the new cached-identity migration preserves jobs and histories. Current verification is synthetic contract/worker/migration/browser coverage, not live SmartRecruiters compatibility. No new dependencies or Google consent are required.

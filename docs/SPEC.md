@@ -335,3 +335,7 @@ Deterministic matching excludes immigration/sponsorship/right-to-work candidates
 ### Initial aggregator delivery (20 November 2026)
 
 Reed supports explicit keyword searches through its credentialed public API. Keys stay private/server-side and are scoped to fixed official search/detail endpoints, not URLs/robots/browser/task data. Each run covers the first 20 matches with detailed text, not all results; existing public fetch guards remain. Publication/ad-expiry dates do not establish application deadlines. Official Reed IDs may dedupe URL variants without merging histories. Current real verification is unavailable; fixtures/auth-scope/browser/migration coverage is not a live compatibility claim.
+
+### Fourth public ATS delivery (20 November 2026)
+
+SmartRecruiters supports an explicit company board's first 20 postings and detailed public text through existing guards. Clearly label the bounded page, preserve literal fields and avoid publication-date guesses. Distinguish opaque API IDs from numeric human-listing IDs; enforce official company-scoped listing URLs and keep alias histories intact. Current verification is synthetic contract/worker/migration/browser coverage; live compatibility and independent multi-ATS quality remain unverified.
