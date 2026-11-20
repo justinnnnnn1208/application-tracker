@@ -16,6 +16,7 @@ def test_real_public_review_terms_are_source_backed_and_do_not_claim_phase_accep
     result=evaluate(cases,review,predict=abstain)
     assert result['schema_grounding_valid']==9
     assert result['minimum_term_recall']==0 and result['empty_case_accuracy']==1
+    assert result['development_checks_passed'] is False and result['cases_failing_development_checks']>0
     assert result['phase_2_accepted'] is False
 
 
@@ -28,6 +29,7 @@ def test_validation_success_does_not_hide_company_background_false_positives():
     result=evaluate(cases,review,predict=wrong)
     assert result['schema_grounding_valid']==1 and result['empty_case_accuracy']==0
     assert result['forbidden_terms_returned']==1
+    assert result['development_checks_passed'] is False and result['results'][0]['checks_passed'] is False
 
 
 def test_ungrounded_model_output_stays_in_failure_denominator():
@@ -58,6 +60,8 @@ def test_unavailable_model_is_not_tested_and_stops_further_requests():
     assert len(calls)==1 and result['not_tested']==9 and result['failed']==0
     assert result['minimum_term_recall'] is None and result['empty_case_accuracy'] is None
     assert result['quality_assessed'] is False and result['phase_2_accepted'] is False
+    assert result['development_checks_passed'] is None and result['cases_failing_development_checks']==0
+    assert all(row['checks_passed'] is None for row in result['results'])
     assert all(row['missing_skills'] is None and row['forbidden_skills'] is None for row in result['results'])
 
 
@@ -69,3 +73,17 @@ def test_changed_snapshot_hash_cannot_reuse_old_review_labels(tmp_path):
     path=tmp_path/'review.json';path.write_text(json.dumps(labels))
     with pytest.raises(ValueError,match='different source version'):
         load_review(path,cases)
+
+
+def test_passing_limited_checks_are_explicit_but_do_not_accept_phase_two():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    review.cases=[item for item in review.cases if item.empty_skills]
+    seen=[]
+    def abstain(text):
+        return RequirementsData(),'synthetic-protocol-fixture',len(text),False
+    result=evaluate(cases,review,predict=abstain,progress=lambda id,state:seen.append(state))
+    assert result['development_checks_passed'] is True and result['cases_failing_development_checks']==0
+    assert all(row['checks_passed'] is True for row in result['results'])
+    assert seen==['PASSED limited checks']*len(review.cases)
+    assert result['phase_2_accepted'] is False

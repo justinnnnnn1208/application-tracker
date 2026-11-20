@@ -181,13 +181,13 @@ The score is a preference heuristic, not an eligibility decision, sponsorship ch
 
 Existing Sheet imports now repair missing titles/locations automatically from stored Notes on API startup. No new Google permission or import is needed for already imported data. In details, Description from Notes shows the original summary when a full description is absent. Company-only rows still require an actual role title. You can paste the existing URL on Dashboard to enrich details with a supported full listing. Existing Notes, statuses and populated fields are preserved. Matching can use a Notes summary when a real role title is available, with an explicit summary-only notice. Missing role/summary data is shown as Needs details rather than a misleading zero score.
 
-To reproduce the development report from apps/api:
+To reproduce the latest 38-page field/role regression from apps/api:
 
 ```sh
-uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest.json --role-classification
+uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest-nov20.json --role-classification
 ```
 
-Reports are stored under fixtures/eval/reports. No new dependency or migration is required for this delivery. Sheets remains read-only; no Google permission change is needed.
+Historical reports are stored under fixtures/eval/reports; this command prints a fresh report. Original 30/35 manifests stay frozen. See fixtures/eval/REVIEW_NOV20.md for the new controls and known coverage limits. This regression does not accept Phase 2. For the current migrations, use the backup-verifying update launcher at the top of this guide. Sheets remains read-only; no Google permission change is needed.
 
 ## Apply the Notes fix to existing jobs on Mac
 
@@ -291,3 +291,5 @@ Imports read the **first 20 company postings**, then their detailed public API t
 Pull and start with `python3 scripts/dev.py --migrate`; the new cached-identity migration preserves jobs and histories. Current verification is synthetic contract/worker/migration/browser coverage, not live SmartRecruiters compatibility. No new dependencies or Google consent are required.
 
 Repeated discovery clicks reuse an existing queued/running task for that source. A finished import can be explicitly requested again; this does not add retries or a schedule. Native local Ollama connections ignore shell HTTP proxy settings and never follow redirects.
+
+The local-model report now labels limited content checks separately from schema-valid output: PASSED/FAILED/NOT TESTED per case and an overall development_checks_passed value. Schema-valid but incorrect/missing terms fail these checks. No-server cases remain unknown, not passed; Phase 2 acceptance remains separate. The model subset is still nine reviewed cases, not all 38 field/role pages.

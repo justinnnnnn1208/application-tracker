@@ -118,7 +118,7 @@ def evaluate(cases, predict=baseline):
             "predicted_confirmed_yes": predicted_yes, "labelled_confirmed_yes": sum(case.labels.sponsorship == "CONFIRMED_YES" for case, _ in cases),
             "false_confirmed_yes": false_yes, "mismatches": mismatches,
             "phase_2_accepted": False,
-            "limits": ["Baseline extraction only; matching/scoring and graduate inference are not implemented.",
+            "limits": ["Field/role labels from the supplied predictor only; applicant eligibility and production-score accuracy are not assessed.",
                        "Real-page labels, representative coverage and owner-agreed thresholds require review."]}
 
 

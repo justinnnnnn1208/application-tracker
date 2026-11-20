@@ -1,0 +1,58 @@
+{
+  "cases": [
+    {
+      "id": "gocardless-8190692",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/8190692",
+      "html": "pages/gocardless-8190692.html",
+      "sha256": "156f9fa74ce13356e2f996845ff17325c68bef8f2a703ed1efa2237d2430c4af",
+      "captured_on": "2026-11-20",
+      "reviewed_on": "2026-11-20",
+      "labels": {
+        "company": "GoCardless",
+        "title": "Junior Data Analyst",
+        "location": "Riga, Latvia",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "gocardless-7525953",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/7525953",
+      "html": "pages/gocardless-7525953.html",
+      "sha256": "fde6fd92973d6210a5ba293b359da21ad538fe4551abfee6e7b33965f70bbeff",
+      "captured_on": "2026-11-20",
+      "reviewed_on": "2026-11-20",
+      "labels": {
+        "company": "GoCardless",
+        "title": "Data Science Manager",
+        "location": "London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "gocardless-7996584",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/7996584",
+      "html": "pages/gocardless-7996584.html",
+      "sha256": "b5292c1c6b3f682d5787603a8c30b90194145042440dbf94ab1293ed73c5b500",
+      "captured_on": "2026-11-20",
+      "reviewed_on": "2026-11-20",
+      "labels": {
+        "company": "GoCardless",
+        "title": "Senior Site Reliability Engineer (Database Focus)",
+        "location": "London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    }
+  ]
+}

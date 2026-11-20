@@ -1,0 +1,108 @@
+{
+  "checked_at": "2026-11-20T04:21:11.264752+00:00",
+  "kind": "live-disposable-api-worker-intake",
+  "source": "mw-tech-grad",
+  "limits": [
+    "Public Greenhouse API only; no portal form interaction.",
+    "No owner database, Google access, applicant facts or model requests.",
+    "One employer/ATS; this is not a full Phase 2 acceptance certificate."
+  ],
+  "state": "passed",
+  "runs": [
+    {
+      "postings_read": 5,
+      "jobs_created": 4,
+      "duplicates": 1,
+      "warnings": 0
+    },
+    {
+      "postings_read": 5,
+      "jobs_created": 0,
+      "duplicates": 5,
+      "warnings": 0
+    }
+  ],
+  "job_count": 5,
+  "application_count": 5,
+  "seed_history_events": 2,
+  "seed_history_preserved": true,
+  "jobs": [
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646976002",
+      "title": "Software/Infrastructure Graduate -  2027 - Singapore",
+      "location": "Singapore",
+      "start_date": "2027-09-06",
+      "deadline": null,
+      "sponsorship": "UNVERIFIED"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646984002",
+      "title": "Software/Infrastructure Graduate - 2027 - Hong Kong",
+      "location": "Hong Kong",
+      "start_date": "2027-09-06",
+      "deadline": null,
+      "sponsorship": "UNVERIFIED"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8636830002",
+      "title": "Quant Research - Quant Associate Programme - 2027",
+      "location": "London/New York",
+      "start_date": null,
+      "deadline": null,
+      "sponsorship": "UNVERIFIED"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646947002",
+      "title": "Quant Developer - Quant Associate Programme - 2027",
+      "location": "London, New York",
+      "start_date": null,
+      "deadline": null,
+      "sponsorship": "UNVERIFIED"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8645263002",
+      "title": "Software/Infrastructure Graduate - 2027 - London",
+      "location": "London",
+      "start_date": "2027-09-06",
+      "deadline": null,
+      "sponsorship": "UNVERIFIED"
+    }
+  ],
+  "ranking_without_applicant_facts": [
+    {
+      "title": "Software/Infrastructure Graduate - 2027 - London",
+      "location": "London",
+      "score": 65
+    },
+    {
+      "title": "Software/Infrastructure Graduate -  2027 - Singapore",
+      "location": "Singapore",
+      "score": 45
+    },
+    {
+      "title": "Software/Infrastructure Graduate - 2027 - Hong Kong",
+      "location": "Hong Kong",
+      "score": 45
+    },
+    {
+      "title": "Quant Research - Quant Associate Programme - 2027",
+      "location": "London/New York",
+      "score": 20
+    },
+    {
+      "title": "Quant Developer - Quant Associate Programme - 2027",
+      "location": "London, New York",
+      "score": 20
+    }
+  ],
+  "captures": [
+    {
+      "url": "https://boards-api.greenhouse.io/v1/boards/mw-tech-grad/jobs?content=true",
+      "sha256": "3ffce001f7c30a5e70f481e4fc59fe340e5bb8ccb4d430a342249a797bb7894f"
+    },
+    {
+      "url": "https://boards-api.greenhouse.io/v1/boards/mw-tech-grad/jobs?content=true",
+      "sha256": "3ffce001f7c30a5e70f481e4fc59fe340e5bb8ccb4d430a342249a797bb7894f"
+    }
+  ]
+}

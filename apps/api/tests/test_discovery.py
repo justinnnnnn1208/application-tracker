@@ -69,3 +69,22 @@ def test_discovery_preserves_explicit_dates_without_filling_partial_dates(monkey
     jobs, warnings = greenhouse.read_board("fixture")
     assert warnings == 0 and jobs[0].deadline.isoformat() == "2026-11-29"
     assert jobs[0].start_date is None
+
+
+@pytest.mark.parametrize('extra',[{'id':-1},{'id':True},{'id':'../private'},{'absolute_url':{}},{'content':{'invalid':'shape'}},{'absolute_url':'https://job-boards.greenhouse.io/other/jobs/1'},{'absolute_url':'https://job-boards.greenhouse.io/fixture/jobs/999'},{'absolute_url':'https://job-boards.greenhouse.io/fixture/jobs/1/application'},{'absolute_url':'http://job-boards.greenhouse.io/fixture/jobs/1'}])
+def test_greenhouse_rejects_conflicting_or_malformed_official_posting_id(monkeypatch,extra):
+    payload=board_payload();payload['jobs'][0].update(extra)
+    monkeypatch.setattr(greenhouse,'fetch_page',lambda _:json.dumps(payload))
+    assert greenhouse.read_board('fixture')==([],1)
+
+
+def test_greenhouse_keeps_publisher_custom_links_without_trusting_query_id(monkeypatch):
+    from app.services.identity import ats_identity
+    payload=board_payload();payload['jobs'][0]['absolute_url']='https://careers.example.org/opening?gh_jid=1'
+    monkeypatch.setattr(greenhouse,'fetch_page',lambda _:json.dumps(payload))
+    jobs,warnings=greenhouse.read_board('fixture')
+    assert len(jobs)==1 and warnings==0 and ats_identity(jobs[0].url) is None
+    # The same public API host can publish EU job URLs: use actual listing scope.
+    payload['jobs'][0]['absolute_url']='https://job-boards.eu.greenhouse.io/fixture/jobs/1'
+    jobs,warnings=greenhouse.read_board('fixture')
+    assert warnings==0 and ats_identity(jobs[0].url)=='greenhouse-eu:fixture:1'

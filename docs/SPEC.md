@@ -236,7 +236,7 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 ## 12. Open items
 
 - Development-copy configuration and columns were supplied and the owner confirmed all 20 rows imported. Live single-cell write verification is deferred; do not ask for settled configuration again. See [SETUP.md](SETUP.md).
-- Confirm the LLM provider and model name for the default configuration.
+- Local Ollama was selected on 20 November 2026; qwen2.5:3b is the initial recommendation. Installation and real quality still need verification.
 - Confirm the Leeds international student advice check on current visa rules.
 
 ## 13. UI design reference

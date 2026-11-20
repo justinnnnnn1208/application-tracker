@@ -67,7 +67,7 @@ def evaluate(cases, review, predict=None, progress=None):
         case, html = by_id[item.id]
         expected_count += len(item.must_include_skills)
         empty_count += int(item.empty_skills)
-        result = {'id': item.id, 'source_sha256': case.sha256, 'state': 'failed', 'missing_skills': item.must_include_skills, 'forbidden_skills': []}
+        result = {'id': item.id, 'source_sha256': case.sha256, 'state': 'failed', 'checks_passed': False, 'missing_skills': item.must_include_skills, 'forbidden_skills': []}
         try:
             if unavailable:
                 raise requirements.LocalModelUnavailable('Local model unavailable')
@@ -83,19 +83,23 @@ def evaluate(cases, review, predict=None, progress=None):
             empty_correct += int(item.empty_skills and not values)
             forbidden_count += len(forbidden)
             result.update(state='validated', model=model, source_chars=chars, truncated=truncated,
+                          checks_passed=not missing and not forbidden and (not item.empty_skills or not values),
                           skills=data.model_dump()['skills'], missing_skills=missing, forbidden_skills=forbidden,
                           expected_empty=item.empty_skills, empty_correct=not values if item.empty_skills else None)
         except requirements.LocalModelUnavailable:
             unavailable = True
-            result.update(state='not_tested', missing_skills=None, forbidden_skills=None, error='Local model unavailable; no semantic-quality conclusion.')
+            result.update(state='not_tested', checks_passed=None, missing_skills=None, forbidden_skills=None, error='Local model unavailable; no semantic-quality conclusion.')
         except (NeedsInput, ValueError):
             # No model/source bodies or private configuration in errors/progress.
             result['error'] = 'Local extraction unavailable or output failed validation.'
         results.append(result)
         if progress:
-            progress(item.id, result['state'])
+            progress(item.id, 'NOT TESTED' if result['checks_passed'] is None else 'PASSED limited checks' if result['checks_passed'] else 'FAILED limited checks')
     not_tested = sum(row['state'] == 'not_tested' for row in results)
+    failed_checks = sum(row['checks_passed'] is False for row in results)
     return {'cases': len(review.cases), 'schema_grounding_valid': valid, 'failed': len(review.cases) - valid - not_tested,
+            'development_checks_passed': False if failed_checks else None if not_tested else True,
+            'cases_failing_development_checks': failed_checks,
             'not_tested': not_tested, 'quality_assessed': not unavailable,
             'expected_skill_terms': expected_count, 'found_expected_terms': found_count,
             'minimum_term_recall': found_count / expected_count if expected_count and not unavailable else None,
@@ -131,10 +135,11 @@ def main():
         print('Evaluation inputs/output could not be validated. Check paths, checksums, review labels and use a new output filename.')
         return 2
     print(f"{report['schema_grounding_valid']}/{report['cases']} schema/grounding-valid; minimum term recall {report['minimum_term_recall']}; empty-case accuracy {report['empty_case_accuracy']}; Phase 2 acceptance remains unassessed.")
+    print(f"Limited development checks: {'FAILED' if report['development_checks_passed'] is False else 'NOT TESTED' if report['development_checks_passed'] is None else 'PASSED'}; {report['cases_failing_development_checks']} cases failed checks. This is not Phase 2 acceptance.")
     if report['not_tested']:
         print('NOT TESTED: local model unavailable; no semantic-quality pass/fail conclusion.')
         return 2
-    return 1 if report['failed'] or report['found_expected_terms'] != report['expected_skill_terms'] or report['empty_case_accuracy'] not in {None, 1} or report['forbidden_terms_returned'] else 0
+    return 0 if report['development_checks_passed'] else 1
 
 
 if __name__ == '__main__':

@@ -40,9 +40,15 @@ Reed/live step pushed as 35bb6cb5d98a5c1f9bb879e34f755a7a0bcd5f93, remote verifi
 
 SmartRecruiters pushed as e11e53523cd025076472ab4403372c18a00bafb9, remote verified. Both Ollama paths now validate loopback endpoints and ignore shell proxies/redirects; new direct-loopback test reproduced failure before the fix and passed after. Pending discovery requests reuse one source task; completed imports may be requested again. 276 API tests, full production browser and expanded real-page regression passed; frontend unchanged since its passing checks. README/setup corrected stale phase/import/migration statements. No dependencies/private settings/network changes. Real model quality still NOT TESTED.
 
+## Real controls / source-validation checkpoint
+
+Local transport/queue step pushed as 0c71da6473768f3c90696184013659d6f6e14ba1, remote verified. Three new genuine GoCardless excerpts manually labelled/frozen before prediction; initial fields/role controls correct, 3-case probe exit 2 only for size below 30. New manifest-nov20.json has 38 real pages/six employer labels, all Greenhouse; old 30/35 frozen. No new positive dates/policy labels; future runs are regressions. Initial evidence/provenance retained. See fixtures/eval/REVIEW_NOV20.md.
+
+Live metadata reads revealed custom employer URLs and EU-hosted listings returned by the shared Greenhouse API; no blocked host was fetched or settings changed. Source hardening now rejects malformed IDs/content and mismatched known Greenhouse board/ID URLs, retains custom links without inferring identity from their query params, and respects EU URL scope. Initial seven defect tests failed before fix; one extra malformed-content case failed later, then corrected. Final 289 API tests passed. Browser and fresh strict-ID live disposable import/repeat passed; current 38-page regression exit 0, phase_2_accepted=false. Current model runner now separates valid JSON from limited-content checks; actual native attempt still all nine NOT TESTED/exit 2. No real model quality pass. STATUS/README/setup consolidated to remove stale statements.
+
 ## Continue next
 
-Push the checked local transport/queue hardening step, verify remote SHA, then continue focused Phase 2 readiness until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked real-controls/source-validation step, verify remote SHA, then continue focused preservation/readiness work until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 

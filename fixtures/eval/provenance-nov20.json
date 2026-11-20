@@ -1,0 +1,34 @@
+{
+  "labels_frozen_at": "2026-11-20T04:19:09.842444+00:00",
+  "predictor_base_commit": "0c71da6473768f3c90696184013659d6f6e14ba1",
+  "method": "Fetched normal approved public Greenhouse listing URLs via existing fetcher. Preserve original title, og metadata, logo and job header/location/description tags; remove forms/buttons/scripts/style/SVG/assets outside the captured sections. No generated field metadata. Full decoded UTF-8 originals remain ignored locally; SHA256 hashes refer to stored raw/excerpt UTF-8 files. Hand-reviewed visible job text before predictor execution.",
+  "limits": [
+    "Three new GoCardless pages are a small same-ATS check, not independent multi-ATS validation.",
+    "Junior Riga is an overseas control, not a UK recommendation.",
+    "Two senior/manager controls; no positive exact-date/deadline/sponsorship labels. Null date matches do not improve positive-date coverage.",
+    "No model output or applicant/legal data; company workforce statistics are public job-page content."
+  ],
+  "postings": [
+    {
+      "id": "gocardless-8190692",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/8190692",
+      "captured_at": "2026-11-20T04:17:57.673486+00:00",
+      "raw_sha256": "8b5598a4c42bfd9baa52dca744b7dea191c045828bca7433c6e65fdcf2eb433a",
+      "excerpt_sha256": "156f9fa74ce13356e2f996845ff17325c68bef8f2a703ed1efa2237d2430c4af"
+    },
+    {
+      "id": "gocardless-7525953",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/7525953",
+      "captured_at": "2026-11-20T04:18:07.909065+00:00",
+      "raw_sha256": "dffac88bb2d747562aa3ebfd5133c10ac37bc0fbca0ca41c9c5ff2dc8616ae48",
+      "excerpt_sha256": "fde6fd92973d6210a5ba293b359da21ad538fe4551abfee6e7b33965f70bbeff"
+    },
+    {
+      "id": "gocardless-7996584",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/7996584",
+      "captured_at": "2026-11-20T04:18:18.281910+00:00",
+      "raw_sha256": "3942e3ff971998685699acef14550836340d846c57d0ad7531c5fdfbbda7a45b",
+      "excerpt_sha256": "b5292c1c6b3f682d5787603a8c30b90194145042440dbf94ab1293ed73c5b500"
+    }
+  ]
+}

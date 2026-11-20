@@ -1,0 +1,688 @@
+{
+  "cases": [
+    {
+      "id": "graphcore-8843258002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8843258002",
+      "html": "pages/graphcore-8843258002.html",
+      "sha256": "fe784b91d59327dcabd923022349ca6e50b4100db5c5750f8d2c2f4b29b42304",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Silicon Engineer 2027",
+        "location": "Bristol, UK; Cambridge, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894042002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894042002",
+      "html": "pages/graphcore-8894042002.html",
+      "sha256": "34c7cf19dd463ca74c7f13cdbbc8c67c831d3dc9e65d31ada1004d4bba0d915e",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Infrastructure Solutions Engineer 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894145002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894145002",
+      "html": "pages/graphcore-8894145002.html",
+      "sha256": "667415aaf17cd1cf4a37e64f7a46672af0434620893d3fb2e55468049750dc64",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Software Engineer, Analysis Tools 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894149002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894149002",
+      "html": "pages/graphcore-8894149002.html",
+      "sha256": "5ca86fa91acfe69e160860e4b0e7d2bc2e258870959b610320c9fad30cfa9b3e",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Hardware Engineer 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894177002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894177002",
+      "html": "pages/graphcore-8894177002.html",
+      "sha256": "66b6831982d9a572e76208b944f15f9b435946d99549b67fbe690a6cbdc924b2",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Software Engineer, AI Compute Libraries & Performance 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894310002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894310002",
+      "html": "pages/graphcore-8894310002.html",
+      "sha256": "0c33f92527b1c4d4ee152db1f1d685ef2691f6a9f87d8ee901e143ed99c6bb11",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Software Engineer, Accelerator Modelling 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894323002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894323002",
+      "html": "pages/graphcore-8894323002.html",
+      "sha256": "b1da224cd7aa2b3fb0f49ad2ece20fa9b6781623ba5040dec34c038116ee4500",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate UX Engineer 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894348002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894348002",
+      "html": "pages/graphcore-8894348002.html",
+      "sha256": "f6c782e43cbbdb4e3ff20cbd48670678c7614496bc60222b3a293120b456efc2",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate SoC Architecture Engineer 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894364002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894364002",
+      "html": "pages/graphcore-8894364002.html",
+      "sha256": "8c8dbb9ac0b9a3f0f705e99b93b10a899380a82d7fd84802cf26bf85b41bec55",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Software Engineer, AI/ ML Test Systems 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894376002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894376002",
+      "html": "pages/graphcore-8894376002.html",
+      "sha256": "65703cb3d7e3ed1e1593b8a2c09c6171abd30d84b36b2ff939b674e0ce00982c",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Software Engineering Summer Intern, Drivers and Utilities 2027",
+        "location": "Bristol, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894377002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894377002",
+      "html": "pages/graphcore-8894377002.html",
+      "sha256": "1fba2ed8dc09385afc45dd5cefb3de4201032c67d7efac2c4a8d796b431ad452",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Software Engineer, DevOps 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894466002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894466002",
+      "html": "pages/graphcore-8894466002.html",
+      "sha256": "17fdd804849e152d73a5e4b159b592ddc7a6d991d62bcc7ac0986d0ef6729693",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Software Engineer, Frameworks 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894574002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894574002",
+      "html": "pages/graphcore-8894574002.html",
+      "sha256": "00103eebb6ec15ba480341c839141a7550c028163b2b134b9069aaf8ea3ab0fb",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Software Engineer, System Software QA 2027",
+        "location": "Bristol, UK; Cambridge, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "graphcore-8894608002",
+      "url": "https://job-boards.greenhouse.io/graphcore/jobs/8894608002",
+      "html": "pages/graphcore-8894608002.html",
+      "sha256": "e766166d3199c8544420255d1e8ffa0a94d2f6cde465abfc1d95582d2afdbddd",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Graphcore",
+        "title": "Graduate Firmware Engineer 2027",
+        "location": "Bristol, UK",
+        "deadline": "2026-11-29",
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "We are unable to sponsor work visas for our Early Careers opportunities."
+      }
+    },
+    {
+      "id": "canonical-7568354",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/7568354",
+      "html": "pages/canonical-7568354.html",
+      "sha256": "a3fdaa3a74e12dcf65ead3a5f5f0e5801bc2c59026df75bc202adf2532f5dfc2",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Tax Senior Associate",
+        "location": "Home based - EMEA; Office Based - London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "canonical-7661586",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/7661586",
+      "html": "pages/canonical-7661586.html",
+      "sha256": "c330b8c0e1de652052551e55d24aaa95f4a12de67b5021959d6d487c16e9486e",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Graduate Sales Development Representative (UK)",
+        "location": "Office Based - London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "canonical-8008666",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/8008666",
+      "html": "pages/canonical-8008666.html",
+      "sha256": "ea7c4e89525e750bd79f246400a486db39a09663c64ede16e6299dacb87c7be3",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Internal Auditor",
+        "location": "Home Based - Americas; Home based - EMEA; Office Based - London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "canonical-8186466",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/8186466",
+      "html": "pages/canonical-8186466.html",
+      "sha256": "1e212dffac6e50592cc7d03282a118b5bf65a1ec4c6693c04e313f228b2862ff",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Tax Associate",
+        "location": "Home based - EMEA; Office Based - London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "canonical-8318602",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/8318602",
+      "html": "pages/canonical-8318602.html",
+      "sha256": "d8c7c14e55a7e1e3c8b2d82cbc8785d91ac1d40929a0e46ae95da286f4db4067",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Linux Desktop Support Associate (London UK office)",
+        "location": "Office Based - London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "canonical-3257589",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/3257589",
+      "html": "pages/canonical-3257589.html",
+      "sha256": "96b35748936f7385366f74c2a919cf469ec546c1247da2611600b6f58ee9fed6",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Software Engineer - Python - Cloud - graduate level",
+        "location": "Home Based - Americas",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "canonical-5370815",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/5370815",
+      "html": "pages/canonical-5370815.html",
+      "sha256": "bd15ed22bfed3cd67ecc0a41bbc2698fef579c6a25d46f61c78a9a4d00e83402",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Junior Linux Kernel Engineer - Ubuntu",
+        "location": "Home based - Worldwide",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "canonical-6448444",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/6448444",
+      "html": "pages/canonical-6448444.html",
+      "sha256": "3a19f6bd4d75c77b9dd66877aa971b9c1939299d90467abacf0f15aff8557947",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Canonical",
+        "title": "Associate Linux Support Engineer",
+        "location": "Home based - Worldwide",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "monzo-5018066",
+      "url": "https://job-boards.greenhouse.io/monzo/jobs/5018066",
+      "html": "pages/monzo-5018066.html",
+      "sha256": "d3d3c30f5a9f47304df9f324d0833ce6e9a68b17f88019c8f64c4028df874b57",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Monzo",
+        "title": "Engineering Manager",
+        "location": "Cardiff, London or Remote (UK)",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "CONFIRMED_YES",
+        "sponsorship_quote": "We can sponsor visas"
+      }
+    },
+    {
+      "id": "monzo-6036797",
+      "url": "https://job-boards.greenhouse.io/monzo/jobs/6036797",
+      "html": "pages/monzo-6036797.html",
+      "sha256": "63686e2a53e42e76d58b6785c2f4d8034d0aefd934c54f2fc8cbd170c48470ac",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Monzo",
+        "title": "Senior Staff Backend Engineer",
+        "location": "Cardiff, London or Remote (UK)",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "CONFIRMED_YES",
+        "sponsorship_quote": "We can sponsor your visa."
+      }
+    },
+    {
+      "id": "monzo-6369658",
+      "url": "https://job-boards.greenhouse.io/monzo/jobs/6369658",
+      "html": "pages/monzo-6369658.html",
+      "sha256": "de4f8a16c204b3a1c2e6cdc16cc2bb7703ee48a5e8c8fc0243270aded5451edb",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Monzo",
+        "title": "Lead Data Scientist",
+        "location": "Cardiff, London or Remote (UK)",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "CONFIRMED_YES",
+        "sponsorship_quote": "We can sponsor visas"
+      }
+    },
+    {
+      "id": "monzo-6394676",
+      "url": "https://job-boards.greenhouse.io/monzo/jobs/6394676",
+      "html": "pages/monzo-6394676.html",
+      "sha256": "d4e85dca61cbf8a6baf8e419ed14d29c1e4c9a1c27d5433e3f4d1cba4790bccb",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Monzo",
+        "title": "Senior Engineering Manager",
+        "location": "Cardiff, London or Remote (UK)",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "CONFIRMED_YES",
+        "sponsorship_quote": "We can sponsor visas"
+      }
+    },
+    {
+      "id": "deliveroo-8202399",
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202399",
+      "html": "pages/deliveroo-8202399.html",
+      "sha256": "06d32a5087a14000a3d9112b6fe26a8e329f350e80da993c0f258389cfb61eb7",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Deliveroo",
+        "title": "Machine Learning Engineer II - Growth & Personalisation",
+        "location": "London, England",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "deliveroo-8202417",
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202417",
+      "html": "pages/deliveroo-8202417.html",
+      "sha256": "1878ba6f1e62aef9f6487c391a44dec440911223af2076c04471d5705ec1b4af",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Deliveroo",
+        "title": "Senior Software Engineer - Android",
+        "location": "London, United Kingdom - Deliveroo",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "deliveroo-8202448",
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202448",
+      "html": "pages/deliveroo-8202448.html",
+      "sha256": "d7022c1f04cbed3c9bd223905db0811bab05ff08a6b8d48b9ae39f0f8482c076",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Deliveroo",
+        "title": "Senior Software Engineer - iOS",
+        "location": "London, United Kingdom - Deliveroo",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "deliveroo-8202481",
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202481",
+      "html": "pages/deliveroo-8202481.html",
+      "sha256": "5244af4513d341d790a5cd620eaf41ed3a863179da0250a30af8378263f10279",
+      "captured_on": "2026-11-17",
+      "reviewed_on": "2026-11-17",
+      "labels": {
+        "company": "Deliveroo",
+        "title": "Software Engineer II - Android",
+        "location": "London, United Kingdom - Deliveroo",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "mw-8645263002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8645263002",
+      "html": "pages/mw-8645263002.html",
+      "sha256": "0a545970e53e40a3806d66e9273f9b3e14b068ddd16fbf533f9a17685c7b80cd",
+      "captured_on": "2026-11-19",
+      "reviewed_on": "2026-11-19",
+      "labels": {
+        "company": "Marshall Wace - Graduate & Associate roles",
+        "title": "Software/Infrastructure Graduate - 2027 - London",
+        "location": "London",
+        "deadline": null,
+        "start_date": "2027-09-06",
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "mw-8646984002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646984002",
+      "html": "pages/mw-8646984002.html",
+      "sha256": "a6f5c1209e3d36506c680930777baf6f06b5bd304e5da1cf044f184a84cada9a",
+      "captured_on": "2026-11-19",
+      "reviewed_on": "2026-11-19",
+      "labels": {
+        "company": "Marshall Wace - Graduate & Associate roles",
+        "title": "Software/Infrastructure Graduate - 2027 - Hong Kong",
+        "location": "Hong Kong",
+        "deadline": null,
+        "start_date": "2027-09-06",
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "mw-8646976002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646976002",
+      "html": "pages/mw-8646976002.html",
+      "sha256": "8f7e53a6d8fb75ca805c0374bf66fd668d8c73fbc240362915e217ca1fec5c38",
+      "captured_on": "2026-11-19",
+      "reviewed_on": "2026-11-19",
+      "labels": {
+        "company": "Marshall Wace - Graduate & Associate roles",
+        "title": "Software/Infrastructure Graduate -  2027 - Singapore",
+        "location": "Singapore",
+        "deadline": null,
+        "start_date": "2027-09-06",
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "mw-8646947002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646947002",
+      "html": "pages/mw-8646947002.html",
+      "sha256": "73d751b47667bc7530dfd5b646545c1b174b7e577df3ec9a0e278860541b1afd",
+      "captured_on": "2026-11-19",
+      "reviewed_on": "2026-11-19",
+      "labels": {
+        "company": "Marshall Wace - Graduate & Associate roles",
+        "title": "Quant Developer - Quant Associate Programme - 2027",
+        "location": "London, New York",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "mw-8636830002",
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8636830002",
+      "html": "pages/mw-8636830002.html",
+      "sha256": "f8deac8c451fc47c9efda1c123aa8612ef295b07d357370e8e477d525cf81b71",
+      "captured_on": "2026-11-19",
+      "reviewed_on": "2026-11-19",
+      "labels": {
+        "company": "Marshall Wace - Graduate & Associate roles",
+        "title": "Quant Research - Quant Associate Programme - 2027",
+        "location": "London/New York",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "gocardless-8190692",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/8190692",
+      "html": "pages/gocardless-8190692.html",
+      "sha256": "156f9fa74ce13356e2f996845ff17325c68bef8f2a703ed1efa2237d2430c4af",
+      "captured_on": "2026-11-20",
+      "reviewed_on": "2026-11-20",
+      "labels": {
+        "company": "GoCardless",
+        "title": "Junior Data Analyst",
+        "location": "Riga, Latvia",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "gocardless-7525953",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/7525953",
+      "html": "pages/gocardless-7525953.html",
+      "sha256": "fde6fd92973d6210a5ba293b359da21ad538fe4551abfee6e7b33965f70bbeff",
+      "captured_on": "2026-11-20",
+      "reviewed_on": "2026-11-20",
+      "labels": {
+        "company": "GoCardless",
+        "title": "Data Science Manager",
+        "location": "London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "gocardless-7996584",
+      "url": "https://job-boards.greenhouse.io/gocardless/jobs/7996584",
+      "html": "pages/gocardless-7996584.html",
+      "sha256": "b5292c1c6b3f682d5787603a8c30b90194145042440dbf94ab1293ed73c5b500",
+      "captured_on": "2026-11-20",
+      "reviewed_on": "2026-11-20",
+      "labels": {
+        "company": "GoCardless",
+        "title": "Senior Site Reliability Engineer (Database Focus)",
+        "location": "London, UK",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    }
+  ]
+}
