@@ -1,4 +1,4 @@
-"""Run localhost API and UI together; terminate both on Ctrl+C or child failure."""
+"""Run the local app or check its configured model against public fixtures."""
 import argparse
 import os
 from pathlib import Path
@@ -6,13 +6,16 @@ import signal
 import subprocess
 import sys
 import time
+from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--migrate", action="store_true", help="Back up/verify existing SQLite data, apply migrations, then start")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--migrate", action="store_true", help="Back up/verify existing SQLite data, apply migrations, then start")
+    mode.add_argument("--check-model", action="store_true", help="Check the configured local model against public fixtures; do not start the app")
     args = parser.parse_args()
     os.umask(0o077)
     environment = os.environ.copy()
@@ -23,6 +26,23 @@ def main():
             if line.strip() and not line.lstrip().startswith("#"):
                 key, value = line.split("=", 1)
                 environment.setdefault(key.strip(), value.strip())
+    if args.check_model:
+        interpreter = ROOT / "apps/api/.venv/bin/python"
+        if not interpreter.is_file():
+            print("Install API dependencies first: run uv sync --frozen from apps/api, then return to the project root.")
+            return 2
+        report = ROOT / ".local" / f"requirements-check-{uuid4().hex}.json"
+        # This public-data check needs only model selectors, never app/OAuth/API
+        # credentials, database settings or an inherited Python module path.
+        public_environment = {"PATH": environment.get("PATH", os.defpath), "PYTHONUTF8": "1", "PYTHONNOUSERSITE": "1"}
+        public_environment.update({key: environment[key] for key in ("LLM_PROVIDER", "LLM_MODEL", "LLM_BASE_URL") if key in environment})
+        result = subprocess.run([str(interpreter), "-m", "app.services.requirements_eval",
+                                 "--manifest", str(ROOT / "fixtures/eval/manifest-nov20.json"),
+                                 "--review", str(ROOT / "fixtures/eval/requirements-review.json"),
+                                 "--output", str(report)], cwd=ROOT / "apps/api", env=public_environment)
+        if report.is_file():
+            print(f"Public model-check report: {report.relative_to(ROOT)}", flush=True)
+        return result.returncode
     if len(environment.get("APP_ACCESS_TOKEN", "")) < 32:
         sys.exit("Run python scripts/init_local.py or configure APP_ACCESS_TOKEN (32+ characters).")
     if args.migrate:

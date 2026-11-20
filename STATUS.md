@@ -32,7 +32,7 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 
 ## Latest verification
 
-- **298 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
+- **303 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
 - Latest frontend typecheck and production build passed on the SmartRecruiters UI; subsequent changes are backend/data/docs only.
 - Production browser passed: disposable real worker, direct dashboard/reload/restart, server-only credential/origin guards, CRUD/history, Notes repair, CV review/download, filters/deadlines, preferences/feedback/evidence, source controls, synthetic native Ollama task, register upload, backup/CLI restore, notification mocks and 1440/390/320px layouts.
 - Fresh live strict-ID Greenhouse import passed in temporary storage: 4 new + 1 duplicate, repeat 0 new + 5 duplicates; one application each, saved shortlist/history preserved, all Unverified. No applicant facts/model/Google/forms. Reports/capture hashes distinguish live evidence from fixtures.
@@ -44,6 +44,8 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 Original 30 and 19 November 35 manifests stay frozen. `fixtures/eval/manifest-nov20.json` contains **38 genuine excerpts across six employer labels, all Greenhouse**. Three new GoCardless labels were frozen before initial prediction: Junior Data Analyst in Riga, Data Science Manager and Senior SRE in London. Initial fields/role controls matched; the 3-case-only probe exits 2 because it is below the 30-page dataset-readiness minimum. The combined regression exits 0. Future runs are regressions after label inspection.
 
 Current field/role regression matches labels with zero extraction failures/false YES. Known coverage: 12 deadlines, 3 exact start dates, 32 role-level YES/NO labels. The three date positives share one Marshall Wace template; the new null-date controls do not improve positive-date coverage. The original Nov19 0/3 held-out date failure remains saved. Automatic sponsorship abstains (4 YES/14 NO labels; zero known-policy accuracy). Zero false YES from abstention does not measure evidence-assessment quality. **phase_2_accepted remains false.** See fixture review/provenance files.
+
+`python3 scripts/dev.py --check-model` runs the local-model check from the project root, using the app model selectors while excluding app/OAuth/API/database settings from its child process. It starts no app/migrations and writes a new ignored report. Its actual cloud invocation reported NOT TESTED/exit 2, not a model pass. Normal app/migration startup is covered by launcher regression tests.
 
 The local-model runner separately reviews nine hash-bound public cases for minimum named-term recall, empty cases and company-background controls. It now reports per-case/overall limited checks separately from valid JSON. Actual native attempt: **9 NOT TESTED**, unknown metrics, exit 2 because no Ollama server/model exists here. No quality pass is claimed; education/experience semantics and exhaustive precision remain unassessed.
 

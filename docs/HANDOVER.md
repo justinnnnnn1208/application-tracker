@@ -50,9 +50,13 @@ Live metadata reads revealed custom employer URLs and EU-hosted listings returne
 
 Real-controls/source step pushed as 78eb45ec186671e60f78de71fdef9f615eb6b81f, remote verified. Restore review reproduced acceptance of missing-database/unsupported/duplicate-member archives; now rejects before any restored destination. Valid version-1 format preserved. Exact database snapshots now encode SQLite file URIs: # could previously select/create a different empty file, percent escapes could open the wrong path/fail. Three filename regressions prove app-driver and restored-row identity/no truncated file. First percent fixture used an incorrectly encoded SQLAlchemy URL; corrected to URL.create/render_as_string, same assertions retained. Final 298 API tests and production browser backup/CLI restore passed. No schema/dependencies/private data/config changes. See decisions/backup-manifest-validation.md. Mac operational restore remains untested.
 
+## One-command Mac model check
+
+Backup step pushed as 953ea676a1942b6996f1455961897ce271d9dc06, remote verified. Existing launcher now supports `python3 scripts/dev.py --check-model` from root: same private model selectors/shell precedence, minimal child environment excluding app/OAuth/API/database settings, no app startup/migration, unique ignored report. Mutually exclusive with --migrate. Five tests cover privacy/setup/exit/conflict and preserved normal/migration startup; full suite 303 passed. Actual shortcut reached native unavailable endpoint, all nine NOT TESTED/exit 2, report .local/requirements-check-174d887a51c647619e12293350d080a5.json. No real model quality pass. Backend/frontend unchanged; previous browser/build evidence remains applicable. See SETUP.md.
+
 ## Continue next
 
-Push the checked backup preservation step, verify remote SHA, then simplify the Mac local-model verification command and finish readiness/handover until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked launcher shortcut, verify remote SHA, then finish the acceptance/readiness review and morning handover until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 

@@ -254,13 +254,15 @@ Job details show an exact registered-name match with routes/towns/date/source, i
 
 ## Evaluate the local model before relying on extracted terms
 
-With Ollama running and qwen2.5:3b installed, from `apps/api` run this public-data-only check (one command):
+With Ollama running, the selected model installed and the model entries above saved in your private `.env`, run this from the **project root**:
 
 ```sh
-LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:3b uv run --frozen python -m app.services.requirements_eval --manifest ../../fixtures/eval/manifest-expanded.json --review ../../fixtures/eval/requirements-review.json --output ../../.local/ollama-requirements-report-1.json
+python3 scripts/dev.py --check-model
 ```
 
-These public model selectors apply only to this command; it does not load the private app database, profile, Notes or CV. It validates source-page hashes and manually reviewed minimum named-technology expectations on nine real snapshots, including cases where product marketing must not become job requirements. Existing report files are never overwritten; use a new output name for another run.
+This loads the same model choice as the app (explicit shell model settings still take precedence). It passes only the local-model selectors and minimal runtime settings to the public evaluation process, excluding database/app/OAuth/API credentials. It does not start the tracker, migrate or open its database, profile, Notes or CVs. The native connection enforces loopback and does not use shell proxies. App access-token setup is not needed for this public-only check; API dependencies must already be installed.
+
+The command prints each of the nine reviewed cases and the relative path of a new report under `.local/requirements-check-*.json`. Existing reports are never overwritten. It validates source hashes, minimum named-technology expectations, empty cases and company-marketing controls. The field/role manifest has 38 pages; this separate model subset is still nine, not full semantic coverage. No real model was available during cloud verification; the actual shortcut correctly reported all nine NOT TESTED and exit 2.
 
 Exit 2 means setup/input unavailable or NOT TESTED. An unavailable local server stops further model calls and leaves quality metrics unknown, not a fabricated zero-quality result. Exit 1 means schema/grounding or the reviewed minimum-term/empty-case checks failed. Exit 0 passes these limited development checks, not every requirement or full Phase 2 acceptance. Inspect quotes and the explicit coverage limits. No real model was available in the cloud run, so its semantic quality remains unverified.
 
