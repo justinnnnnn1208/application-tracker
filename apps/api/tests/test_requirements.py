@@ -169,13 +169,15 @@ def test_tampered_cache_does_not_supply_scores_or_ui_terms(client,monkeypatch):
     assert not any('Fabricated' in row['explanation'] for row in result['breakdown'])
 
 
-def test_misclassified_sponsorship_terms_never_penalise_preference_scores(client,monkeypatch):
+@pytest.mark.parametrize('term',['Visa sponsorship','ILR','Indefinite leave to remain','Permanent residency','Settled status','Pre-settled status','EU Settlement Scheme','Authorised to work','Eligible to work','UK work rights','British citizenship','Skilled Worker','Right‑to‑work','pre–settled status','work_authorisation'])
+def test_misclassified_sponsorship_terms_never_penalise_preference_scores(client,monkeypatch,term):
     configure(monkeypatch)
-    job=create(client,description='Python required. Visa sponsorship available.')
+    quote=f'{term} is required.'
+    job=create(client,description=f'Python required. {quote}')
     client.post('/api/facts',json={'category':'skill','content':'Python','source':'Fixture reviewed fact','verified':True})
     client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
     before=client.get(f"/api/jobs/{job['id']}/match").json()
-    data=RequirementsData.model_validate({'skills':[{'value':'Python','quote':'Python required.'},{'value':'Visa sponsorship','quote':'Visa sponsorship available.'}]})
+    data=RequirementsData.model_validate({'skills':[{'value':'Python','quote':'Python required.'},{'value':term,'quote':quote}]})
     monkeypatch.setattr(requirements,'extract',lambda text:(data.grounded(text),'fixture-local',len(text),False))
     client.post('/api/tasks/requirements',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
     client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)

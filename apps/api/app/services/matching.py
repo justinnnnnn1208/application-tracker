@@ -11,7 +11,7 @@ from app.db.models import Fact, JobRequirements, MatchResult, Preferences, Profi
 from app.services.requirements import validated as validated_requirements
 from app.services.errors import NeedsInput
 
-VERSION = "preference-v4-no-immigration-terms"
+VERSION = "preference-v5-immigration-neutral-terms"
 WEIGHTS = {"role": 20, "graduate": 25, "location": 20, "skills": 20, "experience": 10, "start_date": 5}
 SKILLS = ("python", "java", "javascript", "typescript", "c++", "c#", "rust", "golang", "sql", "react", "linux", "docker", "kubernetes", "terraform", "pytorch", "tensorflow", "aws", "azure", "git")
 
@@ -22,7 +22,13 @@ def contains(text, term):
 
 def immigration_term(value):
     # Exclude these job-text candidates, never evaluate a person's legal status.
-    return bool(re.search(r"\b(?:visas?|sponsor(?:ship|ing|ed)?|immigration|citizenship|nationality|skilled[\s_-]+worker|work[\s_-]+(?:permits?|authori[sz]ation|eligibility)|right[\s_-]+to[\s_-]+work|permission[\s_-]+to[\s_-]+work)\b", value, re.I))
+    value = re.sub(r"[_/\-\u2010-\u2015]+", " ", value)
+    return bool(re.search(
+        r"\b(?:visas?|sponsor(?:ship|ing|ed|s)?|immigration|citizenship|nationality|ILR|EUSS|"
+        r"(?:indefinite|limited|permanent)\s+leave\s+to\s+(?:remain|enter)|permanent\s+residen(?:cy|ce|t)|"
+        r"(?:pre\s*)?settled\s+status|EU\s+settlement\s+scheme|(?:authori[sz]ed|eligible)\s+to\s+work|"
+        r"work(?:ing)?\s+rights|skilled\s+worker|work\s+(?:permits?|authori[sz]ation|eligibility)|"
+        r"right\s+to\s+work|permission\s+to\s+work)\b", value, re.I))
 
 
 def graduate_level(title, description):

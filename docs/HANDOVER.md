@@ -54,9 +54,15 @@ Real-controls/source step pushed as 78eb45ec186671e60f78de71fdef9f615eb6b81f, re
 
 Backup step pushed as 953ea676a1942b6996f1455961897ce271d9dc06, remote verified. Existing launcher now supports `python3 scripts/dev.py --check-model` from root: same private model selectors/shell precedence, minimal child environment excluding app/OAuth/API/database settings, no app startup/migration, unique ignored report. Mutually exclusive with --migrate. Five tests cover privacy/setup/exit/conflict and preserved normal/migration startup; full suite 303 passed. Actual shortcut reached native unavailable endpoint, all nine NOT TESTED/exit 2, report .local/requirements-check-174d887a51c647619e12293350d080a5.json. No real model quality pass. Backend/frontend unchanged; previous browser/build evidence remains applicable. See SETUP.md.
 
+## Clean delivery / final score guard
+
+Launcher shortcut pushed as 2857020d9923ab8b1347fee13bfd474802bfc553, remote verified. Clean tracked-file export in /tmp, no existing private config/storage/deps, passed fresh frozen installs, 303 tests, typecheck/build, production browser and actual first init → dev --migrate → dashboard/proxy CRUD/auth → clean SIGINT shutdown. Cache-only API attempt lacked wheels; normal permitted package fetch succeeded. Linux disposable verification, not Mac operational proof. Ignored public summary .local/release-nov20.json; scratch private key/value never printed.
+
+Further score review reproduced nine hidden penalty cases for misclassified ILR/leave/residency/settlement/work-rights candidates. Expanded known-phrase lexical guard/separator normalization, no source quote/legal/profile changes. Fifteen end-to-end cases now preserve numeric scores/citations and Unverified; final 317 API tests, current production browser and 38-page regression passed. New version preference-v5-immigration-neutral-terms invalidates old scores; owner recalculates active jobs after pull. This does not certify exhaustive model semantics or immigration eligibility. No new dependencies/schema/environment config.
+
 ## Continue next
 
-Push the checked launcher shortcut, verify remote SHA, then finish the acceptance/readiness review and morning handover until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked v5 score guard, verify remote SHA, then finish the concise morning handover and final delivery audit until 05:00. No further feature scope is required before remaining real-model/network evidence. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 
