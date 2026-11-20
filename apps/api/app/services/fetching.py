@@ -1,6 +1,7 @@
 import ipaddress
 import os
 import socket
+import re
 from time import monotonic, sleep
 from urllib.parse import urljoin, urlsplit
 from urllib.robotparser import RobotFileParser
@@ -37,20 +38,24 @@ def validate_public_url(url: str):
     return url
 
 
-def fetch_page(url: str) -> str:
+def fetch_page(url: str, *, auth=None) -> str:
+    if auth is not None:
+        parts = urlsplit(canonical_url(url))
+        if parts.scheme != "https" or parts.hostname != "www.reed.co.uk" or parts.port is not None or not re.fullmatch(r"/api/1\.0/(?:search/?|jobs/[0-9]{1,15}/?)", parts.path):
+            raise NeedsInput("Credential scope is restricted to the official Reed search/job API.")
     url = validate_public_url(url)
     host = urlsplit(url).hostname
     approved = {value.strip().lower() for value in os.environ.get("URL_FETCH_ALLOWED_HOSTS", "").split(",") if value.strip()}
     if host not in approved:
         raise NeedsInput("Fetching this host is not enabled. Check its terms, approve the host in URL_FETCH_ALLOWED_HOSTS, or paste the page HTML.")
     with httpx.Client(timeout=20, follow_redirects=False, headers={"User-Agent": USER_AGENT}) as client:
-        def get(target, limit):
+        def get(target, limit, request_auth=None):
             validate_public_url(target)
             delay = max(0, 5 - (monotonic() - _last_request.get(host, -100)))
             if delay:
                 sleep(delay)  # This runs only in the separate worker.
             _last_request[host] = monotonic()
-            with client.stream("GET", target) as response:
+            with client.stream("GET", target, **({"auth": request_auth} if request_auth is not None else {})) as response:
                 if response.is_redirect:
                     raise NeedsInput("The page redirects. Verify the destination and paste its direct vacancy URL.")
                 if response.status_code in {401, 403, 429}:
@@ -75,7 +80,7 @@ def fetch_page(url: str) -> str:
                 if crawl_delay > 60:
                     raise NeedsInput("The site's crawl delay is too long for this workflow. Use manual entry.")
                 sleep(crawl_delay)
-            return get(url, 1_000_000)
+            return get(url, 1_000_000, auth)
         except NeedsInput:
             raise
         except httpx.HTTPError:

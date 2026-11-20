@@ -83,7 +83,7 @@ def main():
                 raise RuntimeError(f"Test port {port} is already in use; stop its service first") from exc
     with ollama_fixture() as (model_port, model_calls), tempfile.TemporaryDirectory(prefix="tracker-browser-") as temp, (ROOT / ".local/browser-services.log").open("w") as log:
         token = secrets.token_urlsafe(48)
-        environment = {**os.environ, "APP_ACCESS_TOKEN": token, "DATABASE_URL": f"sqlite:///{temp}/test.db", "STORAGE_DIR": f"{temp}/storage", "API_BASE_URL": "http://127.0.0.1:8001", "NEXT_TELEMETRY_DISABLED": "1", "LLM_PROVIDER": "ollama", "LLM_MODEL": "fixture-contract-only", "LLM_BASE_URL": f"http://127.0.0.1:{model_port}/v1"}
+        environment = {**os.environ, "APP_ACCESS_TOKEN": token, "DATABASE_URL": f"sqlite:///{temp}/test.db", "STORAGE_DIR": f"{temp}/storage", "API_BASE_URL": "http://127.0.0.1:8001", "NEXT_TELEMETRY_DISABLED": "1", "REED_API_KEY": "", "LLM_PROVIDER": "ollama", "LLM_MODEL": "fixture-contract-only", "LLM_BASE_URL": f"http://127.0.0.1:{model_port}/v1"}
         subprocess.run([str(API / ".venv/bin/alembic"), "upgrade", "head"], cwd=API, env=environment, check=True)
         processes = []
         try:
@@ -327,6 +327,15 @@ def main():
                 expect(discovery.get_by_role("button", name="Discover jobs from fixture-ashby", exact=True)).to_be_disabled()
                 discovery.get_by_role("button", name="Remove fixture-ashby", exact=True).click()
                 expect(discovery.get_by_role("button", name="Remove fixture-ashby", exact=True)).to_have_count(0)
+                discovery.get_by_label("Discovery provider", exact=True).select_option("reed")
+                discovery.get_by_label("Reed search keywords", exact=True).fill("graduate software")
+                expect(discovery.get_by_label("Employer name on the board", exact=True)).to_have_count(0)
+                discovery.get_by_role("button", name="Add discovery source", exact=True).click()
+                expect(discovery.get_by_text("Private Reed API key not configured.", exact=True)).to_be_visible()
+                expect(discovery.get_by_role("button", name="Discover jobs from graduate software", exact=True)).to_be_disabled()
+                assert 'fixture-private-api-key' not in page.content()
+                discovery.get_by_role("button", name="Remove graduate software", exact=True).click()
+                expect(discovery.get_by_role("button", name="Remove graduate software", exact=True)).to_have_count(0)
                 discovery.locator("summary").click()
                 register_panel = page.locator("details").filter(has=page.locator("summary", has_text="Sponsor register")).first
                 register_panel.locator("summary").first.click()

@@ -201,6 +201,7 @@ class DiscoverySource(Base):
     board: Mapped[str] = mapped_column(String(150))
     employer: Mapped[str] = mapped_column(String(200), default="", server_default="")
     region: Mapped[str] = mapped_column(String(10), default="global", server_default="global")
+    search_query: Mapped[str] = mapped_column(String(300), default="", server_default="")
     enabled: Mapped[bool] = mapped_column(Boolean, default=False)
 
 

@@ -272,3 +272,13 @@ Settings → Job discovery now includes Ashby. Enter the board slug and the empl
 Only explicitly listed public rows with matching official board/UUID listing URLs are imported. Unlisted/missing visibility, off-board URLs and malformed entries are skipped; application/private ATS endpoints are never called. Dates come only from complete labelled vacancy text; publishedAt is not a deadline. Current support is contract/worker/browser tested with synthetic fixtures, not a live compatibility claim. No new schema/dependency for this adapter.
 
 The matching scorer also excludes immigration/sponsorship/right-to-work terms even if a model incorrectly places them among technology candidates. It never derives your legal status. This score-version update makes older results stale; recalculate active-job scores after pulling.
+
+## Reed aggregator search
+
+Reed is an optional, credential-gated public API source. Obtain a jobseeker API key from https://www.reed.co.uk/developers/jobseeker after reviewing its terms. Put it only in the private root `.env` as `REED_API_KEY=...`; never send the key in chat or enter it in the website. Add `www.reed.co.uk` to your existing private URL_FETCH_ALLOWED_HOSTS, preserving other approved hosts. The cloud network policy is separate and has not been changed. Restart with `python3 scripts/dev.py --migrate` after pulling this release (new search configuration/cached-ID migration).
+
+Settings → Job discovery → Reed search takes keywords instead of an employer board slug. Employer/location come from actual API records. Without a private key the import button is disabled; the key itself is never sent to the browser. Enable the source for manual requests only after reviewing terms/access.
+
+Each run reads the **first 20 matching ads**, then detailed API text. It is not all search results; change the query to explore other matches. Existing rate/robots/size/denial guards apply, so detailed imports can take several minutes while the app stays open. No automatic discovery/retry is scheduled. Posting date/advert expiry are not guessed as application deadlines. No sponsorship filter or score penalty. Known Reed IDs dedupe hostname/title-slug variants while preserving histories; conflicts among existing records need review.
+
+Live Reed credentials/official responses were unavailable in cloud. Current verification is synthetic contract/worker/auth-scope/migration/browser coverage. No Google/OAuth changes are needed. Use the existing `--migrate` backup-verifying launcher; old sources keep empty search-query defaults.

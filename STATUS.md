@@ -2,7 +2,7 @@
 
 Reviewed: 20 November 2026 (Europe/London).
 
-**Phase 2: in progress, roughly 85%.** This estimate is not acceptance. Phase 1 was accepted for progression with the explicit deferrals below. Sheets stays read-only by default; no Phase 3 work, submissions or environment publication.
+**Phase 2: in progress, roughly 90%.** This estimate is not acceptance. Phase 1 was accepted for progression with the explicit deferrals below. Sheets stays read-only by default; no Phase 3 work, submissions or environment publication.
 
 ## Delivered
 
@@ -28,7 +28,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals a
 
 ## Latest verification
 
-- API: **225 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
+- API: **243 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
 - Frontend: `npm run typecheck` and production build passed on the final evidence-clear UI code.
 - Final production browser smoke passed on the latest backend/frontend: real disposable worker, Notes repair/restart, identity aliases, score/feedback/weights persistence, evidence save/filter/source/stale/clear, Lever EU source configuration, origin/auth guards, CRUD/history, CV review/download, backup/CLI restore, reminders and 1440/390/320px layouts. No owner data/Google/Lever calls.
 - Alembic schema-drift and upgrade/downgrade tests pass; legacy source settings, evidence and job/history preservation covered. Latest head a74cd158ef43.
@@ -80,3 +80,9 @@ Public snapshots plus nine manually reviewed, hash-bound technology expectations
 Ashby adapter/configuration implemented alongside Greenhouse and Lever: listed-only intake, strict board/UUID HTTPS URLs, literal source fields, published-date separation, script-free HTML fallback and owner-preserving same-ID enrichment. No new dependency/schema. Public npm client source inspected for endpoint/field contract, never installed/executed; live official API/docs compatibility still NOT TESTED. Synthetic fixture stays outside genuine eval data.
 
 225 API tests and frontend typecheck/build passed; full production browser passed including disabled Ashby source create/remove and all existing flows. Deterministic scoring now excludes immigration/visa/sponsorship/right-to-work candidates even when misclassified by a model; numeric/fact-citation score invariance test passes. New score version preference-v4-no-immigration-terms invalidates old caches. Initial new assertion compared intentionally different fallback/model explanation strings; corrected to numeric points/citations, then suite passed. Expanded 35-page regression unchanged, zero false YES, Phase 2 acceptance false. No network/config mutation.
+
+## Aggregator / fresh live intake checkpoint
+
+Bounded Reed API keyword search/detail adapter implemented. Private server-only key, readiness boolean only, 20-result page, detailed text, no inferred expiry/deadline dates, official numeric source-ID dedupe and owner-preserving legacy cache migration. Credentials are scoped to exact HTTPS Reed API paths and never sent to robots/URLs/browser/tasks. Existing fetch guards remain. Migration da70f481b276 adds search-query config and generated key repair. 243 API tests; typecheck/build; full production browser passed, including missing-key disabled action and no employer field for search. Live Reed still NOT TESTED: no private key/source grant. No dependencies or environment/private .env mutation.
+
+Fresh permitted public Greenhouse API → actual worker check in disposable DB/storage passed on current code: saved real MW London posting tracked/shortlisted first, API imports 4 new + 1 duplicate; repeat 0 new + 5 duplicates. One application per job, seeded status/two history events preserved, all five Unverified. Current role-only ranking without applicant facts prioritises London graduate role (65) over overseas graduate controls (45). This is a preference demonstration, not personal fit/eligibility. Report fixtures/eval/reports/nov20-live-intake.json; raw API hashes retained, raw captures ignored locally. No Mac DB, Google, portal forms or model requests. Initial temporary script needed PYTHONPATH corrected before it ran; final live check passed.

@@ -331,3 +331,7 @@ A user-downloaded Home Office worker-register CSV may be cached after explicit o
 Ashby public posting-board intake joins Greenhouse/Lever with explicit public-listing visibility and strict source identity checks. Missing/unlisted/private or malformed data is not guessed. No application endpoints. Current Ashby verification is synthetic contract/worker/browser coverage, not live.
 
 Deterministic matching excludes immigration/sponsorship/right-to-work candidates even when a model misclassifies them as skills. This is not a legal eligibility rule. Source candidates remain reviewable; quality evaluation is still needed. Score version changes invalidate previously cached calculations.
+
+### Initial aggregator delivery (20 November 2026)
+
+Reed supports explicit keyword searches through its credentialed public API. Keys stay private/server-side and are scoped to fixed official search/detail endpoints, not URLs/robots/browser/task data. Each run covers the first 20 matches with detailed text, not all results; existing public fetch guards remain. Publication/ad-expiry dates do not establish application deadlines. Official Reed IDs may dedupe URL variants without merging histories. Current real verification is unavailable; fixtures/auth-scope/browser/migration coverage is not a live compatibility claim.

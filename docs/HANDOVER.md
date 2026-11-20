@@ -26,9 +26,15 @@ Runner step pushed as 8d40786ac74e23ae255191a43357a268dd5e2e4b, remote verified.
 
 Found model-category edge case: source-grounded visa terms could otherwise enter a skill denominator. Added deterministic immigration-term scoring exclusion and preference-v4-no-immigration-terms version. Numeric score/citations remain unchanged with injected visa skill. New test first compared explanation strings that legitimately identify fallback vs local mode; corrected to relevant numeric/citation invariant, then full suite passed. No legal values inferred/changed. Real 35-page field regression unchanged. Network approval still pending; no settings mutated. Next independent source step may add one credential-gated aggregator; real keys must be configured privately, never requested in chat.
 
+## Reed / fresh live checkpoint
+
+Ashby/scoring step pushed as 9bc3e1f1f9159356f599bd9bad02a24e821d1fef, remote verified. Reed aggregator now implemented with private REED_API_KEY, bounded first-20 search plus detailed API text, exact official ID/URL checks, credential-free robots and strict credential path scope. Source readiness bool only; no browser key input. Migration da70f481b276 preserves old source config and reindexes cached Reed URLs without history merges. 243 API tests, frontend and full browser passed, including absent-key/source configuration. Synthetic fixture key only; real Reed source/key unavailable. No private .env/network changes.
+
+Fresh allowed Greenhouse live API/worker check also passed in temporary storage: pre-seeded/shortlisted genuine MW London posting → 4 new/1 duplicate → repeat 0 new/5 duplicate; one application per job, seed status/two events preserved, all Unverified. No facts/profile/model/Google/portal forms. London grad preference score 65, overseas controls 45 with no applicant facts. Saved public metadata report fixtures/eval/reports/nov20-live-intake.json; raw API responses ignored .local/live-nov20. Temp script's module path fixed with PYTHONPATH before execution; no app regression. Phase 2 ~90% implementation, acceptance still incomplete; real Ollama/blocked-source/official register verification remains pending. Next work can harden proof/remaining source scope while waiting; do not publish the unanswered network draft.
+
 ## Continue next
 
-Push the checked register step and verify the remote SHA, then continue the independent real-model evaluation runner/public-source adapter work. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling this migration; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked Reed/live-proof step, verify remote SHA, then continue remaining Phase 2 scope/tests until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling this migration; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 

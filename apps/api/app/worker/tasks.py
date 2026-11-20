@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.db.models import Application, MatchResult, DiscoverySource, Job, Document, FactCandidate, Preferences, Schedule, SheetConfig, Task, now
 from app.integrations.llm.provider import configured_provider
 from app.integrations.discovery.greenhouse import read_board
+from app.integrations.discovery.reed import read_search as read_reed_search
 from app.integrations.discovery.ashby import read_board as read_ashby_board
 from app.integrations.discovery.lever import read_board as read_lever_board
 from app.integrations.sheets.client import GoogleSheet
@@ -76,9 +77,11 @@ def execute(session, task, settings):
         return {"job_id": job.id, **save_match(session, job)}
     if task.kind == "discover":
         source = session.get(DiscoverySource, task.payload.get("source_id"))
-        if not source or not source.enabled or source.provider not in {"greenhouse", "lever", "ashby"}:
+        if not source or not source.enabled or source.provider not in {"greenhouse", "lever", "ashby", "reed"}:
             raise NeedsInput("The discovery source is missing, disabled or unsupported.")
-        if source.provider == "lever":
+        if source.provider == "reed":
+            jobs, warnings = read_reed_search(source.search_query)
+        elif source.provider == "lever":
             jobs, warnings = read_lever_board(source.board, source.employer, source.region)
         elif source.provider == "ashby":
             jobs, warnings = read_ashby_board(source.board, source.employer)

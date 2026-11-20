@@ -1,0 +1,11 @@
+# Bounded Reed API search
+
+20 November 2026. Phase 2 includes aggregator APIs. Add one explicit, manual search path using a server-side REED_API_KEY and existing source/task/fetch/identity infrastructure. No new dependencies. No scraping of the website, private portals, LinkedIn or Indeed. No browser key field; configuration returns only readiness boolean.
+
+Reference: https://www.reed.co.uk/developers/jobseeker. Public reeduk-sdk-js 1.0.2 source was inspected for the search/details fields, pagination and HTTP Basic key contract (npm archive SHA-256 5f65a7f09a39b2bc6298b871adc7aca217145d636a608f78e945f2230924ad7c); it was not installed/executed. No real credentials/live official API response were available, so compatibility remains NOT TESTED.
+
+Read the first 20 keyword matches, then each detailed API record; clearly label the result as a bounded search page. Do not misrepresent excerpts as full vacancy text or posting/advert-expiration timestamps as application deadlines. Keep location literal, without inferring UK eligibility. Strict official Reed URL/numeric-ID matching supports hostname/slug variants; distinct known IDs remain distinct. Cached legacy Reed keys migrate without merging job/application histories. Missing key stops before HTTP; later detail denial aborts before partial intake. Invalid individual rows are counted.
+
+Extend the shared fetcher with a credential option restricted to HTTPS www.reed.co.uk /api/1.0/search or numeric jobs endpoints. Keep host opt-in, public DNS, TLS, robots, delays, size bounds, denied-access/rate-limit stops and no redirects. Credentials go only on the actual API GET; robots gets no auth, keys never enter URLs/task/config output. Do not add broad arbitrary authenticated fetching. Source API data is untrusted and never supplies applicant facts, approval or APPLIED status.
+
+Tests use synthetic API/HTTP data and fixture keys. Cover detailed-vs-excerpt/date semantics, key privacy/scope/robots, source readiness, atomic failed search, owner-preserving alias dedupe and migration. Browser verifies source keywords/no employer guessing/missing-key disabled action. Actual account terms/key/rate allowance and live compatibility require owner private setup. No Google permissions/network settings changed.

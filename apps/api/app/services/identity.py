@@ -19,6 +19,8 @@ def ats_identity(url):
     if parts.port is not None:
         return None
     path = parts.path.strip('/').split('/')
+    if parts.hostname in {'reed.co.uk', 'www.reed.co.uk'} and len(path) == 3 and path[0] == 'jobs' and re.fullmatch(r'[0-9]{1,15}', path[2]) and int(path[2]) > 0:
+        return f'reed:jobs:{int(path[2])}'
     if parts.hostname in {'boards.greenhouse.io', 'job-boards.greenhouse.io', 'boards.eu.greenhouse.io', 'job-boards.eu.greenhouse.io'}:
         if len(path) == 3 and re.fullmatch(r'[A-Za-z0-9_-]{1,100}', path[0]) and path[1] == 'jobs' and re.fullmatch(r'[0-9]{1,30}', path[2]):
             provider = 'greenhouse-eu' if '.eu.greenhouse.io' in parts.hostname else 'greenhouse'
