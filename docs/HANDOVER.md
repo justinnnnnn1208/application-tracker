@@ -46,9 +46,13 @@ Local transport/queue step pushed as 0c71da6473768f3c90696184013659d6f6e14ba1, r
 
 Live metadata reads revealed custom employer URLs and EU-hosted listings returned by the shared Greenhouse API; no blocked host was fetched or settings changed. Source hardening now rejects malformed IDs/content and mismatched known Greenhouse board/ID URLs, retains custom links without inferring identity from their query params, and respects EU URL scope. Initial seven defect tests failed before fix; one extra malformed-content case failed later, then corrected. Final 289 API tests passed. Browser and fresh strict-ID live disposable import/repeat passed; current 38-page regression exit 0, phase_2_accepted=false. Current model runner now separates valid JSON from limited-content checks; actual native attempt still all nine NOT TESTED/exit 2. No real model quality pass. STATUS/README/setup consolidated to remove stale statements.
 
+## Backup preservation checkpoint
+
+Real-controls/source step pushed as 78eb45ec186671e60f78de71fdef9f615eb6b81f, remote verified. Restore review reproduced acceptance of missing-database/unsupported/duplicate-member archives; now rejects before any restored destination. Valid version-1 format preserved. Exact database snapshots now encode SQLite file URIs: # could previously select/create a different empty file, percent escapes could open the wrong path/fail. Three filename regressions prove app-driver and restored-row identity/no truncated file. First percent fixture used an incorrectly encoded SQLAlchemy URL; corrected to URL.create/render_as_string, same assertions retained. Final 298 API tests and production browser backup/CLI restore passed. No schema/dependencies/private data/config changes. See decisions/backup-manifest-validation.md. Mac operational restore remains untested.
+
 ## Continue next
 
-Push the checked real-controls/source-validation step, verify remote SHA, then continue focused preservation/readiness work until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked backup preservation step, verify remote SHA, then simplify the Mac local-model verification command and finish readiness/handover until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 

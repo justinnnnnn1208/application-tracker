@@ -482,3 +482,60 @@ def test_status_write_worker_and_uncertain_outcome_are_not_retried(client, monke
     client.post("/api/tasks/sheets/sync")
     drain(client)
     assert len(sheet.writes) == 1
+
+
+def test_restore_rejects_manifest_without_database_instead_of_creating_empty_db(tmp_path):
+    archive=tmp_path/'missing-database.zip'
+    with zipfile.ZipFile(archive,'w') as file:
+        file.writestr('manifest.json',json.dumps({'version':1,'files':{}}))
+    destination=tmp_path/'restore-must-not-exist'
+    with pytest.raises(ValueError,match='manifest'):
+        restore(archive,destination)
+    assert not destination.exists()
+
+
+@pytest.mark.parametrize('variant',['version','missing-version','duplicate','unexpected-file','non-object'])
+def test_restore_rejects_unsupported_or_ambiguous_manifest_without_partial_destination(client,tmp_path,variant):
+    import hashlib
+    original=backup(client.app.state.settings,tmp_path/'backups')
+    archive=tmp_path/f'{variant}.zip'
+    with zipfile.ZipFile(original['archive']) as file:
+        members={name:file.read(name) for name in file.namelist()}
+    manifest=json.loads(members['manifest.json'])
+    if variant=='version':manifest['version']=999
+    elif variant=='missing-version':manifest.pop('version')
+    elif variant=='unexpected-file':
+        members['unexpected.bin']=b'not a supported backup member'
+        manifest['files']['unexpected.bin']=hashlib.sha256(members['unexpected.bin']).hexdigest()
+    elif variant=='non-object':manifest=[]
+    members['manifest.json']=json.dumps(manifest).encode()
+    with zipfile.ZipFile(archive,'w') as file:
+        for name,data in members.items():file.writestr(name,data)
+        if variant=='duplicate':
+            with pytest.warns(UserWarning,match='Duplicate name'):
+                file.writestr('database.sqlite3',members['database.sqlite3'])
+    destination=tmp_path/f'restore-{variant}'
+    with pytest.raises(ValueError):restore(archive,destination)
+    assert not destination.exists()
+
+
+@pytest.mark.parametrize('filename',['source#private.sqlite3','source%20private.sqlite3','source with spaces.sqlite3'])
+def test_backup_reads_the_exact_database_with_uri_special_characters(tmp_path,filename):
+    from app.core.config import Settings
+    database=tmp_path/filename
+    with sqlite3.connect(database) as connection:
+        connection.execute('CREATE TABLE preserved (value TEXT NOT NULL)')
+        connection.execute('INSERT INTO preserved VALUES (?)',('synthetic exact-database fixture',))
+    storage=tmp_path/'storage';storage.mkdir()
+    from sqlalchemy.engine import URL
+    from app.db.session import make_engine
+    settings=Settings(URL.create('sqlite',database=str(database)).render_as_string(hide_password=False),'fixture-only-token-'*3,storage)
+    engine=make_engine(settings.database_url)
+    with engine.connect() as connection:
+        assert connection.exec_driver_sql('SELECT value FROM preserved').scalar()=='synthetic exact-database fixture'
+    engine.dispose()
+    result=backup(settings,tmp_path/'backups')
+    assert not (tmp_path/'source').exists()
+    destination=tmp_path/'restored-exact-database';restore(Path(result['archive']),destination)
+    with sqlite3.connect(destination/'database.sqlite3') as connection:
+        assert connection.execute('SELECT value FROM preserved').fetchone()[0]=='synthetic exact-database fixture'

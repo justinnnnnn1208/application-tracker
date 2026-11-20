@@ -24,12 +24,19 @@ def restore(archive: Path, destination: Path):
             members = file.infolist()
             if sum(item.file_size for item in members) > 2_000_000_000:
                 raise ValueError("Backup is too large")
+            names = file.namelist()
+            if len(names) != len(set(names)):
+                raise ValueError("Duplicate backup archive members")
             for item in members:
                 path = Path(item.filename)
                 if path.is_absolute() or ".." in path.parts or (item.external_attr >> 16) & 0o170000 == 0o120000:
                     raise ValueError("Unsafe archive member")
             manifest = json.loads(file.read("manifest.json"))
-            if set(file.namelist()) != set(manifest["files"]) | {"manifest.json"}:
+            if not isinstance(manifest, dict) or type(manifest.get("version")) is not int or manifest["version"] != 1 or not isinstance(manifest.get("files"), dict) or "database.sqlite3" not in manifest["files"]:
+                raise ValueError("Unsupported or incomplete backup manifest")
+            if any(name != "database.sqlite3" and not name.startswith("storage/") for name in manifest["files"]):
+                raise ValueError("Unsupported backup manifest member")
+            if set(names) != set(manifest["files"]) | {"manifest.json"}:
                 raise ValueError("Unexpected archive members")
             for name, expected in manifest["files"].items():
                 data = file.read(name)
@@ -61,7 +68,7 @@ def backup(settings, destination: Path):
     archive = destination / name
     with tempfile.TemporaryDirectory(prefix="tracker-backup-") as directory:
         snapshot = Path(directory) / "database.sqlite3"
-        with sqlite3.connect(f"file:{database}?mode=ro", uri=True) as source, sqlite3.connect(snapshot) as target:
+        with sqlite3.connect(database.as_uri() + "?mode=ro", uri=True) as source, sqlite3.connect(snapshot) as target:
             source.backup(target)
         files = {"database.sqlite3": snapshot}
         for path in storage.rglob("*"):

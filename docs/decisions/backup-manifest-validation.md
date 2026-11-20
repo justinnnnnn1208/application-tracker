@@ -1,0 +1,9 @@
+# Restore format and exact database paths
+
+20 November 2026. Preservation review found that a manifest containing no database could be accepted: connecting SQLite during integrity checking created an empty database, which then passed integrity. Unsupported/missing versions, duplicate ZIP names and checksum-listed files outside the backup layout were also accepted. Six new malformed-archive tests reproduced these defects before the fix.
+
+Require the existing integer version 1, a files object containing database.sqlite3, and only the supported database/storage member layout. Reject duplicate archive names before reading the manifest. Keep traversal/symlink/size/checksum/database-integrity checks and restore only to a new destination; failed validation leaves no destination. Do not rewrite old archives or replace an existing database.
+
+A second regression reproduced a real source-path issue: inserting a database filename directly into a SQLite file URI treats # as a fragment and percent escapes as syntax. It could back up a different/empty file or fail to open. Use Path.as_uri() before adding the read-only query, so the snapshot reads exactly the database selected by SQLAlchemy configuration. Tests create synthetic databases with #, literal %20 and spaces; prove the app's SQLAlchemy driver reads the expected row, then prove restore contains it and no truncated filename was created. The first percent test used an incorrectly encoded SQLAlchemy URL, was corrected to URL.create/render_as_string, and retains the same exact-file assertions.
+
+No new dependencies, schema, archive format or private-data access. Existing version-1 backups remain supported; newly rejected inputs are incomplete/unsupported/ambiguous archives. Browser/migration/service round trips cover ordinary DB/facts/CV/register content. Owner Mac operational restore remains untested; these disposable tests do not claim it passed.

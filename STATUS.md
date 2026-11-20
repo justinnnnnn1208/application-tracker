@@ -15,7 +15,7 @@ Reviewed: 20 November 2026 (Europe/London).
 | Local requirement candidates | Explicit per-job Ollama tasks, source quotes/schema validation, bounded input/output/retries and stale/concurrent-source protection. No Notes/profile/facts/CV/legal inputs. Current technology candidates feed deterministic overlap; otherwise labelled finite-keyword fallback. Both Ollama paths enforce loopback endpoints and ignore shell proxies/redirects. Synthetic HTTP tests are not real model quality. |
 | Sponsorship review | Owner-confirmed source quote and saved listing URL, context fingerprint, stale/legacy rejection and clear action. Provenance checks do not establish the statement's meaning. Automatic role-policy assessment is not delivered; default remains Unverified. |
 | Licence signal | Dated owner-confirmed official-asset CSV upload, conservative exact organisation-name lookup, separate route/town/source/hash display. Full parsing precedes atomic cache replacement; snapshots are retained/backed up. This is not online provenance verification, legal-employer identity or role sponsorship. |
-| Safe updates/backups | Backup-verifying `python3 scripts/dev.py --migrate`, schema guard and non-destructive CLI restore. Migration head eb81a592c387; cached identity migrations preserve existing jobs/history. No new dependencies; private configuration/encryption keys remain unchanged. |
+| Safe updates/backups | Backup-verifying `python3 scripts/dev.py --migrate`, schema guard and non-destructive CLI restore. Migration head eb81a592c387; cached identity migrations preserve existing jobs/history. Restore now rejects incomplete/unsupported/duplicate-member archives; URI-safe read-only snapshots honour database paths containing #, literal percent escapes or spaces. No new dependencies; private configuration/encryption keys remain unchanged. |
 
 ## Phase 1 acceptance record
 
@@ -32,12 +32,12 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 
 ## Latest verification
 
-- **289 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
+- **298 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
 - Latest frontend typecheck and production build passed on the SmartRecruiters UI; subsequent changes are backend/data/docs only.
 - Production browser passed: disposable real worker, direct dashboard/reload/restart, server-only credential/origin guards, CRUD/history, Notes repair, CV review/download, filters/deadlines, preferences/feedback/evidence, source controls, synthetic native Ollama task, register upload, backup/CLI restore, notification mocks and 1440/390/320px layouts.
 - Fresh live strict-ID Greenhouse import passed in temporary storage: 4 new + 1 duplicate, repeat 0 new + 5 duplicates; one application each, saved shortlist/history preserved, all Unverified. No applicant facts/model/Google/forms. Reports/capture hashes distinguish live evidence from fixtures.
 - Greenhouse malformed/conflicting board/ID/URL tests reproduced failures before hardening. They now skip invalid entries, preserve publisher custom links without trusting arbitrary query IDs, and allow literal EU listing scope returned by the shared API. One additional malformed-content test initially failed; explicit type validation fixed it, then the full suite passed.
-- Local proxy regression reproduced failure before the direct-client fix and passed after. No unresolved application-test failure at this checkpoint.
+- Local proxy regression reproduced failure before the direct-client fix and passed after. Backup review reproduced missing-DB/unsupported-manifest acceptance and URI-filename mistakes; strict format checks and URI-safe paths now pass targeted/full/browser checks. One percent-filename test first encoded a different SQLAlchemy path, was corrected to a rendered URL, and proves both app-driver and restored-row identity. No unresolved application-test failure at this checkpoint.
 
 ## Real-page and model evaluation
 
