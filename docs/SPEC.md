@@ -101,7 +101,7 @@ Existing tracker: https://docs.google.com/spreadsheets/d/1UCZX9aj7Ls_EIgY231bhuf
 
 - OAuth 2.0, `spreadsheets` scope, tokens encrypted at rest.
 - **Current rollout (owner update):** the owner reported all 20 development-copy jobs imported and approved copy-only status write-back. Read-only remains the default. Only an explicit private `SHEETS_WRITE_COPY_ID` enables the broader `spreadsheets` scope, followed by renewed consent. The app restricts mutations to single mapped status cells on that copy; the original remains blocked. Live write verification is still pending. The owner subsequently explicitly accepted deferring live write verification and authorised Phase 2, with Mac notification and operational restore checks also outstanding. Keep Sheets read-only by default.
-- Map columns **by header name** through a configurable mapping. Header names have been supplied; the development-copy tab and header-row number still need confirmation (see [SETUP.md](SETUP.md)).
+- Map columns **by header name** through a configurable mapping. The development-copy configuration, tab and header row were supplied, and the owner confirmed all 20 rows imported. Preserve the existing Mac configuration; do not ask for settled values again (see [SETUP.md](SETUP.md)).
 - A row's job URL is its identity; store the row number alongside it.
 - **Never rewrite ranges.** Write single cells only, so formulas, formatting and notes stay intact.
 - Pull changes using a stored hash per row; write back only when the DB value changed.
@@ -241,7 +241,7 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 
 ## 13. UI design reference
 
-The owner supplied two reference screenshots in conversation: a light dashboard with blue actions, and a compact dark tracker with filters and collapsible sections. Use the first for layout and the second for compact controls; the owner subsequently requested a charcoal-grey theme; these are guides, not pixel-exact blueprints. No reference PNG is currently committed at `docs/design/dashboard.png`. The references contain Phase 2 and 3 elements that must not be built yet (see "Phase 1 scope" below).
+The owner supplied two reference screenshots in conversation: a light dashboard with blue actions, and a compact dark tracker with filters and collapsible sections. Use the first for layout and the second for compact controls; the owner subsequently requested a charcoal-grey theme; these are guides, not pixel-exact blueprints. No reference PNG is currently committed at `docs/design/dashboard.png`. The references contain several phases: Phase 2 discovery/matching is now authorised; application preparation/review remains gated by later phases. The accepted Phase 1 baseline is described below.
 
 ### Layout and style
 
@@ -259,16 +259,16 @@ The owner supplied two reference screenshots in conversation: a light dashboard 
 
 Desktop deadline reminders (owner clarification): opt-in browser notifications, displayed through macOS when browser/OS settings allow them. While the tab is open, notify once per job per UK day for active deadlines within 7 days; exclude expired/applied source rows. No reminders run after the tab closes. Keep the deadline view available when permission is denied.
 
-### Phase 1 scope (pages and elements to build now)
+### Phase 1 scope (accepted baseline)
 
 - **Dashboard:** sidebar; "Paste a job URL" input with an Add job button; last Sheet sync time; number cards for Jobs tracked, Closing in 7 days, and Applied; a "Closing soon" table with Role, Company and location, Deadline, Sponsorship and Status columns.
 - **Jobs:** list with filters (status, deadline, sponsorship) and a job detail page showing extracted fields, original description and URL, and the sponsorship evidence.
 - **My Profile:** CV upload and review of the extracted facts (edit, correct, confirm), plus the fixed sensitive-declaration fields.
 - **Settings:** Google Sheets connection and column mapping, backup and restore, access token.
 
-### Not in Phase 1 (do not build yet)
+### Elements beyond Phase 1
 
-- The Match column and scores (Phase 2).
+- The Match column and scores belong to Phase 2, which the owner has now authorised.
 - "Awaiting your review" and "Needs your input" cards, Application Queue, Application Review, My Applications, and CV Manager (Phase 3 onwards).
 - Sidebar links for pages that do not exist yet should be hidden, not left as dead links.
 
