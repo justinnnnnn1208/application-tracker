@@ -16,6 +16,10 @@ Local requirements step pushed as 2b9e6a81052a4505894abb05cc37abe65ae85fcc, remo
 
 Checks: **207 API tests passed**; typecheck/build passed; full production browser passed through protected metadata/body upload → real worker → separate register signal, Unverified role policy, and backup/CLI restore of metadata/entries/raw CSV. Final two added legacy/unicode unit cases pass; no runtime changes after browser run. Real 35-page regression unchanged with zero false YES and phase_2_accepted=false. Actual official CSV/live model quality still NOT TESTED. See docs/decisions/sponsor-register.md. Phase 2 ~85% implementation; acceptance incomplete. Network draft approval remains unanswered; do not mutate it.
 
+## Local model runner checkpoint
+
+Register step pushed as 0948974fa32d5b808f4d3e33357588ac1590307e, remote SHA verified. New runner app.services.requirements_eval uses only validated public snapshots and nine manually reviewed/hash-bound technology cases. It reports minimum recall/empty-case/forbidden company-background controls, not complete semantic precision. No DB/profile/Notes/CV access. Existing reports are not overwritten. Real native Ollama attempt failed because no local server/model is installed/running: all nine NOT TESTED, quality metrics null, exit 2; only the first connection was attempted. Do not call this real-model evaluation passed. Unit/API suite 213 passed and 35-case field regression unchanged; no UI changes in this checkpoint. See SETUP.md for the one-command Mac check.
+
 ## Continue next
 
 Push the checked register step and verify the remote SHA, then continue the independent real-model evaluation runner/public-source adapter work. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling this migration; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.

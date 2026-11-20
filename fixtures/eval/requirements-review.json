@@ -1,0 +1,97 @@
+{
+  "reviewed_on": "2026-11-20",
+  "notes": "Minimum named technology expectations reviewed from saved visible descriptions before a real model run. Empty cases contain no named technology requirements; generic engineering/sales skills are not claimed absent. These are a small development subset, not a held-out semantic-quality certificate.",
+  "cases": [
+    {
+      "id": "graphcore-8894042002",
+      "must_include_skills": [
+        "Linux",
+        "Windows",
+        "Python",
+        "Bash",
+        "PowerShell"
+      ],
+      "empty_skills": false,
+      "forbidden_skills": [],
+      "note": "Explicit server environments and scripting examples in What we're looking for.",
+      "sha256": "34c7cf19dd463ca74c7f13cdbbc8c67c831d3dc9e65d31ada1004d4bba0d915e"
+    },
+    {
+      "id": "canonical-7661586",
+      "must_include_skills": [],
+      "empty_skills": true,
+      "forbidden_skills": [
+        "Ubuntu",
+        "Linux",
+        "Blockchain",
+        "IoT"
+      ],
+      "note": "Graduate sales role. These names occur in company/product background, not named technology requirements for the candidate.",
+      "sha256": "c330b8c0e1de652052551e55d24aaa95f4a12de67b5021959d6d487c16e9486e"
+    },
+    {
+      "id": "monzo-5018066",
+      "must_include_skills": [],
+      "empty_skills": true,
+      "forbidden_skills": [],
+      "note": "Engineering management experience required; no named language/tool/framework requirement appears in this snapshot.",
+      "sha256": "d3d3c30f5a9f47304df9f324d0833ce6e9a68b17f88019c8f64c4028df874b57"
+    },
+    {
+      "id": "deliveroo-8202399",
+      "must_include_skills": [
+        "Python"
+      ],
+      "empty_skills": false,
+      "forbidden_skills": [],
+      "note": "Production code in Python is explicitly requested.",
+      "sha256": "06d32a5087a14000a3d9112b6fe26a8e329f350e80da993c0f258389cfb61eb7"
+    },
+    {
+      "id": "mw-8646947002",
+      "must_include_skills": [
+        "Python",
+        "C++"
+      ],
+      "empty_skills": false,
+      "forbidden_skills": [],
+      "note": "Advanced programming skills in Python, C++, or similar languages.",
+      "sha256": "73d751b47667bc7530dfd5b646545c1b174b7e577df3ec9a0e278860541b1afd"
+    },
+    {
+      "id": "mw-8636830002",
+      "must_include_skills": [
+        "Python",
+        "C++"
+      ],
+      "empty_skills": false,
+      "forbidden_skills": [],
+      "note": "Strong programming skills in Python, C++, or similar languages.",
+      "sha256": "f8deac8c451fc47c9efda1c123aa8612ef295b07d357370e8e477d525cf81b71"
+    },
+    {
+      "id": "mw-8645263002",
+      "must_include_skills": [],
+      "empty_skills": true,
+      "forbidden_skills": [],
+      "note": "Graduate rotations describe engineering work without named technology requirements.",
+      "sha256": "0a545970e53e40a3806d66e9273f9b3e14b068ddd16fbf533f9a17685c7b80cd"
+    },
+    {
+      "id": "mw-8646984002",
+      "must_include_skills": [],
+      "empty_skills": true,
+      "forbidden_skills": [],
+      "note": "Same graduate template, Hong Kong control; no named technology requirements.",
+      "sha256": "a6f5c1209e3d36506c680930777baf6f06b5bd304e5da1cf044f184a84cada9a"
+    },
+    {
+      "id": "mw-8646976002",
+      "must_include_skills": [],
+      "empty_skills": true,
+      "forbidden_skills": [],
+      "note": "Same graduate template, Singapore control; no named technology requirements.",
+      "sha256": "8f7e53a6d8fb75ca805c0374bf66fd668d8c73fbc240362915e217ca1fec5c38"
+    }
+  ]
+}

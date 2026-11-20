@@ -10,6 +10,10 @@ from app.schemas import RequirementsData
 from app.services.errors import NeedsInput
 from app.services.sponsorship import snapshot
 
+class LocalModelUnavailable(NeedsInput):
+    """Model configuration/transport failed; semantic quality was not tested."""
+
+
 MAX_CHARS = 16000
 
 
@@ -36,7 +40,7 @@ def public_text(job):
 def extract(text, *, client=None):
     config = configuration()
     if not config:
-        raise NeedsInput('Configure local Ollama with LLM_PROVIDER=ollama and LLM_MODEL. Remote model URLs are not used for this task.')
+        raise LocalModelUnavailable('Configure local Ollama with LLM_PROVIDER=ollama and LLM_MODEL. Remote model URLs are not used for this task.')
     url, model = config
     source = text[:MAX_CHARS]
     owned_client = client is None
@@ -61,7 +65,7 @@ def extract(text, *, client=None):
             except (ValueError, KeyError, TypeError, AttributeError):
                 continue
             except httpx.HTTPError:
-                raise NeedsInput('Local Ollama could not complete extraction. Start Ollama and install the configured model, then request a new task.') from None
+                raise LocalModelUnavailable('Local Ollama could not complete extraction. Start Ollama and install the configured model, then request a new task.') from None
     finally:
         if owned_client:
             client.close()

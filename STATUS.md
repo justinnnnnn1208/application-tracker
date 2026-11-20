@@ -28,7 +28,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals a
 
 ## Latest verification
 
-- API: **207 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
+- API: **213 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
 - Frontend: `npm run typecheck` and production build passed on the final evidence-clear UI code.
 - Final production browser smoke passed on the latest backend/frontend: real disposable worker, Notes repair/restart, identity aliases, score/feedback/weights persistence, evidence save/filter/source/stale/clear, Lever EU source configuration, origin/auth guards, CRUD/history, CV review/download, backup/CLI restore, reminders and 1440/390/320px layouts. No owner data/Google/Lever calls.
 - Alembic schema-drift and upgrade/downgrade tests pass; legacy source settings, evidence and job/history preservation covered. Latest head a74cd158ef43.
@@ -70,3 +70,7 @@ Owner selected local Ollama; qwen2.5:3b recommended as an initial small Mac mode
 Owner-confirmed, dated CSV import and conservative exact-name signal implemented. Full parsing precedes transactional replacement of public cache only; source/date/hash/raw files retained. Cases/spacing/Unicode composition match, but brands/punctuation/accents/suffixes are not guessed. Policy sponsorship, legal declarations, scores and job/history records remain unchanged. Legacy boolean flags without register provenance are not treated as checks. The UI links the dated source and clearly labels owner-confirmed upload; real official-file/network verification remains NOT TESTED.
 
 207 API tests; frontend typecheck/build; production browser upload through the protected proxy → real worker → separate job signal with Unverified policy; backup/CLI restore including new tables/raw CSV bytes passed. Added migration c96ef370a165. No new dependencies; Sheets/read-only scope and environment settings unchanged. Expanded real-page regression still reports zero extraction failures/false YES and Phase 2 accepted false. Local real-model and live multi-ATS/official-register acceptance remain unverified. Phase estimate ~85% implementation, not acceptance.
+
+## Local-model evaluation runner
+
+Public snapshots plus nine manually reviewed, hash-bound technology expectations now have a standalone local-only runner. It distinguishes schema grounding from semantic minimum-term/empty-case checks and includes company-marketing false-positive controls. It never reads the app DB/profile/Notes/CVs and never overwrites reports. Native endpoint attempt in this cloud returned model unavailable: nine cases NOT TESTED, quality metrics null, exit 2; no semantic pass claimed. All unavailable cases stop after the first failed connection. Unit tests cover abstention, valid-but-wrong category, fabricated output, unavailable server and stale review hashes. API suite 213 passed; no frontend change in this step. Field/classification regression on 35 real snapshots remains unchanged.

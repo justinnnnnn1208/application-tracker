@@ -1,0 +1,71 @@
+from pathlib import Path
+import pytest
+from app.schemas import RequirementsData
+from app.services.evaluation import load_cases
+from app.services.requirements_eval import load_review, evaluate
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+def test_real_public_review_terms_are_source_backed_and_do_not_claim_phase_acceptance():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    assert len(review.cases)==9
+    def abstain(text):
+        return RequirementsData(),'fixture-not-real-model',len(text),False
+    result=evaluate(cases,review,predict=abstain)
+    assert result['schema_grounding_valid']==9
+    assert result['minimum_term_recall']==0 and result['empty_case_accuracy']==1
+    assert result['phase_2_accepted'] is False
+
+
+def test_validation_success_does_not_hide_company_background_false_positives():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    review.cases=[item for item in review.cases if item.id=='canonical-7661586']
+    def wrong(text):
+        return RequirementsData.model_validate({'skills':[{'value':'Ubuntu','quote':'Ubuntu is the fastest growing Linux distribution'}]}),'fixture',len(text),False
+    result=evaluate(cases,review,predict=wrong)
+    assert result['schema_grounding_valid']==1 and result['empty_case_accuracy']==0
+    assert result['forbidden_terms_returned']==1
+
+
+def test_ungrounded_model_output_stays_in_failure_denominator():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    def invented(text):
+        return RequirementsData.model_validate({'skills':[{'value':'FabricatedXYZ','quote':'FabricatedXYZ required.'}]}),'fixture',len(text),False
+    result=evaluate(cases,review,predict=invented)
+    assert result['schema_grounding_valid']==0 and result['failed']==9
+    assert result['minimum_term_recall']==0 and result['empty_case_accuracy']==0
+
+
+def test_duplicate_or_non_source_review_labels_are_rejected():
+    from app.services.requirements_eval import Review
+    with pytest.raises(ValueError):
+        Review.model_validate({'reviewed_on':'2026-11-20','notes':'Fixture','cases':[{'id':'fixture','sha256':'0'*64,'must_include_skills':['Python'],'empty_skills':True,'forbidden_skills':[],'note':'Conflicting fixture'}]})
+
+
+def test_unavailable_model_is_not_tested_and_stops_further_requests():
+    from app.services.requirements import LocalModelUnavailable
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    calls=[]
+    def unavailable(text):
+        calls.append(text)
+        raise LocalModelUnavailable('Local model unavailable')
+    result=evaluate(cases,review,predict=unavailable)
+    assert len(calls)==1 and result['not_tested']==9 and result['failed']==0
+    assert result['minimum_term_recall'] is None and result['empty_case_accuracy'] is None
+    assert result['quality_assessed'] is False and result['phase_2_accepted'] is False
+    assert all(row['missing_skills'] is None and row['forbidden_skills'] is None for row in result['results'])
+
+
+def test_changed_snapshot_hash_cannot_reuse_old_review_labels(tmp_path):
+    import json
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    labels=json.loads((ROOT/'fixtures/eval/requirements-review.json').read_text())
+    labels['cases'][0]['sha256']='0'*64
+    path=tmp_path/'review.json';path.write_text(json.dumps(labels))
+    with pytest.raises(ValueError,match='different source version'):
+        load_review(path,cases)
