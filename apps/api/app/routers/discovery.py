@@ -3,7 +3,7 @@ from typing import Literal
 from pydantic import Field, field_validator, model_validator
 from sqlalchemy import select
 
-from app.db.models import DiscoverySource
+from app.db.models import DiscoverySource, Task
 from app.integrations.discovery.greenhouse import validate_board
 from app.integrations.discovery.reed import configured as reed_configured
 from app.routers.tracker import DB, require
@@ -79,4 +79,7 @@ def discover(data: DiscoverData, session: DB):
         raise HTTPException(409, "Configure REED_API_KEY privately before importing Reed jobs.")
     if not source.enabled:
         raise HTTPException(409, "Enable the source before discovering jobs")
+    for task in session.scalars(select(Task).where(Task.kind == "discover", Task.status.in_(["QUEUED", "RUNNING"]))):
+        if task.payload == {"source_id": source.id}:
+            return task
     return enqueue(session, "discover", {"source_id": source.id})

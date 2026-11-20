@@ -36,9 +36,13 @@ Fresh allowed Greenhouse live API/worker check also passed in temporary storage:
 
 Reed/live step pushed as 35bb6cb5d98a5c1f9bb879e34f755a7a0bcd5f93, remote verified. Fourth public ATS now implemented: bounded first-20 company page plus detailed text, strict company/public numeric listing identity distinct from opaque API ID, no arbitrary ref/form URLs. Migration eb81a592c387 backfills cached identities, preserving jobs/history. 262 API tests, typecheck/build, full production browser passed; expanded 35-real-page regression unchanged. Fixtures are synthetic; official live compatibility remains NOT TESTED. No settings/private config/dependencies changed. See decisions/smartrecruiters-discovery.md.
 
+## Local transport / queue checkpoint
+
+SmartRecruiters pushed as e11e53523cd025076472ab4403372c18a00bafb9, remote verified. Both Ollama paths now validate loopback endpoints and ignore shell proxies/redirects; new direct-loopback test reproduced failure before the fix and passed after. Pending discovery requests reuse one source task; completed imports may be requested again. 276 API tests, full production browser and expanded real-page regression passed; frontend unchanged since its passing checks. README/setup corrected stale phase/import/migration statements. No dependencies/private settings/network changes. Real model quality still NOT TESTED.
+
 ## Continue next
 
-Push the checked SmartRecruiters step, verify remote SHA, then continue focused Phase 2 hardening/readiness until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
+Push the checked local transport/queue hardening step, verify remote SHA, then continue focused Phase 2 readiness until 05:00. Real Lever/Ollama/multi-ATS checks remain blocked/unverified. Do not enable writes/submit or start Phase 3. Keep Phase 1 deferrals below visible. Use backup-verifying `python3 scripts/dev.py --migrate` after pulling these migrations; private Ollama setup is in SETUP.md. End with the requested 05:00 summary, not the older 02:45 cutoff below.
 
 ## Prior run / Phase 1 acceptance record
 

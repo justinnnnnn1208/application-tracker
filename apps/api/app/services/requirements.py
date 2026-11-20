@@ -1,11 +1,11 @@
 """Public vacancy terms only. Never include Notes, facts, CVs or declarations."""
-import ipaddress
 import os
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlunsplit
 
 import httpx
 
 from app.db.models import JobRequirements, now
+from app.integrations.llm.provider import local_endpoint
 from app.schemas import RequirementsData
 from app.services.errors import NeedsInput
 from app.services.sponsorship import snapshot
@@ -22,12 +22,8 @@ def configuration():
     if os.environ.get('LLM_PROVIDER') != 'ollama' or not model or len(model) > 200:
         return None
     try:
-        parts = urlsplit(os.environ.get('LLM_BASE_URL', 'http://127.0.0.1:11434/v1'))
-        parts.port
-        local = parts.hostname == 'localhost' or ipaddress.ip_address(parts.hostname).is_loopback
-    except ValueError:
-        return None
-    if parts.scheme not in {'http', 'https'} or not local or parts.username or parts.password or parts.query or parts.fragment:
+        parts = local_endpoint(os.environ.get('LLM_BASE_URL', 'http://127.0.0.1:11434/v1'))
+    except NeedsInput:
         return None
     return urlunsplit((parts.scheme, parts.netloc, '/api/chat', '', '')), model
 
@@ -44,7 +40,8 @@ def extract(text, *, client=None):
     url, model = config
     source = text[:MAX_CHARS]
     owned_client = client is None
-    client = client or httpx.Client(timeout=120)
+    # The selected model is local; shell proxies must never carry this request.
+    client = client or httpx.Client(timeout=120, trust_env=False, follow_redirects=False)
     try:
         for _ in range(3):
             try:

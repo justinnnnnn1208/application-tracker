@@ -184,3 +184,53 @@ def test_misclassified_sponsorship_terms_never_penalise_preference_scores(client
     numeric=lambda result:[(row['criterion'],row['points'],row['maximum'],row['fact_ids']) for row in result['breakdown']]
     assert numeric(after)==numeric(before)
     assert client.get('/api/jobs').json()[0]['sponsorship']=='UNVERIFIED'
+
+
+def test_native_loopback_connection_ignores_shell_proxy_settings(monkeypatch):
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+    from threading import Thread
+    configure(monkeypatch)
+    for name in ('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):
+        monkeypatch.setenv(name,'http://127.0.0.1:9')
+    for name in ('NO_PROXY','no_proxy'):
+        monkeypatch.setenv(name,'')
+    received=[]
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            received.append(json.loads(self.rfile.read(int(self.headers['Content-Length']))))
+            body=json.dumps({'done':True,'message':{'content':json.dumps(output())}}).encode()
+            self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
+        def log_message(self,*_):
+            pass
+    server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
+    thread=Thread(target=server.serve_forever,daemon=True);thread.start()
+    monkeypatch.setenv('LLM_BASE_URL',f'http://127.0.0.1:{server.server_port}/v1')
+    try:
+        data,*_=requirements.extract('Elixir and PostgreSQL required.')
+        assert data.skills[0].value=='Elixir' and len(received)==1
+    finally:
+        server.shutdown();server.server_close();thread.join(timeout=2)
+
+
+@pytest.mark.parametrize('base',['https://model.example.org/v1','http://192.168.1.2:11434/v1','http://localhost.evil/v1','http://user:password@127.0.0.1/v1','http://[bad','file:///tmp/model','http://127.0.0.1:bad/v1','http://127.0.0.1/v1?key=private','http://127.0.0.1/v1#private'])
+def test_ollama_page_provider_also_rejects_nonlocal_or_credentialed_urls(monkeypatch,base):
+    from app.integrations.llm.provider import configured_provider
+    configure(monkeypatch);monkeypatch.setenv('LLM_BASE_URL',base)
+    with pytest.raises(NeedsInput,match='loopback'):
+        configured_provider()
+
+
+def test_ollama_compatible_page_client_disables_proxy_and_redirects(monkeypatch):
+    from app.integrations.llm.provider import Ollama
+    calls=[]
+    original=httpx.Client
+    def handle(request):
+        calls.append(request)
+        return httpx.Response(200,json={'choices':[{'message':{'content':json.dumps({'title':'Engineer','company':'Fixture','description':'ignored model rewrite'})}}]})
+    def factory(**kwargs):
+        assert kwargs['trust_env'] is False and kwargs['follow_redirects'] is False
+        return original(transport=httpx.MockTransport(handle),**kwargs)
+    monkeypatch.setattr(httpx,'Client',factory)
+    data=Ollama('fixture').extract('https://example.org/job','Fixture Engineer vacancy source.')
+    assert len(calls)==1 and str(calls[0].url)=='http://127.0.0.1:11434/v1/chat/completions'
+    assert data.description=='Fixture Engineer vacancy source.'

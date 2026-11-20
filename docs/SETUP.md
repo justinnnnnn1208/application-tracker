@@ -2,9 +2,9 @@
 
 These instructions describe the current code. Run on the owner's own computer; the project remains local through Phases 1–5. Use the existing checkout and preserve `.env`, `.local/` and `storage/`.
 
-## Latest update: source identity and evidence-review migrations (19 November 2026)
+## Latest update: Phase 2 migrations (20 November 2026)
 
-This release adds a job_sources table and content-bound manual sponsorship reviews. Stop the app with Control+C, pull the branch, then use `python3 scripts/dev.py --migrate` from the project root. The launcher loads your existing private .env, creates and restores/verifies a backup of an existing SQLite database/storage into ignored `.local/migration-backups`, applies migrations to that configured DB and starts services. It refuses when the worker is running or backup verification fails. Regular later starts still use `python3 scripts/dev.py`. Keep the encryption key separately. No new dependencies. The API now fails early with this instruction if the schema is behind.
+The latest migrations include source identities, content-bound manual sponsorship reviews, public requirement candidates, the dated sponsor-register cache and discovery-search configuration. Stop the app with Control+C, pull the branch, then use `python3 scripts/dev.py --migrate` from the project root. The launcher loads your existing private .env, creates and restores/verifies a backup of an existing SQLite database/storage into ignored `.local/migration-backups`, applies migrations to that configured DB and starts services. It refuses when the worker is running or backup verification fails. Regular later starts still use `python3 scripts/dev.py`. Keep the encryption key separately. No new dependencies. The API now fails early with this instruction if the schema is behind.
 
 ## Start on macOS in VS Code
 
@@ -16,11 +16,10 @@ From the repository root, first-time setup. Run commands one at a time and stop 
 python3 scripts/init_local.py
 cd apps/api
 uv sync --frozen
-uv run alembic upgrade head
 cd ../web
 npm ci
 cd ../..
-python3 scripts/dev.py
+python3 scripts/dev.py --migrate
 ```
 
 Open `http://127.0.0.1:3000` in a browser on the same computer. The dashboard opens directly; no token entry is required. The combined launcher loads the private root `.env` and starts API, worker and web processes. Keep that terminal open. Click the terminal and press **Control+C**, not Command+C, to stop.
@@ -37,7 +36,7 @@ After completed work is pushed, stop the app before updating:
 git pull --ff-only origin dev/phase-1
 ```
 
-Do not overwrite local changes if Git reports a conflict. Refresh Python dependencies with `cd apps/api && uv sync --frozen`, run `uv run alembic upgrade head` there if migrations changed, and run `npm ci` from `apps/web` if the JavaScript lockfile changed. Return to the repository root and start `python3 scripts/dev.py`.
+Do not overwrite local changes if Git reports a conflict. Refresh Python dependencies with `cd apps/api && uv sync --frozen` only if their lockfile changed, and run `npm ci` from `apps/web` if the JavaScript lockfile changed. Return to the repository root and start `python3 scripts/dev.py --migrate` for an update containing migrations. That launcher loads the private configuration and verifies a backup before upgrading an existing database. Later ordinary starts use `python3 scripts/dev.py`.
 
 Keep ports 3000 and 8000 on localhost. The API token is generated and used only by the local servers. Do not paste it into chat, browser storage or committed files. `scripts/init_local.py` preserves existing `.env` values; it is not a credential rotation tool.
 
@@ -137,7 +136,7 @@ On Dashboard, choose **Enable desktop reminders** and allow the browser permissi
 
 ## Optional approved status write-back on the development copy
 
-You can keep Sheets read-only by leaving `SHEETS_WRITE_COPY_ID` unset. There is no automatic write scheduling. The owner approved development-copy status writes after reporting the successful import; this approval does not permit touching the original tracker or starting Phase 2.
+You can keep Sheets read-only by leaving `SHEETS_WRITE_COPY_ID` unset. There is no automatic write scheduling. The owner approved development-copy status writes after reporting the successful import; this approval does not permit touching the original tracker. The owner later separately authorised Phase 2 while deferring this live write test; keep Sheets read-only during current Phase 2 work.
 
 To perform the remaining live acceptance test on your Mac:
 
@@ -160,7 +159,7 @@ Current write-back updates existing linked statuses only: it does not append new
 
 The owner authorised Phase 2 with the Phase 1 live write test deferred. Keep Google Sheets read-only. In Settings → Job discovery, enter the employer's Greenhouse board **slug**, not its URL. It is the identifier in a URL such as `https://job-boards.greenhouse.io/BOARD`. No sources are seeded or fetched automatically. Review the source's terms before enabling it; the checkbox enables manual task requests only.
 
-For a permitted public API fetch, add `boards-api.greenhouse.io` to your existing comma-separated `URL_FETCH_ALLOWED_HOSTS` in the private root .env, preserving any hosts already approved. Restart the app. Add/enable the chosen source, click Discover jobs from that source, then inspect Background tasks and Jobs. Imports run in the worker, dedupe canonical URLs and leave sponsorship UNVERIFIED. This first adapter imports the whole chosen board; UK/junior preference ranking is not yet implemented. Unsupported/missing dates stay unknown, and absent API company names are explicitly shown as Employer not provided. No submissions, Sheets writes, profile data or hosted LLM calls are involved.
+For a permitted public API fetch, add `boards-api.greenhouse.io` to your existing comma-separated `URL_FETCH_ALLOWED_HOSTS` in the private root .env, preserving any hosts already approved. Restart the app. Add/enable the chosen source, click Discover jobs from that source, then inspect Background tasks and Jobs. Imports run in the worker, dedupe canonical URLs and leave sponsorship UNVERIFIED. This adapter imports the whole chosen board; use current preference scores to prioritise UK/junior technology roles. Unsupported/missing dates stay unknown, and absent API company names are explicitly shown as Employer not provided. No submissions, Sheets writes, profile data or hosted LLM calls are involved.
 
 The shared fetcher requires publicly resolving addresses, explicit host approval, accessible robots.txt and allowed crawl rules. It bounds responses to 1 MB, rate-limits, and stops on redirects, 401/403/429 or robots denial. Large boards may need a later bounded pagination/detail adapter; this version fails rather than silently truncating them. Live verification on 17 November 2026 fetched a Graphcore vacancy and imported 60 Monzo postings twice through a disposable API/worker: first 60 added, then 0 added/60 duplicates. No owner storage was used.
 
@@ -290,3 +289,5 @@ Settings → Job discovery → SmartRecruiters takes the company identifier from
 Imports read the **first 20 company postings**, then their detailed public API text. This is not the entire board, and repeated runs revisit the page. Existing robots/rate/size/access guards apply, so detail requests can take several minutes. The configured company and public listing ID must match; unsupported links/data are skipped instead of guessed. Publication dates do not become deadlines; sponsorship stays informational. No automatic schedule or portal form interaction.
 
 Pull and start with `python3 scripts/dev.py --migrate`; the new cached-identity migration preserves jobs and histories. Current verification is synthetic contract/worker/migration/browser coverage, not live SmartRecruiters compatibility. No new dependencies or Google consent are required.
+
+Repeated discovery clicks reuse an existing queued/running task for that source. A finished import can be explicitly requested again; this does not add retries or a schedule. Native local Ollama connections ignore shell HTTP proxy settings and never follow redirects.
