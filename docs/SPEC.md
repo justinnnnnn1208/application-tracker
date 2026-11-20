@@ -325,3 +325,9 @@ The owner selected local Ollama. Explicit per-job tasks may extract technology/e
 ### Dated register signal (20 November 2026)
 
 A user-downloaded Home Office worker-register CSV may be cached after explicit owner confirmation of official asset reference, publication date and mapping. Display exact organisation-name matches, routes and dated file/source provenance independently of role sponsorship and scoring. Case/whitespace/Unicode composition may normalise; brands, legal suffixes, accents and punctuation must not be guessed. A miss is not proof of no licence, and a hit does not establish role-specific sponsorship, legal employer identity or applicant eligibility. Reject malformed/partial imports atomically. Current file provenance is owner-confirmed upload, not automatic official-source verification.
+
+### Tier 1 source coverage / immigration-neutral matching (20 November 2026)
+
+Ashby public posting-board intake joins Greenhouse/Lever with explicit public-listing visibility and strict source identity checks. Missing/unlisted/private or malformed data is not guessed. No application endpoints. Current Ashby verification is synthetic contract/worker/browser coverage, not live.
+
+Deterministic matching excludes immigration/sponsorship/right-to-work candidates even when a model misclassifies them as skills. This is not a legal eligibility rule. Source candidates remain reviewable; quality evaluation is still needed. Score version changes invalidate previously cached calculations.

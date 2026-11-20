@@ -14,7 +14,7 @@ router = APIRouter()
 
 class SourceData(StrictModel):
     board: str
-    provider: Literal["greenhouse", "lever"] = "greenhouse"
+    provider: Literal["greenhouse", "lever", "ashby"] = "greenhouse"
     employer: str = Field(default="", max_length=200)
     region: Literal["global", "eu"] = "global"
     enabled: bool = False
@@ -27,9 +27,9 @@ class SourceData(StrictModel):
 
     @model_validator(mode="after")
     def provider_settings(self):
-        if self.provider == "lever" and not self.employer.strip():
-            raise ValueError("Lever needs the employer name shown on its board")
-        if self.provider == "greenhouse" and self.region != "global":
+        if self.provider in {"lever", "ashby"} and not self.employer.strip():
+            raise ValueError("Supply the employer name shown on this board")
+        if self.provider != "lever" and self.region != "global":
             raise ValueError("Region applies only to Lever")
         return self
 

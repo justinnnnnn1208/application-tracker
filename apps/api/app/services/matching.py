@@ -11,13 +11,18 @@ from app.db.models import Fact, JobRequirements, MatchResult, Preferences, Profi
 from app.services.requirements import validated as validated_requirements
 from app.services.errors import NeedsInput
 
-VERSION = "preference-v3-grounded-requirements"
+VERSION = "preference-v4-no-immigration-terms"
 WEIGHTS = {"role": 20, "graduate": 25, "location": 20, "skills": 20, "experience": 10, "start_date": 5}
 SKILLS = ("python", "java", "javascript", "typescript", "c++", "c#", "rust", "golang", "sql", "react", "linux", "docker", "kubernetes", "terraform", "pytorch", "tensorflow", "aws", "azure", "git")
 
 
 def contains(text, term):
     return bool(re.search(r"(?<![\w+#])" + re.escape(term) + r"(?![\w+#])", text, re.I))
+
+
+def immigration_term(value):
+    # Exclude these job-text candidates, never evaluate a person's legal status.
+    return bool(re.search(r"\b(?:visas?|sponsor(?:ship|ing|ed)?|immigration|citizenship|nationality|skilled[\s_-]+worker|work[\s_-]+(?:permits?|authori[sz]ation|eligibility)|right[\s_-]+to[\s_-]+work|permission[\s_-]+to[\s_-]+work)\b", value, re.I))
 
 
 def graduate_level(title, description):
@@ -83,7 +88,7 @@ def calculate(data):
     preferred = [target for target in targets if contains(job["location"], target)]
     add("location", 1 if preferred or (not targets and uk) else .5 if uk else 0, "Preferred location appears in source: " + ", ".join(preferred) if preferred else "Explicit UK location; preferred-city match not established." if uk else "UK/preferred location not established; worldwide/EMEA is not assumed UK-eligible.")
     analysis = data.get("requirements")
-    required = {term["value"] for term in analysis["skills"]} if analysis is not None else {term for term in SKILLS if contains(text, term)}
+    required = {term["value"] for term in analysis["skills"] if not immigration_term(term["value"])} if analysis is not None else {term for term in SKILLS if contains(text, term)}
     for field, categories in [("skills", {"skill", "education", "project", "experience"}), ("experience", {"experience"})]:
         evidence = {term: [fact["id"] for fact in data["facts"] if fact["category"] in categories and contains(fact["content"], term)] for term in required}
         matched = sorted(term for term, ids in evidence.items() if ids)

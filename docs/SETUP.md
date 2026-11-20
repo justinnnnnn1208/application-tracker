@@ -264,3 +264,11 @@ LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:3b uv run --frozen python -m app.services.
 These public model selectors apply only to this command; it does not load the private app database, profile, Notes or CV. It validates source-page hashes and manually reviewed minimum named-technology expectations on nine real snapshots, including cases where product marketing must not become job requirements. Existing report files are never overwritten; use a new output name for another run.
 
 Exit 2 means setup/input unavailable or NOT TESTED. An unavailable local server stops further model calls and leaves quality metrics unknown, not a fabricated zero-quality result. Exit 1 means schema/grounding or the reviewed minimum-term/empty-case checks failed. Exit 0 passes these limited development checks, not every requirement or full Phase 2 acceptance. Inspect quotes and the explicit coverage limits. No real model was available in the cloud run, so its semantic quality remains unverified.
+
+## Ashby public discovery
+
+Settings → Job discovery now includes Ashby. Enter the board slug and the employer name exactly as shown on the public board. Review its terms, add `api.ashbyhq.com` to your existing private URL_FETCH_ALLOWED_HOSTS without removing other entries, and restart. This cloud's policy has not been changed; actual Ashby access remains unverified here.
+
+Only explicitly listed public rows with matching official board/UUID listing URLs are imported. Unlisted/missing visibility, off-board URLs and malformed entries are skipped; application/private ATS endpoints are never called. Dates come only from complete labelled vacancy text; publishedAt is not a deadline. Current support is contract/worker/browser tested with synthetic fixtures, not a live compatibility claim. No new schema/dependency for this adapter.
+
+The matching scorer also excludes immigration/sponsorship/right-to-work terms even if a model incorrectly places them among technology candidates. It never derives your legal status. This score-version update makes older results stale; recalculate active-job scores after pulling.

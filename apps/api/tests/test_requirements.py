@@ -167,3 +167,20 @@ def test_tampered_cache_does_not_supply_scores_or_ui_terms(client,monkeypatch):
     client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
     result=client.get(f"/api/jobs/{job['id']}/match").json()
     assert not any('Fabricated' in row['explanation'] for row in result['breakdown'])
+
+
+def test_misclassified_sponsorship_terms_never_penalise_preference_scores(client,monkeypatch):
+    configure(monkeypatch)
+    job=create(client,description='Python required. Visa sponsorship available.')
+    client.post('/api/facts',json={'category':'skill','content':'Python','source':'Fixture reviewed fact','verified':True})
+    client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    before=client.get(f"/api/jobs/{job['id']}/match").json()
+    data=RequirementsData.model_validate({'skills':[{'value':'Python','quote':'Python required.'},{'value':'Visa sponsorship','quote':'Visa sponsorship available.'}]})
+    monkeypatch.setattr(requirements,'extract',lambda text:(data.grounded(text),'fixture-local',len(text),False))
+    client.post('/api/tasks/requirements',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    after=client.get(f"/api/jobs/{job['id']}/match").json()
+    assert after['score']==before['score']
+    numeric=lambda result:[(row['criterion'],row['points'],row['maximum'],row['fact_ids']) for row in result['breakdown']]
+    assert numeric(after)==numeric(before)
+    assert client.get('/api/jobs').json()[0]['sponsorship']=='UNVERIFIED'

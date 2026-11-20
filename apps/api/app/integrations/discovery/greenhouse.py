@@ -11,7 +11,7 @@ from app.services.fetching import fetch_page
 
 def validate_board(board):
     if not re.fullmatch(r"[A-Za-z0-9_-]{1,100}", board):
-        raise ValueError("Use only a Greenhouse board slug, not a URL")
+        raise ValueError("Use only a board slug, not a URL")
     return board
 
 

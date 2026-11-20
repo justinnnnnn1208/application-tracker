@@ -28,7 +28,7 @@ Native Mac notification delivery is also outstanding. These accepted deferrals a
 
 ## Latest verification
 
-- API: **213 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
+- API: **225 passed**, one existing Starlette/httpx deprecation warning. `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short` from apps/api.
 - Frontend: `npm run typecheck` and production build passed on the final evidence-clear UI code.
 - Final production browser smoke passed on the latest backend/frontend: real disposable worker, Notes repair/restart, identity aliases, score/feedback/weights persistence, evidence save/filter/source/stale/clear, Lever EU source configuration, origin/auth guards, CRUD/history, CV review/download, backup/CLI restore, reminders and 1440/390/320px layouts. No owner data/Google/Lever calls.
 - Alembic schema-drift and upgrade/downgrade tests pass; legacy source settings, evidence and job/history preservation covered. Latest head a74cd158ef43.
@@ -74,3 +74,9 @@ Owner-confirmed, dated CSV import and conservative exact-name signal implemented
 ## Local-model evaluation runner
 
 Public snapshots plus nine manually reviewed, hash-bound technology expectations now have a standalone local-only runner. It distinguishes schema grounding from semantic minimum-term/empty-case checks and includes company-marketing false-positive controls. It never reads the app DB/profile/Notes/CVs and never overwrites reports. Native endpoint attempt in this cloud returned model unavailable: nine cases NOT TESTED, quality metrics null, exit 2; no semantic pass claimed. All unavailable cases stop after the first failed connection. Unit tests cover abstention, valid-but-wrong category, fabricated output, unavailable server and stale review hashes. API suite 213 passed; no frontend change in this step. Field/classification regression on 35 real snapshots remains unchanged.
+
+## Tier 1 public board coverage and scoring hardening
+
+Ashby adapter/configuration implemented alongside Greenhouse and Lever: listed-only intake, strict board/UUID HTTPS URLs, literal source fields, published-date separation, script-free HTML fallback and owner-preserving same-ID enrichment. No new dependency/schema. Public npm client source inspected for endpoint/field contract, never installed/executed; live official API/docs compatibility still NOT TESTED. Synthetic fixture stays outside genuine eval data.
+
+225 API tests and frontend typecheck/build passed; full production browser passed including disabled Ashby source create/remove and all existing flows. Deterministic scoring now excludes immigration/visa/sponsorship/right-to-work candidates even when misclassified by a model; numeric/fact-citation score invariance test passes. New score version preference-v4-no-immigration-terms invalidates old caches. Initial new assertion compared intentionally different fallback/model explanation strings; corrected to numeric points/citations, then suite passed. Expanded 35-page regression unchanged, zero false YES, Phase 2 acceptance false. No network/config mutation.
