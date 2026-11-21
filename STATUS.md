@@ -1,6 +1,6 @@
 # Current project status
 
-Reviewed: 21 November 2026, before the 05:00 Europe/London cutoff.
+Reviewed: 21 November 2026, 05:00 Europe/London.
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
 

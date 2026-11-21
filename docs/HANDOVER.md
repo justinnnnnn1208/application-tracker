@@ -4,10 +4,10 @@
 
 ## Session
 
-- Owner authorised Phase 2 work until **05:00 Europe/London on 21 November 2026**, following the plan, testing steps, recording decisions and pushing working changes. Summary due at that cutoff; this handover is prepared before it.
+- Owner authorised Phase 2 work until **05:00 Europe/London on 21 November 2026**, following the plan, testing steps, recording decisions and pushing working changes. Closed at the 05:00 cutoff. No revised-prompt Mac Qwen result arrived before it; Phase 2 remains incomplete.
 - Branch: **dev/phase-1**. Started clean at fb1e35b; latest tested application commit **74a76ac0aad15f6742aae4233f4257b0daec84ae**, pushed and remote SHA verified. All 13 application commits this shift use owner author/committer name justinnnnnn1208.
 - **Phase 2: roughly 90% implementation, acceptance incomplete.** Not a time forecast/quality certificate. Phase 3 is not authorised. Sheets stays read-only; no original/copy writes, hosted applicant processing, real form interaction or submissions.
-- No unfinished application changes. This handover/status and the public live-check report form the final documentation delivery; verify its remote commit before final response. No unrelated changes. No dependency/lockfile/schema migration changes; migration head eb81a592c387, score preference-v5-immigration-neutral-terms.
+- No unfinished application changes. The handover/status and public live-check report were pushed at 16915ea, remote SHA verified and worktree clean. This closing note is documentation only; verify its remote commit before final response. No unrelated changes. No dependency/lockfile/schema migration changes; migration head eb81a592c387, score preference-v5-immigration-neutral-terms.
 - Future build sessions should proactively ask whether to run until 05:00 unless the owner already specified a cutoff. Do not carry this date into a later session.
 
 ## What changed
