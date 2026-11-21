@@ -12,6 +12,17 @@ from app.services.errors import NeedsInput
 from app.worker.tasks import run_once
 
 
+def model_transport(handle):
+    # Existing output/retry tests focus on generation; supply explicit synthetic
+    # local metadata. Separate selection tests exercise refusal/metadata failures.
+    def route(request):
+        if request.url.path == '/api/show':
+            assert set(json.loads(request.content)) == {'model'}
+            return httpx.Response(200, json={'model_info': {'general.architecture': 'fixture'}})
+        return handle(request)
+    return httpx.MockTransport(route)
+
+
 def configure(monkeypatch):
     monkeypatch.setenv('LLM_PROVIDER', 'ollama')
     monkeypatch.setenv('LLM_MODEL', 'qwen2.5:3b')
@@ -36,7 +47,7 @@ def test_native_local_provider_is_structured_bounded_and_source_only(monkeypatch
         assert 'tools' not in body and body['format']['additionalProperties'] is False
         return httpx.Response(200,json={'done': True,'done_reason': 'stop','message': {'content':json.dumps(output())}})
     job=SimpleNamespace(title='Engineer',location='London',description='Elixir and PostgreSQL required.',eligibility_requirements='',notes='SECRET NOTE',facts='SECRET FACT',legal='SECRET LEGAL')
-    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+    with httpx.Client(transport=model_transport(handle)) as client:
         data, model, chars, truncated=requirements.extract(requirements.public_text(job),client=client)
     assert data.skills[0].value == 'Elixir' and model == 'qwen2.5:3b' and chars > 0 and not truncated
     assert 'SECRET' not in json.dumps(calls)
@@ -64,7 +75,7 @@ def test_invalid_ungrounded_and_truncated_model_responses_fail_after_two_retries
         def handle(request):
             calls.append(request)
             return httpx.Response(200,json={'done':True,'message':{'content':json.dumps(payload)}})
-        with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        with httpx.Client(transport=model_transport(handle)) as client:
             with pytest.raises(NeedsInput,match='three attempts'):
                 requirements.extract('Elixir and PostgreSQL required. JavaScript required. React required.',client=client)
         assert len(calls)==3
@@ -72,7 +83,7 @@ def test_invalid_ungrounded_and_truncated_model_responses_fail_after_two_retries
     def cut_off(request):
         calls.append(request)
         return httpx.Response(200,json={'done':True,'done_reason':'length','message':{'content':json.dumps(output())}})
-    with httpx.Client(transport=httpx.MockTransport(cut_off)) as client:
+    with httpx.Client(transport=model_transport(cut_off)) as client:
         with pytest.raises(NeedsInput):requirements.extract('Elixir and PostgreSQL required.',client=client)
     assert len(calls)==3
 
@@ -134,12 +145,12 @@ def test_input_limit_is_visible_and_tail_quotes_cannot_be_claimed(monkeypatch):
         body=json.loads(request.content);seen.append(body['messages'][-1]['content'])
         return httpx.Response(200,json={'done':True,'message':{'content':'{"skills": [], "education": [], "experience": []}'}})
     text='x' * requirements.MAX_CHARS + ' Tail only Kubernetes required.'
-    with httpx.Client(transport=httpx.MockTransport(empty)) as client:
+    with httpx.Client(transport=model_transport(empty)) as client:
         data,_,chars,truncated=requirements.extract(text,client=client)
     assert truncated is True and chars==requirements.MAX_CHARS and len(seen[0])==chars
     def invented_tail(_):
         return httpx.Response(200,json={'done':True,'message':{'content':json.dumps({'skills':[{'value':'Kubernetes','quote':'Kubernetes required.'}]})}})
-    with httpx.Client(transport=httpx.MockTransport(invented_tail)) as client:
+    with httpx.Client(transport=model_transport(invented_tail)) as client:
         with pytest.raises(NeedsInput):requirements.extract(text,client=client)
 
 
@@ -200,8 +211,9 @@ def test_native_loopback_connection_ignores_shell_proxy_settings(monkeypatch,pro
     received=[]
     class Handler(BaseHTTPRequestHandler):
         def do_POST(self):
-            received.append((self.headers.get('Authorization'),json.loads(self.rfile.read(int(self.headers['Content-Length'])))))
-            payload={'done':True,'message':{'content':json.dumps(output())}} if protocol=='native' else {'choices':[{'message':{'content':json.dumps({'title':'Engineer','company':'Fixture'})}}]}
+            body=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+            received.append((self.path,self.headers.get('Authorization'),body))
+            payload={'model_info':{'general.architecture':'fixture'}} if self.path=='/api/show' else {'done':True,'message':{'content':json.dumps(output())}} if protocol=='native' else {'choices':[{'message':{'content':json.dumps({'title':'Engineer','company':'Fixture'})}}]}
             body=json.dumps(payload).encode()
             self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
         def log_message(self,*_):
@@ -218,7 +230,8 @@ def test_native_loopback_connection_ignores_shell_proxy_settings(monkeypatch,pro
             from app.integrations.llm.provider import Ollama
             data=Ollama('fixture',base_url=f'http://127.0.0.1:{server.server_port}/v1').extract('https://example.org/job',source)
             assert data.title=='Engineer' and data.description==source
-        assert len(received)==1 and received[0][0] is None
+        assert [row[0] for row in received]==['/api/show','/api/chat' if protocol=='native' else '/v1/chat/completions']
+        assert all(row[1] is None for row in received) and set(received[0][2])=={'model'}
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
 
@@ -240,7 +253,7 @@ def test_ollama_compatible_page_client_disables_proxy_and_redirects(monkeypatch)
         return httpx.Response(200,json={'choices':[{'message':{'content':json.dumps({'title':'Engineer','company':'Fixture','description':'ignored model rewrite'})}}]})
     def factory(**kwargs):
         assert kwargs['trust_env'] is False and kwargs['follow_redirects'] is False
-        return original(transport=httpx.MockTransport(handle),**kwargs)
+        return original(transport=model_transport(handle),**kwargs)
     monkeypatch.setattr(httpx,'Client',factory)
     data=Ollama('fixture').extract('https://example.org/job','Fixture Engineer vacancy source.')
     assert len(calls)==1 and str(calls[0].url)=='http://127.0.0.1:11434/v1/chat/completions'
@@ -262,7 +275,7 @@ def test_local_setup_failures_have_safe_actionable_reasons_without_retry_or_body
         if failure=='connect':raise httpx.ConnectError(private,request=request)
         if failure=='timeout':raise httpx.ReadTimeout(private,request=request)
         return httpx.Response(failure,text=private,headers={'Location':'http://remote.example/secret'} if failure==307 else {})
-    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+    with httpx.Client(transport=model_transport(handle)) as client:
         with pytest.raises(requirements.LocalModelUnavailable) as caught:
             requirements.extract('public fixture job text',client=client)
     assert len(calls)==1 and caught.value.reason==reason
@@ -283,7 +296,7 @@ def test_local_setup_failures_have_safe_actionable_reasons_without_retry_or_body
 def test_single_attempt_diagnoses_rejection_without_echoing_model_output(monkeypatch,payload,source,reason):
     configure(monkeypatch);calls=[]
     def handle(request):calls.append(request);return httpx.Response(200,json=payload)
-    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+    with httpx.Client(transport=model_transport(handle)) as client:
         with pytest.raises(requirements.InvalidRequirementsOutput) as error:
             requirements.extract(source,client=client,attempts=1)
     assert len(calls)==1 and error.value.reason==reason and error.value.attempts==1
@@ -304,7 +317,7 @@ def test_prompt_matches_grounding_contract_and_retry_feedback_excludes_rejected_
         body=json.loads(request.content);calls.append(body)
         payload={'skills':[{'value':marker,'quote':'JavaScript required.'}]} if len(calls)==1 else {'skills':[{'value':'Java','quote':'Java required.'}]}
         return httpx.Response(200,json={'done':True,'message':{'content':json.dumps(payload)}})
-    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+    with httpx.Client(transport=model_transport(handle)) as client:
         data,*_=requirements.extract('JavaScript required. Java required.',client=client)
     assert data.skills[0].value=='Java' and len(calls)==2
     assert 'Each value must occur verbatim inside its own quote' in calls[0]['messages'][0]['content']

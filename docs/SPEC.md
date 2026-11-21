@@ -343,3 +343,7 @@ Reed supports explicit keyword searches through its credentialed public API. Key
 ### Fourth public ATS delivery (20 November 2026)
 
 SmartRecruiters supports an explicit company board's first 20 postings and detailed public text through existing guards. Clearly label the bounded page, preserve literal fields and avoid publication-date guesses. Distinguish opaque API IDs from numeric human-listing IDs; enforce official company-scoped listing URLs and keep alias histories intact. Current verification is synthetic contract/worker/migration/browser coverage; live compatibility and independent multi-ATS quality remain unverified.
+
+### Local model identity check (21 November 2026)
+
+Selecting Ollama requires model metadata as well as loopback transport. Before sending public vacancy text, inspect the selected model name via `/api/show`; refuse explicit cloud tags, advertised remote models/hosts and missing/malformed local model metadata. Apply this to native requirements and compatible page extraction, without hosted fallback. No applicant data is added. Tests/metadata validation do not establish semantic-quality acceptance.

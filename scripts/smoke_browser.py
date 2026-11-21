@@ -52,12 +52,16 @@ def ollama_fixture():
             pass
         def do_POST(self):
             body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            assert self.path == '/api/chat' and 'tools' not in body
-            captured.append(body)
-            text = body['messages'][-1]['content']
-            assert 'Updated fixture note' not in text and 'Fixture-only test record' not in text
-            skills = [{'value': 'Elixir', 'quote': 'Elixir required.'}] if 'Elixir required.' in text else []
-            data = json.dumps({'done': True, 'done_reason': 'stop', 'message': {'content': json.dumps({'skills': skills, 'education': [], 'experience': []})}}).encode()
+            if self.path == '/api/show':
+                assert body == {'model': 'fixture-contract-only'}
+                data = json.dumps({'model_info': {'general.architecture': 'fixture'}}).encode()
+            else:
+                assert self.path == '/api/chat' and 'tools' not in body
+                captured.append(body)
+                text = body['messages'][-1]['content']
+                assert 'Updated fixture note' not in text and 'Fixture-only test record' not in text
+                skills = [{'value': 'Elixir', 'quote': 'Elixir required.'}] if 'Elixir required.' in text else []
+                data = json.dumps({'done': True, 'done_reason': 'stop', 'message': {'content': json.dumps({'skills': skills, 'education': [], 'experience': []})}}).encode()
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Length', str(len(data)))

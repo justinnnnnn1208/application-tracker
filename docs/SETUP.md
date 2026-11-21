@@ -325,3 +325,14 @@ LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model
 ```
 
 Only after reviewing its results should you change the private .env model setting. Neither fast-check success on a subset nor schema validity alone accepts Phase 2.
+
+## Ollama opens a cloud chat
+
+Bare `ollama` may open a cloud model. Exit that chat with `/bye`, then select the downloaded local model explicitly:
+
+```sh
+ollama run qwen2.5:7b "Reply with OK"
+LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model
+```
+
+The second command runs from the repository root, separately from the chat. Keep Ollama open. The tracker checks `/api/show` with only the model name before sending vacancy text; cloud tags, remote aliases and unverifiable metadata stop with a setup message. A local loopback URL alone does not establish local inference. A successful model download/OK reply is not a passed requirements check. No OAuth change, credential sharing or new model download is needed if qwen2.5:7b is already installed.

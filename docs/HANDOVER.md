@@ -22,6 +22,12 @@ Prompt fix pushed as 3c0afba, SHA verified. Six new source-review API tests plus
 
 Owner then showed bare ollama selecting glm-5.3-flash:cloud. Advised /bye, explicit local `ollama run qwen2.5:7b "Reply with OK"`, then pull and `LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model`. Await actual revised-prompt result. Next review: reject known cloud model selections for both local paths; loopback alone can proxy a cloud model. No private data sent. Continue authorised work until 05:00 London Nov21; do not mutate network settings or start Phase3.
 
+## Local-model identity checkpoint — 04:07 London
+
+Source review pushed as d66e0e6e5157821ca5d201c2724de06789d76c47; remote SHA verified. After owner showed bare Ollama selecting a cloud model, both local protocols now inspect `/api/show` with only model name before vacancy text. Explicit cloud tags, remote_host/remote_model aliases and missing/malformed model_info are refused. No hosted fallback. Official source contract inspected at Ollama commit 23b94a2daf2cd1fbf6b4dcfbfd3efbaca424b7bf (decision links). Fourteen new two-protocol tests first failed, then pass; full 364 API tests, production browser and 38-page field regression pass. Existing synthetic transport fixtures now explicitly provide local metadata; real loopback/proxy/header tests exercise the preflight too. Actual root cloud-tag check with no server returns remote_model_refused/9 NOT TESTED/exit 2 and unknown quality, not a pass. No dependency/migration/managed-settings/private-data changes. Push this passing step after docs review.
+
+Next independent work: genuine held-out controls using only already permitted Greenhouse hosts, respecting fetch/robots/rate limits. Broader ATS hosts remain blocked and the owner declined changing policy. Await revised-prompt local 7B output; no new download requested. Continue until 05:00 London Nov21, no Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

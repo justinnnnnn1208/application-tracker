@@ -6,7 +6,7 @@ Reviewed: 21 November 2026 (Europe/London).
 
 ## Latest checked step — 21 November, 04:00 London
 
-Reviewed secondary listing controls: 350 API tests, TypeScript/production build, full disposable production browser (including link → repeat intake → unlink and unchanged history), and 38-page field/role regression passed. No dependency/migration change. Revised-prompt qwen2.5:7b result remains awaited after the real first-case term_not_in_quote failure. The owner reported bare `ollama` opened glm-5.3-flash:cloud; advised exiting and explicitly running the downloaded local qwen2.5:7b. Local endpoint alone does not prove a model runs locally; cloud-model guard is the next review.
+Reviewed secondary listing controls: 350 API tests, TypeScript/production build, full disposable production browser (including link → repeat intake → unlink and unchanged history), and 38-page field/role regression passed. No dependency/migration change. Revised-prompt qwen2.5:7b result remains awaited after the real first-case term_not_in_quote failure. The owner reported bare `ollama` opened glm-5.3-flash:cloud; advised exiting and explicitly running the downloaded local qwen2.5:7b. Local endpoint alone does not prove a model runs locally; cloud-model guard is delivered: both local paths inspect model-name-only metadata before source text, refuse cloud tags/remote aliases/unverifiable metadata. Fourteen new regressions first failed then passed; full 364 API tests, production browser and 38-page field regression pass. Actual root cloud-name check returned remote_model_refused, 9 NOT TESTED, exit 2 without a model server. No semantic pass inferred.
 
 ## Implemented and checked
 

@@ -1,7 +1,8 @@
 import json
 import os
 import ipaddress
-from urllib.parse import urlsplit
+import re
+from urllib.parse import urlsplit, urlunsplit
 from typing import Protocol
 import httpx
 from app.schemas import JobData
@@ -25,11 +26,45 @@ def local_endpoint(value):
     return parts
 
 
+LOCAL_MODEL_HINTS = {
+    "remote_model_refused": "The selected Ollama model is cloud-hosted. Select a downloaded local model such as qwen2.5:7b; no vacancy text was sent.",
+    "model_metadata_invalid": "Local model metadata could not be verified. Update/open Ollama, check ollama list and select a downloaded model; no vacancy text was sent.",
+}
+
+
+class LocalModelRejected(NeedsInput):
+    def __init__(self, reason):
+        self.reason = reason
+        super().__init__(LOCAL_MODEL_HINTS[reason])
+
+
+def require_local_model(client, base_url, model):
+    """Inspect model-name metadata before sending source text, including local aliases."""
+    if re.search(r'(?:^|[:/-])cloud(?:$|[:/-])', model.casefold()):
+        raise LocalModelRejected("remote_model_refused")
+    parts = local_endpoint(base_url)
+    response = client.post(urlunsplit((parts.scheme, parts.netloc, '/api/show', '', '')), json={"model": model}, timeout=15)
+    response.raise_for_status()
+    try:
+        metadata = response.json()
+    except ValueError:
+        raise LocalModelRejected("model_metadata_invalid") from None
+    if not isinstance(metadata, dict):
+        raise LocalModelRejected("model_metadata_invalid")
+    if metadata.get('remote_host') or metadata.get('remote_model'):
+        raise LocalModelRejected("remote_model_refused")
+    if not isinstance(metadata.get('model_info'), dict) or not metadata['model_info']:
+        raise LocalModelRejected("model_metadata_invalid")
+
+
 class OpenAICompatible:
     trust_env = True
     def __init__(self, base_url, model, key="", client=None):
         self.base_url, self.model, self.key = base_url.rstrip("/"), model, key
         self.client = client
+
+    def check_model(self, client):
+        pass
 
     def extract(self, url, text):
         messages = [
@@ -40,6 +75,8 @@ class OpenAICompatible:
         try:
             for _ in range(3):  # Initial attempt plus at most two invalid-output retries.
                 try:
+                    if _ == 0:
+                        self.check_model(client)
                     response = client.post(f"{self.base_url}/chat/completions", headers={"Authorization": f"Bearer {self.key}"} if self.key else {}, json={"model": self.model, "messages": messages, "response_format": {"type": "json_object"}})
                     response.raise_for_status()
                     output = json.loads(response.json()["choices"][0]["message"]["content"])
@@ -71,6 +108,9 @@ class Ollama(OpenAICompatible):
     def __init__(self, model, base_url="http://127.0.0.1:11434/v1", **kwargs):
         local_endpoint(base_url)
         super().__init__(base_url, model, **kwargs)
+
+    def check_model(self, client):
+        require_local_model(client, self.base_url, self.model)
 
 
 def configured_provider():

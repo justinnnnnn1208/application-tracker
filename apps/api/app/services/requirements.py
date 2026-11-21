@@ -6,12 +6,13 @@ import httpx
 from pydantic import ValidationError
 
 from app.db.models import JobRequirements, now
-from app.integrations.llm.provider import local_endpoint
+from app.integrations.llm.provider import local_endpoint, require_local_model, LocalModelRejected, LOCAL_MODEL_HINTS
 from app.schemas import RequirementsData
 from app.services.errors import NeedsInput
 from app.services.sponsorship import snapshot
 
 MODEL_SETUP_HINTS = {
+    **LOCAL_MODEL_HINTS,
     'unavailable': 'Local Ollama could not complete extraction. Open Ollama, check ollama list, then retry.',
     'configuration': 'Configure local Ollama: set LLM_PROVIDER=ollama, LLM_MODEL and a loopback LLM_BASE_URL in the private .env. No model call was made.',
     'server_unreachable': 'Cannot connect to local Ollama. Open the Ollama app and check that LLM_BASE_URL points to its local address.',
@@ -83,6 +84,8 @@ def extract(text, *, client=None, attempts=3):
         reason, fields = 'response_shape', []
         for attempt in range(attempts):
             try:
+                if attempt == 0:
+                    require_local_model(client, url, model)
                 response = client.post(url, json={
                     'model': model, 'stream': False, 'format': RequirementsData.model_json_schema(),
                     'options': {'temperature': 0, 'num_ctx': 8192, 'num_predict': 2048},
@@ -116,6 +119,8 @@ def extract(text, *, client=None, attempts=3):
             except (KeyError, TypeError, AttributeError):
                 reason, fields = 'response_shape', []
                 continue
+            except LocalModelRejected as error:
+                raise LocalModelUnavailable(reason=error.reason) from None
             except httpx.TimeoutException:
                 raise LocalModelUnavailable(reason='timed_out') from None
             except httpx.ConnectError:
