@@ -87,6 +87,12 @@ class RequirementTerm(StrictModel):
     quote: Nonempty = Field(max_length=2000, description='A short exact contiguous source substring containing the value, with original words and punctuation.')
 
 
+class RequirementGroundingError(ValueError):
+    def __init__(self, reason, field):
+        self.field = field
+        super().__init__(reason)
+
+
 class RequirementsData(StrictModel):
     skills: list[RequirementTerm] = Field(default_factory=list, max_length=50)
     education: list[RequirementTerm] = Field(default_factory=list, max_length=20)
@@ -94,15 +100,15 @@ class RequirementsData(StrictModel):
 
     def grounded(self, text):
         source = ' '.join(text.split()).casefold()
-        for terms in (self.skills, self.education, self.experience):
+        for category, terms in (('skills', self.skills), ('education', self.education), ('experience', self.experience)):
             seen = set()
-            for term in terms:
+            for index, term in enumerate(terms):
                 value, quote = ' '.join(term.value.split()).casefold(), ' '.join(term.quote.split()).casefold()
                 if quote not in source:
-                    raise ValueError('requirement_quote_not_in_source')
+                    raise RequirementGroundingError('requirement_quote_not_in_source', f'{category}.{index}.quote:quote_not_in_source')
                 if not re.search(r"(?<![\w+#])" + re.escape(value) + r"(?![\w+#])", quote):
-                    raise ValueError('requirement_term_not_in_quote')
+                    raise RequirementGroundingError('requirement_term_not_in_quote', f'{category}.{index}.value:term_not_in_quote')
                 if value in seen:
-                    raise ValueError('requirement_duplicate_term')
+                    raise RequirementGroundingError('requirement_duplicate_term', f'{category}.{index}.value:duplicate_term')
                 seen.add(value)
         return self

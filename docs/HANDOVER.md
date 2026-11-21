@@ -54,6 +54,10 @@ Concurrent source fix pushed as 05b1522c47ba078031168b4307c0dca77d7f9da0, remote
 
 Fallback model boundary pushed as ad5e1bf96bf1e8760b5ddc69ed9eb09c54faf4cb, remote SHA verified. Generic JSON-LD previously accepted a conflicting known posting URL. Four reproductions failed; compare recognised source/declared identities and stop when both identify different postings/boards/regions/providers. Resolve relative URLs without fetching. Keep the selected URL; unknown publisher links do not create invented identity aliases. Seven controls/103 affected tests and the 40-page field regression pass; final full 397 API tests and production browser pass. No data/schema/dependency/network changes. Push after checks. Next safe diagnostic refinement: identify fixed schema category/index for grounding errors, never raw values. Real revised-prompt 7B output still awaited; continue until05:00, no Phase3.
 
+## Safe grounding position checkpoint — 04:38 London
+
+Structured source guard pushed as fe0cd2eb37f94872a45a3b7b1cf9e218cbb7acb5, remote SHA verified. Grounding failures now include a fixed public schema category/index/field/reason only (education.0.value:term_not_in_quote), without rejected values/quotes. New ValueError subclass retains original reason strings; cache/eval consumers still reject it. JSON schema equality against the prior commit verified; prompt/validation criteria unchanged. Two diagnostic regressions first failed then passed. Full 399 API tests, production browser and 40-page regression pass. Actual synthetic native HTTP CLI verifies preflight then one failed case/eight NOT TESTED, field propagation/no marker echo; no real model quality. Push checked step. Finish fallback-path review until05:00; owner Mac result still awaited, no phase progression/network changes.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

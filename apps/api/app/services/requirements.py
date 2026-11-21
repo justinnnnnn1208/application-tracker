@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 from app.db.models import JobRequirements, now
 from app.integrations.llm.provider import local_endpoint, require_local_model, LocalModelRejected, LOCAL_MODEL_HINTS
-from app.schemas import RequirementsData
+from app.schemas import RequirementsData, RequirementGroundingError
 from app.services.errors import NeedsInput
 from app.services.sponsorship import snapshot
 
@@ -114,7 +114,7 @@ def extract(text, *, client=None, attempts=3):
                 reason = {'requirement_quote_not_in_source': 'quote_not_in_source',
                           'requirement_term_not_in_quote': 'term_not_in_quote',
                           'requirement_duplicate_term': 'duplicate_term'}.get(str(error), 'response_shape')
-                fields = []
+                fields = [error.field] if isinstance(error, RequirementGroundingError) else []
                 continue
             except (KeyError, TypeError, AttributeError):
                 reason, fields = 'response_shape', []

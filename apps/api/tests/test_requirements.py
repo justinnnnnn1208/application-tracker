@@ -326,3 +326,18 @@ def test_prompt_matches_grounding_contract_and_retry_feedback_excludes_rejected_
     for body in calls:
         schema=body['format']['$defs']['RequirementTerm']['properties']
         assert 'substring' in schema['value']['description'] and 'containing' in schema['quote']['description']
+
+
+@pytest.mark.parametrize('kind,term,expected', [
+    ('education',{'value':'PRIVATE_REJECTED_VALUE','quote':'A degree is required.'},'education.0.value:term_not_in_quote'),
+    ('skills',{'value':'Python','quote':'PRIVATE_REJECTED_QUOTE'},'skills.0.quote:quote_not_in_source'),
+])
+def test_grounding_diagnostic_identifies_only_schema_position_not_rejected_values(monkeypatch,kind,term,expected):
+    configure(monkeypatch)
+    def handle(request):
+        return httpx.Response(200,json={'done':True,'message':{'content':json.dumps({kind:[term]})}})
+    with httpx.Client(transport=model_transport(handle)) as client:
+        with pytest.raises(requirements.InvalidRequirementsOutput) as error:
+            requirements.extract('Python required. A degree is required.',client=client,attempts=1)
+    assert error.value.fields==[expected]
+    assert 'PRIVATE_REJECTED' not in str(error.value) and 'PRIVATE_REJECTED' not in str(error.value.fields)
