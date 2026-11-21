@@ -267,3 +267,31 @@ def test_local_setup_failures_have_safe_actionable_reasons_without_retry_or_body
             requirements.extract('public fixture job text',client=client)
     assert len(calls)==1 and caught.value.reason==reason
     assert private not in str(caught.value) and 'remote.example' not in str(caught.value)
+
+
+@pytest.mark.parametrize('payload,source,reason',[
+    ({'done':True,'done_reason':'length','message':{'content':'{}'}},'Python required.','output_limit'),
+    ({'done':False,'message':{'content':'{}'}},'Python required.','incomplete_response'),
+    ({'done':True,'message':{'content':'not JSON'}},'Python required.','schema_invalid'),
+    ({'done':True,'message':{'content':'{\"SYNTHETIC_PRIVATE_FIELD\": 1}'}},'Python required.','schema_invalid'),
+    ({'done':True,'message':None},'Python required.','response_shape'),
+    ({'done':True,'message':{'content':json.dumps({'skills':[{'value':'Python','quote':'Python required.'}]*2})}},'Python required.','duplicate_term'),
+    ({'done':True,'message':{'content':'{"skills": ["SYNTHETIC_PRIVATE"]}'}},'Python required.','schema_invalid'),
+    ({'done':True,'message':{'content':json.dumps({'skills':[{'value':'Python','quote':'Python required.'}]})}},'No technology stated.','quote_not_in_source'),
+    ({'done':True,'message':{'content':json.dumps({'skills':[{'value':'Java','quote':'JavaScript required.'}]})}},'JavaScript required.','term_not_in_quote'),
+])
+def test_single_attempt_diagnoses_rejection_without_echoing_model_output(monkeypatch,payload,source,reason):
+    configure(monkeypatch);calls=[]
+    def handle(request):calls.append(request);return httpx.Response(200,json=payload)
+    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        with pytest.raises(requirements.InvalidRequirementsOutput) as error:
+            requirements.extract(source,client=client,attempts=1)
+    assert len(calls)==1 and error.value.reason==reason and error.value.attempts==1
+    assert 'SYNTHETIC_PRIVATE' not in str(error.value) and 'SYNTHETIC_PRIVATE' not in str(error.value.fields)
+
+
+@pytest.mark.parametrize('attempts',[0,4,True])
+def test_attempt_limit_cannot_exceed_spec_or_make_unconfigured_requests(monkeypatch,attempts):
+    monkeypatch.setattr(httpx,'Client',lambda **_:pytest.fail('No client for invalid attempt limit'))
+    with pytest.raises(ValueError,match='one to three'):
+        requirements.extract('Public fixture',attempts=attempts)

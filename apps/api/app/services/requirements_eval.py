@@ -58,16 +58,24 @@ def load_review(path, cases):
     return review
 
 
-def evaluate(cases, review, predict=None, progress=None):
+def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False):
     predict = predict or requirements.extract
     by_id = {case.id: (case, html) for case, html in cases}
     results, valid, expected_count, found_count, empty_count, empty_correct, forbidden_count = [], 0, 0, 0, 0, 0, 0
     unavailable = None
+    stopped = False
     for item in review.cases:
         case, html = by_id[item.id]
         expected_count += len(item.must_include_skills)
         empty_count += int(item.empty_skills)
         result = {'id': item.id, 'source_sha256': case.sha256, 'state': 'failed', 'checks_passed': False, 'missing_skills': item.must_include_skills, 'forbidden_skills': []}
+        if stopped:
+            result.update(state='not_tested', checks_passed=None, missing_skills=None, forbidden_skills=None,
+                          error_code='stopped_after_failure', error='Not run: an earlier case failed the limited checks.')
+            results.append(result)
+            if progress:
+                progress(item.id, 'NOT TESTED (stopped after failure)')
+            continue
         try:
             if unavailable:
                 raise requirements.LocalModelUnavailable(reason=unavailable)
@@ -90,23 +98,30 @@ def evaluate(cases, review, predict=None, progress=None):
             unavailable = error.reason
             result.update(state='not_tested', checks_passed=None, missing_skills=None, forbidden_skills=None,
                           error_code=unavailable, error=requirements.MODEL_SETUP_HINTS[unavailable])
+        except requirements.InvalidRequirementsOutput as error:
+            result.update(error_code=error.reason, validation_attempts=error.attempts,
+                          validation_fields=error.fields, missing_skills=None, forbidden_skills=None,
+                          error='Model output rejected; semantic terms were not assessed and no response values were copied into diagnostics.')
         except (NeedsInput, ValueError):
             # No model/source bodies or private configuration in errors/progress.
             result['error'] = 'Local extraction unavailable or output failed validation.'
         results.append(result)
+        if fail_fast and result['checks_passed'] is False:
+            stopped = True
         if progress:
             progress(item.id, 'NOT TESTED' if result['checks_passed'] is None else 'PASSED limited checks' if result['checks_passed'] else 'FAILED limited checks')
     not_tested = sum(row['state'] == 'not_tested' for row in results)
     failed_checks = sum(row['checks_passed'] is False for row in results)
     return {'cases': len(review.cases), 'schema_grounding_valid': valid, 'failed': len(review.cases) - valid - not_tested,
+            'completed_cases': len(review.cases) - not_tested, 'stopped_after_failure': stopped and not_tested > 0,
             'development_checks_passed': False if failed_checks else None if not_tested else True,
             'cases_failing_development_checks': failed_checks,
-            'not_tested': not_tested, 'quality_assessed': not unavailable,
+            'not_tested': not_tested, 'quality_assessed': not unavailable and not not_tested,
             'unavailable_reason': unavailable, 'setup_hint': requirements.MODEL_SETUP_HINTS.get(unavailable),
             'expected_skill_terms': expected_count, 'found_expected_terms': found_count,
-            'minimum_term_recall': found_count / expected_count if expected_count and not unavailable else None,
+            'minimum_term_recall': found_count / expected_count if expected_count and not not_tested else None,
             'expected_empty_cases': empty_count, 'correct_empty_cases': empty_correct,
-            'empty_case_accuracy': empty_correct / empty_count if empty_count and not unavailable else None,
+            'empty_case_accuracy': empty_correct / empty_count if empty_count and not not_tested else None,
             'forbidden_terms_returned': forbidden_count, 'results': results, 'phase_2_accepted': False,
             'limits': ['Public saved pages only; this runner never opens the application DB/profile/Notes/CVs.',
                        'Minimum named-term recall and empty-case checks do not measure every requirement or semantic precision.',
@@ -119,6 +134,8 @@ def main():
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--review', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True, help='New JSON report path; existing files are never overwritten')
+    parser.add_argument('--fail-fast', action='store_true', help='Stop model calls after the first failed limited check; skipped cases remain NOT TESTED')
+    parser.add_argument('--single-attempt', action='store_true', help='One model response per case, without schema/grounding retries')
     args = parser.parse_args()
     if not requirements.configuration():
         print('NOT TESTED: configure a local Ollama model first. No remote calls or application database access attempted.')
@@ -128,20 +145,37 @@ def main():
             raise ValueError('Output already exists')
         cases = load_cases(args.manifest)
         review = load_review(args.review, cases)
-        report = evaluate(cases, review, progress=lambda id, state: print(f'{id}: {state}', flush=True))
+        print(f"Checking {len(review.cases)} public cases; {'stopping at first failure' if args.fail_fast else 'full run'}; {'one response' if args.single_attempt else 'up to three validation attempts'} per case.", flush=True)
+        predict = (lambda text: requirements.extract(text, attempts=1)) if args.single_attempt else None
+        report = evaluate(cases, review, predict=predict, fail_fast=args.fail_fast,
+                          progress=lambda id, state: print(f'{id}: {state}', flush=True))
+        report['attempts_per_case'] = 1 if args.single_attempt else 3
         args.output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         with args.output.open('x', encoding='utf-8') as file:
             file.write(json.dumps(report, indent=2) + '\n')
         args.output.chmod(0o600)
+    except KeyboardInterrupt:
+        print('Model check cancelled. No full-set accuracy conclusion or tracker database change.')
+        return 130
     except (OSError, ValueError):
         print('Evaluation inputs/output could not be validated. Check paths, checksums, review labels and use a new output filename.')
         return 2
-    print(f"{report['schema_grounding_valid']}/{report['cases']} schema/grounding-valid; minimum term recall {report['minimum_term_recall']}; empty-case accuracy {report['empty_case_accuracy']}; Phase 2 acceptance remains unassessed.")
+    print(f"Completed {report['completed_cases']}/{report['cases']} cases; schema/grounding-valid {report['schema_grounding_valid']}/{report['completed_cases']}; {report['not_tested']} NOT TESTED.")
+    print(f"Minimum term recall {report['minimum_term_recall']}; empty-case accuracy {report['empty_case_accuracy']}; Phase 2 acceptance remains unassessed.")
     print(f"Limited development checks: {'FAILED' if report['development_checks_passed'] is False else 'NOT TESTED' if report['development_checks_passed'] is None else 'PASSED'}; {report['cases_failing_development_checks']} cases failed checks. This is not Phase 2 acceptance.")
-    if report['not_tested']:
+    for row in report['results']:
+        if row['checks_passed'] is False:
+            print(f"{row['id']} failure: {row.get('error_code', 'reviewed_content_checks')}.")
+            if row['state'] == 'validated':
+                print(f"Missing skills: {', '.join(row['missing_skills'] or []) or 'none'}; forbidden terms: {', '.join(row['forbidden_skills'] or []) or 'none'}.")
+            if row.get('validation_fields'):
+                print('Validation fields/types: ' + ', '.join(row['validation_fields']))
+    if report['unavailable_reason']:
         print(f"NOT TESTED [{report['unavailable_reason']}]: {report['setup_hint']}")
         print('No semantic-quality pass/fail conclusion; fix local setup and request another check.')
         return 2
+    if report['stopped_after_failure']:
+        print(f"Stopped after the first failed case; {report['not_tested']} cases were NOT TESTED. No full-set accuracy claim.")
     return 0 if report['development_checks_passed'] else 1
 
 

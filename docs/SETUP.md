@@ -262,7 +262,7 @@ python3 scripts/dev.py --check-model
 
 This loads the same model choice as the app (explicit shell model settings still take precedence). It passes only the local-model selectors and minimal runtime settings to the public evaluation process, excluding database/app/OAuth/API credentials. It does not start the tracker, migrate or open its database, profile, Notes or CVs. The native connection enforces loopback and does not use shell proxies. App access-token setup is not needed for this public-only check; API dependencies must already be installed.
 
-The command prints each of the nine reviewed cases and the relative path of a new report under `.local/requirements-check-*.json`. Existing reports are never overwritten. It validates source hashes, minimum named-technology expectations, empty cases and company-marketing controls. The field/role manifest has 38 pages; this separate model subset is still nine, not full semantic coverage. No real model was available during cloud verification; the actual shortcut correctly reported all nine NOT TESTED and exit 2.
+The default check makes one response attempt per case and stops after the first failed check. Remaining cases are NOT TESTED, never counted as passing or assigned full-set accuracy. It prints completed/planned counts, a rejection reason and safe schema field/type codes, then the relative path of a new report under `.local/requirements-check-*.json`. Existing reports are never overwritten. It validates source hashes, minimum named-technology expectations, empty cases and company-marketing controls. The field/role manifest has 38 pages; this separate model subset is still nine, not full semantic coverage. No real model was available during cloud verification; the actual shortcut correctly reported all nine NOT TESTED and exit 2.
 
 Exit 2 means setup/input unavailable or NOT TESTED. An unavailable local server stops further model calls and leaves quality metrics unknown, not a fabricated zero-quality result. Exit 1 means schema/grounding or the reviewed minimum-term/empty-case checks failed. Exit 0 passes these limited development checks, not every requirement or full Phase 2 acceptance. Inspect quotes and the explicit coverage limits. No real model was available in the cloud run, so its semantic quality remains unverified.
 
@@ -305,3 +305,19 @@ The current scoring version excludes additional known leave/residency/settlement
 Open Ollama on the Mac, then run `ollama list`. If the configured model is missing, run `ollama pull qwen2.5:3b`. Test generation with `ollama run qwen2.5:3b "Reply with OK"`, then retry `python3 scripts/dev.py --check-model` from the project root. If the command is unavailable, the Mac app binary is `/Applications/Ollama.app/Contents/Resources/ollama`; use it in place of `ollama`. Keep the app running.
 
 The new check prints a safe reason code: server_unreachable means connection failed; timed_out suggests warming the selected model first; model_or_endpoint_missing is a 404 and requires checking model installation and local address; structured_request_rejected suggests checking Ollama/model schema support. Access/busy/runtime/redirect failures have separate hints. These are setup/transport diagnostics, not semantic quality scores. No response body, credential or private config URL is printed. The first unavailable request stops further case calls and leaves metrics unknown.
+
+## Slow or failed model checks
+
+The owner’s Mac run of qwen2.5:3b produced only 1/9 schema/grounding-valid responses (minimum term recall 0.1; empty-case accuracy 0.0). This is a real failed model run; the exact rejection causes were not recorded by that older check. Do not certify the model from a successful install or a short OK response.
+
+Pull the latest branch, then use `python3 scripts/dev.py --check-model`. It now makes one response attempt per case and stops on the first quality failure. Codes distinguish output_limit, incomplete_response, schema_invalid, quote_not_in_source, term_not_in_quote, duplicate_term and response_shape. Schema paths/types are shown without response values. Skipped cases remain NOT TESTED and aggregate metrics stay unknown. The tracker’s actual per-job extraction retains its existing initial attempt plus at most two retries; only the public diagnostic is shortened.
+
+`python3 scripts/dev.py --check-model-full` explicitly requests the slower all-case diagnostic with the normal validation retries. Control+C cancels a check without starting/migrating/changing the tracker database. A report is written after a completed check; cancelling before completion may leave no report.
+
+For the owner’s 16 GB Mac, qwen2.5:7b is a larger candidate, not a verified replacement. Download with `ollama pull qwen2.5:7b`, then test it without changing saved settings:
+
+```sh
+LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model
+```
+
+Only after reviewing its results should you change the private .env model setting. Neither fast-check success on a subset nor schema validity alone accepts Phase 2.

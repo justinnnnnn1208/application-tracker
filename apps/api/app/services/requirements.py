@@ -3,6 +3,7 @@ import os
 from urllib.parse import urlunsplit
 
 import httpx
+from pydantic import ValidationError
 
 from app.db.models import JobRequirements, now
 from app.integrations.llm.provider import local_endpoint
@@ -31,6 +32,13 @@ class LocalModelUnavailable(NeedsInput):
         super().__init__(message or MODEL_SETUP_HINTS[self.reason])
 
 
+class InvalidRequirementsOutput(NeedsInput):
+    def __init__(self, reason, attempts, fields=()):
+        self.reason, self.attempts, self.fields = reason, attempts, list(fields)
+        count = {1: 'one attempt', 2: 'two attempts', 3: 'three attempts'}[attempts]
+        super().__init__(f'Local model output failed schema/source validation after {count}. Reason: {reason}. No requirements were saved.')
+
+
 MAX_CHARS = 16000
 
 
@@ -50,7 +58,9 @@ def public_text(job):
     return f'Title: {job.title}\nLocation: {job.location}\nVacancy description:\n{job.description}\nEligibility requirements:\n{job.eligibility_requirements}'
 
 
-def extract(text, *, client=None):
+def extract(text, *, client=None, attempts=3):
+    if type(attempts) is not int or not 1 <= attempts <= 3:
+        raise ValueError('Validation attempts must be an integer from one to three')
     config = configuration()
     if not config:
         raise LocalModelUnavailable(reason='configuration')
@@ -60,7 +70,8 @@ def extract(text, *, client=None):
     # The selected model is local; shell proxies must never carry this request.
     client = client or httpx.Client(timeout=120, trust_env=False, follow_redirects=False)
     try:
-        for _ in range(3):
+        reason, fields = 'response_shape', []
+        for _ in range(attempts):
             try:
                 response = client.post(url, json={
                     'model': model, 'stream': False, 'format': RequirementsData.model_json_schema(),
@@ -73,10 +84,27 @@ def extract(text, *, client=None):
                 response.raise_for_status()
                 payload = response.json()
                 if payload.get('done') is not True or payload.get('done_reason') == 'length':
-                    raise ValueError('Incomplete model response')
+                    reason = 'output_limit' if payload.get('done_reason') == 'length' else 'incomplete_response'
+                    fields = []
+                    continue
                 data = RequirementsData.model_validate_json(payload['message']['content']).grounded(source)
                 return data, model, len(source), len(text) > MAX_CHARS
-            except (ValueError, KeyError, TypeError, AttributeError):
+            except ValidationError as error:
+                reason = 'schema_invalid'
+                # Keep fixed schema paths/types only; never copy model field names,
+                # values, JSON snippets or validator context into diagnostics.
+                allowed = {'skills', 'education', 'experience', 'value', 'quote'}
+                fields = ['.'.join(str(part) if isinstance(part, int) and 0 <= part < 50 or part in allowed else 'field' for part in item['loc']) + ':' + item['type']
+                          for item in error.errors(include_input=False, include_context=False, include_url=False)[:5]]
+                continue
+            except ValueError as error:
+                reason = {'requirement_quote_not_in_source': 'quote_not_in_source',
+                          'requirement_term_not_in_quote': 'term_not_in_quote',
+                          'requirement_duplicate_term': 'duplicate_term'}.get(str(error), 'response_shape')
+                fields = []
+                continue
+            except (KeyError, TypeError, AttributeError):
+                reason, fields = 'response_shape', []
                 continue
             except httpx.TimeoutException:
                 raise LocalModelUnavailable(reason='timed_out') from None
@@ -95,7 +123,7 @@ def extract(text, *, client=None):
     finally:
         if owned_client:
             client.close()
-    raise NeedsInput('Local model output failed schema/source validation after three attempts. No requirements were saved.')
+    raise InvalidRequirementsOutput(reason, attempts, fields)
 
 
 def current(job, row):

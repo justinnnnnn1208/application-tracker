@@ -16,7 +16,7 @@ Question-driven brainstorming can be done in conversation. No interviewing plugi
 
 ## Owner's working preferences
 
-- The owner develops on a Mac using VS Code. Give commands with `python3`, explain the directory to run them from, and use Control+C to stop the app.
+- The owner develops on a 16 GB Mac using VS Code. Give commands with `python3`, explain the directory to run them from, and use Control+C to stop the app.
 - Desktop reminders are optional browser notifications while the tab is open; use macOS notification permissions. No closed-browser delivery is promised.
 - The website should open directly to the dashboard. No unlock page or lock/sign-out buttons. The backend credential remains server-side; services stay on localhost.
 - Send understandable progress updates: a rough phase bar, every Phase 1 acceptance criterion marked PASSED/FAILED/NOT TESTED with evidence, changes since the last update, work not reached, and any owner inputs needed. Percentages are rough indicators, not completion criteria or time estimates.
@@ -62,4 +62,4 @@ Do not read private data merely to fill out a context file. Record configuration
 
 ## Model preference
 
-On 20 November the owner selected local Ollama for structured vacancy requirements. Recommend qwen2.5:3b as an initial small model, with real quality evaluated before relying on it. Local task input excludes Notes, applicant facts, CVs and legal declarations. Do not infer that selecting a model means it is installed, configured or verified. Hosted personal-data permissions remain unchanged.
+On 20 November the owner selected local Ollama for structured vacancy requirements. The initial qwen2.5:3b recommendation failed the owner’s real validation run; see STATUS.md. qwen2.5:7b is the next recommended candidate for the 16 GB Mac, not a verified/configured replacement. Evaluate actual quality before relying on it. Local task input excludes Notes, applicant facts, CVs and legal declarations. Do not infer that selecting a model means it is installed, configured or verified. Hosted personal-data permissions remain unchanged.

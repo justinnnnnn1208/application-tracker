@@ -1,6 +1,6 @@
 # Current project status
 
-Reviewed: 20 November 2026 (Europe/London).
+Reviewed: 21 November 2026 (Europe/London).
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** Percentages are estimates, not quality certificates. Phase 1 was accepted for progression with explicit operational deferrals. Sheets stays read-only by default. Phase 3, submissions and environment publication are not authorised.
 
@@ -32,7 +32,7 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 
 ## Latest verification
 
-- **318 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
+- **343 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
 - Latest frontend typecheck and production build passed on the SmartRecruiters UI; subsequent changes are backend/data/docs only.
 - Production browser passed: disposable real worker, direct dashboard/reload/restart, server-only credential/origin guards, CRUD/history, Notes repair, CV review/download, filters/deadlines, preferences/feedback/evidence, source controls, synthetic native Ollama task, register upload, backup/CLI restore, notification mocks and 1440/390/320px layouts.
 - Fresh live strict-ID Greenhouse import passed in temporary storage: 4 new + 1 duplicate, repeat 0 new + 5 duplicates; one application each, saved shortlist/history preserved, all Unverified. No applicant facts/model/Google/forms. Reports/capture hashes distinguish live evidence from fixtures.
@@ -78,3 +78,9 @@ Open http://127.0.0.1:3000. Later starts use `python3 scripts/dev.py`. No new pr
 Owner reported all nine Mac checks NOT TESTED (unavailable), which does not establish model-quality failure or success. Fresh baseline 318 tests passed. Structured diagnostics now preserve bounded connection/timeout/404/schema-request/access/busy/runtime/redirect reason codes and safe setup hints through evaluator skips and CLI output. HTTP bodies, URLs and exception details are never echoed. Nine new regression cases first failed, then the full 327-test suite and 38-page field regression passed. A cloud shortcut run returned server_unreachable/exit 2 with unknown quality metrics; the Mac cause remains unknown pending its command output. Existing remote-configuration rejection tests retained their assertion after wording was corrected.
 
 Owner explicitly requested work until 05:00 London on 21 November and proactive cutoff questions at future build-session starts; AGENTS/context record this, without repeating an already explicit instruction. Owner chose to keep network settings unchanged; do not prepare/apply/publish a network draft or ask for the same grant again unless they revisit it. Existing real-provider checks remain blocked/unverified.
+
+## 21 November — real model failure and faster checks
+
+Owner supplied the actual Mac qwen2.5:3b full result: **1/9 schema/grounding-valid**, minimum term recall **0.1**, empty-case accuracy **0.0**, eight failed limited checks. This supersedes the earlier unavailable-only Mac observation; exact rejection reasons remain unknown. The model is not verified/accepted. Mac memory is 16 GB; qwen2.5:7b is a recommended candidate, not a tested replacement. Saved model settings have not been changed by this cloud session.
+
+The default root model check now stops after the first failed case and uses one response attempt; completed/planned/skipped coverage and safe rejection/schema-path codes are explicit. Whole-set metrics are unknown when incomplete. --check-model-full retains the old comprehensive/retrying diagnostic; app extraction keeps its normal at-most-three attempts. Native CLI/HTTP synthetic rejection proved one actual request, one retained failure, eight NOT TESTED, no body echo or false accuracy claim. Unit tests preserve full passing runs, default app retry limits, cancellation/privacy and setup handling. **343 API tests** and 38-page field regression passed; full production browser verification passed for this checkpoint. No dependencies/schema/UI changes.

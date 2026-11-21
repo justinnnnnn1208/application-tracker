@@ -15,7 +15,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--migrate", action="store_true", help="Back up/verify existing SQLite data, apply migrations, then start")
-    mode.add_argument("--check-model", action="store_true", help="Check the configured local model against public fixtures; do not start the app")
+    mode.add_argument("--check-model", action="store_true", help="Public model check: one response per case, stop at the first failed check; no app startup")
+    mode.add_argument("--check-model-full", action="store_true", help="Full public model diagnostic run, including validation retries and later cases after failure")
     args = parser.parse_args()
     os.umask(0o077)
     environment = os.environ.copy()
@@ -26,7 +27,7 @@ def main():
             if line.strip() and not line.lstrip().startswith("#"):
                 key, value = line.split("=", 1)
                 environment.setdefault(key.strip(), value.strip())
-    if args.check_model:
+    if args.check_model or args.check_model_full:
         interpreter = ROOT / "apps/api/.venv/bin/python"
         if not interpreter.is_file():
             print("Install API dependencies first: run uv sync --frozen from apps/api, then return to the project root.")
@@ -36,10 +37,16 @@ def main():
         # credentials, database settings or an inherited Python module path.
         public_environment = {"PATH": environment.get("PATH", os.defpath), "PYTHONUTF8": "1", "PYTHONNOUSERSITE": "1"}
         public_environment.update({key: environment[key] for key in ("LLM_PROVIDER", "LLM_MODEL", "LLM_BASE_URL") if key in environment})
-        result = subprocess.run([str(interpreter), "-m", "app.services.requirements_eval",
-                                 "--manifest", str(ROOT / "fixtures/eval/manifest-nov20.json"),
-                                 "--review", str(ROOT / "fixtures/eval/requirements-review.json"),
-                                 "--output", str(report)], cwd=ROOT / "apps/api", env=public_environment)
+        try:
+            result = subprocess.run([str(interpreter), "-m", "app.services.requirements_eval",
+                                     "--manifest", str(ROOT / "fixtures/eval/manifest-nov20.json"),
+                                     "--review", str(ROOT / "fixtures/eval/requirements-review.json"),
+                                     "--output", str(report)] + (["--fail-fast", "--single-attempt"] if args.check_model else []), cwd=ROOT / "apps/api", env=public_environment)
+        except KeyboardInterrupt:
+            print('Model check cancelled; no tracker services or migrations were started.')
+            if report.is_file():
+                print(f"Public model-check report: {report.relative_to(ROOT)}")
+            return 130
         if report.is_file():
             print(f"Public model-check report: {report.relative_to(ROOT)}", flush=True)
         return result.returncode

@@ -98,7 +98,11 @@ class RequirementsData(StrictModel):
             seen = set()
             for term in terms:
                 value, quote = ' '.join(term.value.split()).casefold(), ' '.join(term.quote.split()).casefold()
-                if quote not in source or not re.search(r"(?<![\w+#])" + re.escape(value) + r"(?![\w+#])", quote) or value in seen:
-                    raise ValueError('Requirements must quote the supplied vacancy, with unique verbatim terms')
+                if quote not in source:
+                    raise ValueError('requirement_quote_not_in_source')
+                if not re.search(r"(?<![\w+#])" + re.escape(value) + r"(?![\w+#])", quote):
+                    raise ValueError('requirement_term_not_in_quote')
+                if value in seen:
+                    raise ValueError('requirement_duplicate_term')
                 seen.add(value)
         return self

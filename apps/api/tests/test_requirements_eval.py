@@ -103,3 +103,28 @@ def test_unavailable_reason_is_preserved_across_skips_without_echoing_exception_
     assert all(row['error_code']=='timed_out' for row in result['results'])
     assert 'SYNTHETIC_PRIVATE' not in str(result)
     assert 'ollama run' in result['setup_hint']
+
+
+def test_fail_fast_records_one_failure_and_marks_remaining_cases_untested():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    calls=[]
+    def wrong(text):
+        calls.append(text);return RequirementsData(),'synthetic',len(text),False
+    report=evaluate(cases,review,predict=wrong,fail_fast=True)
+    assert len(calls)==1 and report['completed_cases']==1 and report['not_tested']==8
+    assert report['stopped_after_failure'] is True and report['development_checks_passed'] is False
+    assert report['cases_failing_development_checks']==1 and report['minimum_term_recall'] is None
+    assert report['quality_assessed'] is False and report['unavailable_reason'] is None
+    assert all(row['error_code']=='stopped_after_failure' for row in report['results'][1:])
+    assert report['phase_2_accepted'] is False
+
+
+def test_fail_fast_does_not_stop_passing_cases_or_claim_phase_acceptance():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    review.cases=[item for item in review.cases if item.empty_skills]
+    report=evaluate(cases,review,predict=lambda text:(RequirementsData(),'synthetic',len(text),False),fail_fast=True)
+    assert report['not_tested']==0 and report['completed_cases']==len(review.cases)
+    assert report['stopped_after_failure'] is False and report['development_checks_passed'] is True
+    assert report['phase_2_accepted'] is False

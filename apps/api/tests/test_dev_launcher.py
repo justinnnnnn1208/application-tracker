@@ -40,6 +40,7 @@ def test_model_check_loads_private_model_selectors_but_never_passes_secrets_or_d
     command,cwd,_=calls[0]
     assert command[1:3]==['-m','app.services.requirements_eval'] and cwd==tmp_path/'apps/api'
     assert 'requirements-review.json' in command[command.index('--review')+1]
+    assert '--fail-fast' in command and '--single-attempt' in command
     output=capsys.readouterr().out
     assert '.local/requirements-check-' in output and secret not in output
     assert not (tmp_path/'do-not-open.db').exists()
@@ -79,3 +80,21 @@ def test_normal_launch_still_runs_app_services_and_only_explicit_migrations(tmp_
     assert 'app.main:create_app' in services[0] and 'app.worker.main' in services[1]
     assert services[2]==['npm','run','dev']
     if mode:assert events[0][1][-1]=='app.services.migration_cli'
+
+
+def test_full_model_diagnostic_is_explicit_and_does_not_add_fast_flags(tmp_path,monkeypatch):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py','--check-model-full'])
+    calls=[]
+    def run(command,**_):calls.append(command);return SimpleNamespace(returncode=1)
+    monkeypatch.setattr(module.subprocess,'run',run)
+    assert module.main()==1
+    assert '--fail-fast' not in calls[0] and '--single-attempt' not in calls[0]
+
+
+def test_cancelled_model_check_returns_without_starting_services_or_traceback(tmp_path,monkeypatch,capsys):
+    module=launcher(tmp_path,monkeypatch)
+    def cancelled(*_,**__):raise KeyboardInterrupt
+    monkeypatch.setattr(module.subprocess,'run',cancelled)
+    assert module.main()==130
+    assert 'cancelled' in capsys.readouterr().out

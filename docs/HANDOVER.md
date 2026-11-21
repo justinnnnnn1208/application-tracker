@@ -6,6 +6,12 @@ Started clean at fb1e35b. Owner confirmed Mac update/startup/migration worked, t
 
 Completed local diagnostic change: bounded safe reason codes/hints for connection, timeout, missing endpoint/model, rejected structured request, denied access, busy/runtime/redirect; evaluator retains the first reason through skipped cases and prints useful guidance without echoing HTTP body/URL/exception strings. Fresh 318 baseline, then 327 tests and 38-page field regression passed. Existing text assertion failed after a wording change and was preserved by fixing the message. Actual cloud check now reports server_unreachable, nine NOT TESTED, exit 2. Mac reason still unknown. No schema/dependencies/UI change. Push this checked step, then continue remaining Phase 2 scope within available access until 05:00.
 
+## Actual model result / fast diagnostic checkpoint
+
+Diagnostics/preferences step pushed as d59f5b9 (verify remote before delivery). Owner declined network draft; do not revisit it unless they do. Owner then supplied a real full Mac qwen2.5:3b failure: only 1/9 schema/grounding-valid, recall 0.1, empty-case accuracy 0.0; eight FAILED limited checks. Exact causes unknown in old report. They report 16 GB RAM. Recommended qwen2.5:7b as a candidate and explained its 4.7 GB download; no actual quality pass, no private setting change. Awaiting candidate run/first rejection reason.
+
+New root --check-model is first-failure/single-attempt, while --check-model-full preserves all cases/retries. App extraction still defaults to three attempts. Fixed output/JSON/schema/quote/term/duplicate/protocol reason codes and sanitized schema paths; no raw response values. Partial runs keep skipped cases NOT TESTED and full metrics null; observed failures still FAIL. Ctrl+C returns cancellation safely. Native synthetic CLI test proved one request/one failure/eight skipped and no marker echo. 343 API tests, full production browser and real 38-page field regression passed. No new dependencies/schema/frontend changes. Push after finishing its checks, then give owner the short pull/check commands so the next Mac run diagnoses the actual rejection quickly. Continue Phase 2 within unchanged network access until 05:00 London on 21 November; no Phase 3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026
