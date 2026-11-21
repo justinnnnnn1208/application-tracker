@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import pytest
 from app.services.evaluation import baseline, evaluate, load_cases
 from app.services.extraction import extract_job, labelled_date, parse_date
@@ -97,6 +98,28 @@ def test_real_legacy_metadata_page_reuses_worker_history_without_a_model(client,
     assert 'Typescript/Javascript' in jobs[0]['description'] and jobs[0]['status'] == 'SHORTLISTED'
     assert jobs[0]['sponsorship'] == 'UNVERIFIED'
     assert client.get(f"/api/jobs/{job['id']}/events").json() == before
+
+
+@pytest.mark.parametrize('declared', [
+    'https://boards.greenhouse.io/fixture/jobs/2',
+    'https://boards.greenhouse.io/another/jobs/1',
+    'https://job-boards.eu.greenhouse.io/fixture/jobs/1',
+    'https://jobs.lever.co/fixture/123e4567-e89b-12d3-a456-426614174000',
+])
+def test_structured_page_cannot_claim_a_different_known_posting(declared):
+    from app.services.errors import NeedsInput
+    page={'@type':'JobPosting','url':declared,'title':'Engineer','hiringOrganization':{'name':'Fixture'},'description':'Python required.'}
+    html='<script type="application/ld+json">'+json.dumps(page)+'</script>'
+    with pytest.raises(NeedsInput,match='different posting'):
+        extract_job('https://job-boards.greenhouse.io/fixture/jobs/1',html)
+
+
+@pytest.mark.parametrize('declared', ['https://boards.greenhouse.io/fixture/jobs/1?gh_jid=1','/fixture/jobs/1','https://careers.example.org/employer-listing'])
+def test_structured_page_keeps_selected_url_and_does_not_invent_custom_source_identity(declared):
+    page={'@type':'JobPosting','url':declared,'title':'Engineer','hiringOrganization':{'name':'Fixture'},'description':'Python required.'}
+    html='<script type="application/ld+json">'+json.dumps(page)+'</script>'
+    url='https://job-boards.greenhouse.io/fixture/jobs/1'
+    assert extract_job(url,html).url==url
 
 
 @pytest.mark.parametrize("title,description,expected", [("Graduate Engineer", "", "YES"), ("Senior Graduate Programme Manager", "", "NO"), ("Junior Developer", "", "YES"), ("Engineering Intern", "", "UNVERIFIED"), ("Associate Developer", "Benefits for graduates and associates", "UNVERIFIED"), ("Developer", "Minimum 3+ years of production experience", "NO")])

@@ -359,3 +359,7 @@ Validate the complete ISO calendar date/timestamp before taking its advertised c
 ### Fallback page-model boundary (21 November 2026)
 
 Only requested public vacancy fields may be returned by the fallback page model; owner Notes, URLs, status/legal fields and other extras are rejected. Ground values/dates against the exact bounded text sent to the model, not unseen trailing text. Retain the original source description. Schema/source membership checks are not a semantic-quality certificate.
+
+### Structured posting identity consistency (21 November 2026)
+
+When JSON-LD supplies a URL and both it and the selected source have recognised ATS identities, conflicting posting/board/region/provider identities stop extraction for manual review. Relative references resolve without a fetch. Retain the selected source URL; a publisher/custom URL or arbitrary job-ID query does not establish a new authoritative identity. This is source consistency, not employer verification.

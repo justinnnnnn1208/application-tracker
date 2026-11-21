@@ -50,6 +50,10 @@ Secondary identity fix pushed as 3ca1f87a4f4df08b56fe49165b4aca750ad778bc, remot
 
 Concurrent source fix pushed as 05b1522c47ba078031168b4307c0dca77d7f9da0, remote SHA verified. Fallback page provider accepted model-generated Notes (JobData contains owner fields) and validated values against unseen text beyond its 24000-character input. Three reproductions failed before fix. Explicit requested-public-field allowlist rejects owner Notes/extra fields; ground strings/dates against exactly the sent prefix. Keep original source description, model never rewrites it. Full 390 API tests, production browser and latest 40-page regression pass. No dependencies/schema/privacy/network changes or real model quality claim. Push passing step, then continue Phase2 review until05:00; Mac revised-prompt 7B still awaited, no Phase3.
 
+## Structured metadata identity checkpoint — 04:34 London
+
+Fallback model boundary pushed as ad5e1bf96bf1e8760b5ddc69ed9eb09c54faf4cb, remote SHA verified. Generic JSON-LD previously accepted a conflicting known posting URL. Four reproductions failed; compare recognised source/declared identities and stop when both identify different postings/boards/regions/providers. Resolve relative URLs without fetching. Keep the selected URL; unknown publisher links do not create invented identity aliases. Seven controls/103 affected tests and the 40-page field regression pass; final full 397 API tests and production browser pass. No data/schema/dependency/network changes. Push after checks. Next safe diagnostic refinement: identify fixed schema category/index for grounding errors, never raw values. Real revised-prompt 7B output still awaited; continue until05:00, no Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

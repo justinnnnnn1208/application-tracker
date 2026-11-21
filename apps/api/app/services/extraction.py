@@ -1,7 +1,7 @@
 """Read structured public JobPosting data. No tools or instructions from pages execute."""
 from datetime import date, datetime
 from html.parser import HTMLParser
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urljoin
 from app.services.urls import canonical_url
 from app.services.identity import ats_identity
 import json
@@ -223,6 +223,15 @@ def extract_job(url: str, html: str, provider=None) -> JobData:
             return provider.extract(url, plain_html(html))
         raise NeedsInput("No complete JobPosting metadata was found. Add the role manually or configure an extraction provider.")
     item = found[0]
+    source_identity = ats_identity(url)
+    declared_url = item.get('url')
+    if source_identity and isinstance(declared_url, str) and declared_url.strip():
+        try:
+            declared_identity = ats_identity(urljoin(url, declared_url))
+        except ValueError:
+            raise NeedsInput("The public metadata has an invalid posting URL. Review the listing manually.") from None
+        if declared_identity and declared_identity != source_identity:
+            raise NeedsInput("The public metadata identifies a different posting. Review the listing manually.")
     organisation = item.get("hiringOrganization") or {}
     if not isinstance(organisation, dict) or not isinstance(organisation.get("name"), str) or not isinstance(item.get("title"), str):
         raise NeedsInput("The page does not identify a role title and employer. Add or correct them manually.")
