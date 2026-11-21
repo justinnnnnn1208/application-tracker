@@ -87,3 +87,27 @@ def test_evidence_source_cannot_be_unlinked_silently(client):
     body={'snapshot':job['sponsorship_snapshot'],'confirmed':True}
     assert client.request('DELETE',path+'/'+linked['id'],json=body).status_code==409
     assert len(client.get(path).json())==2
+
+
+def test_secondary_known_id_also_prevents_combining_distinct_requisitions(client):
+    job=create(client);path=f"/api/jobs/{job['id']}/sources"
+    assert client.post(path,json=review(job,'https://job-boards.greenhouse.io/fixture/jobs/123')).status_code==201
+    for url in ['https://job-boards.greenhouse.io/fixture/jobs/456','https://job-boards.eu.greenhouse.io/fixture/jobs/123']:
+        assert client.post(path,json=review(job,url)).status_code==422
+    assert len(client.get(path).json())==2
+    assert len(client.get('/api/jobs').json())==1
+
+
+def test_pending_known_alias_also_protects_a_reviewed_link_from_removal(client):
+    job=create(client);path=f"/api/jobs/{job['id']}/sources"
+    linked=client.post(path,json=review(job,'https://job-boards.greenhouse.io/fixture/jobs/123')).json()
+    alias='https://boards.greenhouse.io/fixture/jobs/123'
+    page={'@type':'JobPosting','title':'Source role','hiringOrganization':{'name':'Fixture Employer'},'description':'Source text'}
+    task=client.post('/api/tasks/extract',json={'url':alias,'page_html':'<script type="application/ld+json">'+json.dumps(page)+'</script>'}).json()
+    body={'snapshot':job['sponsorship_snapshot'],'confirmed':True}
+    assert client.request('DELETE',path+'/'+linked['id'],json=body).status_code==409
+    run_once(client.app.state.engine,client.app.state.settings)
+    finished=next(row for row in client.get('/api/tasks').json() if row['id']==task['id'])
+    assert finished['status']=='SUCCEEDED' and finished['result']=={'job_id':job['id'],'created':False}
+    assert len(client.get('/api/jobs').json())==1
+    assert len(client.get(f"/api/jobs/{job['id']}/events").json())==1

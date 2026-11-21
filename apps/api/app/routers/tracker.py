@@ -210,8 +210,11 @@ def require_source_review(job, data):
 def link_source(id: str, data: SourceLink, session: DB, response: Response):
     job = require(session, Job, id)
     require_source_review(job, data)
-    old_key, new_key = ats_identity(job.url), ats_identity(data.url)
-    if old_key and new_key and old_key != new_key:
+    new_key = ats_identity(data.url)
+    old_keys = {ats_identity(job.url)} | {ats_identity(url) for url in session.scalars(select(JobSource.url).where(JobSource.job_id == id))}
+    for old_key in old_keys:
+        if not old_key or not new_key or old_key == new_key:
+            continue
         old_provider, old_board, _ = old_key.split(':')
         new_provider, new_board, _ = new_key.split(':')
         if (old_provider.removesuffix('-eu'), old_board) == (new_provider.removesuffix('-eu'), new_board):
@@ -245,8 +248,10 @@ def unlink_source(id: str, source_id: str, data: SourceConfirmation, session: DB
     evidence = session.get(JobEligibility, id)
     if evidence and evidence.source_url == row.url:
         raise HTTPException(409, 'This link supports a saved evidence review. Clear that review before removing the link.')
+    identity = ats_identity(row.url)
     for task in session.scalars(select(Task).where(Task.kind == 'extract_url', Task.status.in_(['QUEUED', 'RUNNING']))):
-        if task.payload.get('url') == row.url:
+        pending_url = task.payload.get('url')
+        if pending_url == row.url or (identity and pending_url and ats_identity(pending_url) == identity):
             raise HTTPException(409, 'An import is pending for this link. Review its result before removing the link.')
     session.delete(row)
     session.commit()

@@ -38,6 +38,10 @@ Model guard pushed as 134f2ed699e4e801a513f671ed2c58e7dab74936, remote SHA verif
 
 Legacy URL/real-page step pushed as a907be5e56c90aaa80b9537c8dade54ff70537ef, remote SHA verified. Next review reproduced five invalid known dates: metadata range/alternative/junk or impossible timestamp was silently truncated to its first ten characters. Complete ISO date/time validation fixes these; valid timestamps/leap days retained, ambiguous/malformed unknown. Ten regression cases; 93 affected tests and 40-page regression pass, full 384 API tests and production browser now pass. Only extraction.py/test_matching.py plus status/spec/handover for this step; no model/DB/dependency/network/Google changes. Finish checks then push. Revised real 7B result still awaited; continue until05:00 London Nov21, no Phase3.
 
+## Secondary identity checkpoint — 04:21 London
+
+Date fix pushed as 71b0c8b3d3fcd89faace9428cee727bbebce416e, remote SHA verified. Source review found/reproduced two gaps: unknown/custom primary could accept conflicting known IDs via secondary links; a queued official alias could lose its only identity mapping during unlink and create a second job. Compare incoming ID against every saved primary/secondary source; pending alias identities protect removal too. No new abstractions/schema/dependencies. Two tests failed before fix, then 25 affected tests pass; full 386 API tests and production browser pass. Pending-alias test now also verifies actual successful worker reuse, not merely the old job still existing. Update final checks/docs/push. Keep unchanged network policy; model result awaited; continue until05:00, no Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026
