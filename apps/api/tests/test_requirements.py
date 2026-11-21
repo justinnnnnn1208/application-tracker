@@ -295,3 +295,21 @@ def test_attempt_limit_cannot_exceed_spec_or_make_unconfigured_requests(monkeypa
     monkeypatch.setattr(httpx,'Client',lambda **_:pytest.fail('No client for invalid attempt limit'))
     with pytest.raises(ValueError,match='one to three'):
         requirements.extract('Public fixture',attempts=attempts)
+
+
+def test_prompt_matches_grounding_contract_and_retry_feedback_excludes_rejected_values(monkeypatch):
+    configure(monkeypatch);calls=[]
+    marker='SYNTHETIC_REJECTED_VALUE_NOT_TO_ECHO'
+    def handle(request):
+        body=json.loads(request.content);calls.append(body)
+        payload={'skills':[{'value':marker,'quote':'JavaScript required.'}]} if len(calls)==1 else {'skills':[{'value':'Java','quote':'Java required.'}]}
+        return httpx.Response(200,json={'done':True,'message':{'content':json.dumps(payload)}})
+    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        data,*_=requirements.extract('JavaScript required. Java required.',client=client)
+    assert data.skills[0].value=='Java' and len(calls)==2
+    assert 'Each value must occur verbatim inside its own quote' in calls[0]['messages'][0]['content']
+    assert 'term_not_in_quote' in calls[1]['messages'][0]['content']
+    assert marker not in json.dumps(calls)
+    for body in calls:
+        schema=body['format']['$defs']['RequirementTerm']['properties']
+        assert 'substring' in schema['value']['description'] and 'containing' in schema['quote']['description']

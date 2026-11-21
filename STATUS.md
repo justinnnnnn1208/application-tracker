@@ -32,7 +32,7 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 
 ## Latest verification
 
-- **343 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
+- **344 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
 - Latest frontend typecheck and production build passed on the SmartRecruiters UI; subsequent changes are backend/data/docs only.
 - Production browser passed: disposable real worker, direct dashboard/reload/restart, server-only credential/origin guards, CRUD/history, Notes repair, CV review/download, filters/deadlines, preferences/feedback/evidence, source controls, synthetic native Ollama task, register upload, backup/CLI restore, notification mocks and 1440/390/320px layouts.
 - Fresh live strict-ID Greenhouse import passed in temporary storage: 4 new + 1 duplicate, repeat 0 new + 5 duplicates; one application each, saved shortlist/history preserved, all Unverified. No applicant facts/model/Google/forms. Reports/capture hashes distinguish live evidence from fixtures.
@@ -84,3 +84,9 @@ Owner explicitly requested work until 05:00 London on 21 November and proactive 
 Owner supplied the actual Mac qwen2.5:3b full result: **1/9 schema/grounding-valid**, minimum term recall **0.1**, empty-case accuracy **0.0**, eight failed limited checks. This supersedes the earlier unavailable-only Mac observation; exact rejection reasons remain unknown. The model is not verified/accepted. Mac memory is 16 GB; qwen2.5:7b is a recommended candidate, not a tested replacement. Saved model settings have not been changed by this cloud session.
 
 The default root model check now stops after the first failed case and uses one response attempt; completed/planned/skipped coverage and safe rejection/schema-path codes are explicit. Whole-set metrics are unknown when incomplete. --check-model-full retains the old comprehensive/retrying diagnostic; app extraction keeps its normal at-most-three attempts. Native CLI/HTTP synthetic rejection proved one actual request, one retained failure, eight NOT TESTED, no body echo or false accuracy claim. Unit tests preserve full passing runs, default app retry limits, cancellation/privacy and setup handling. **343 API tests** and 38-page field regression passed; full production browser verification passed for this checkpoint. No dependencies/schema/UI changes.
+
+## 21 November — exact quote contract
+
+Owner’s first qwen2.5:7b fast run returned valid JSON but failed grounding on Graphcore with term_not_in_quote; eight cases were correctly skipped/NOT TESTED. The earlier prompt requested relevant source context but did not explicitly require the extracted value to occur inside its own quote. Tightened prompt and schema descriptions to match that unchanged validator, require short contiguous literal quotes, avoid inferred degree labels/company-background technologies, and omit unsupported entries. App retries now add only the safe rejection code/copying reminder, never rejected model values. Default fast diagnostic still makes one attempt.
+
+New regression reproduced the missing prompt contract before the fix, then proved retry recovery without echoing a rejected private marker. **344 API tests**, full production browser and the 38-page field regression passed. No validator relaxation, schema migration, dependencies or saved Mac model change. Real quality of the new prompt remains untested pending the owner’s next run.

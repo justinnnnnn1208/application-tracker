@@ -12,6 +12,10 @@ Diagnostics/preferences step pushed as d59f5b9 (verify remote before delivery). 
 
 New root --check-model is first-failure/single-attempt, while --check-model-full preserves all cases/retries. App extraction still defaults to three attempts. Fixed output/JSON/schema/quote/term/duplicate/protocol reason codes and sanitized schema paths; no raw response values. Partial runs keep skipped cases NOT TESTED and full metrics null; observed failures still FAIL. Ctrl+C returns cancellation safely. Native synthetic CLI test proved one request/one failure/eight skipped and no marker echo. 343 API tests, full production browser and real 38-page field regression passed. No new dependencies/schema/frontend changes. Push after finishing its checks, then give owner the short pull/check commands so the next Mac run diagnoses the actual rejection quickly. Continue Phase 2 within unchanged network access until 05:00 London on 21 November; no Phase 3.
 
+## Quote-contract fix checkpoint
+
+Fast check pushed as 1c011d4, remote SHA verified. Owner downloaded 7B, then its first fast run failed Graphcore term_not_in_quote (JSON parsed; value absent from its own source quote); eight cases NOT TESTED. Prompt was missing that explicit relationship. New prompt/schema descriptions state literal value-in-own-quote, short contiguous quotes, no inferred degree expansions/company marketing. Validator unchanged. Retry feedback uses only a safe rejection code/reminder, never previous model values. Regression proved the missing instruction before fix and safe recovery after; 344 API tests, full browser and 38-page field regression passed. Push this checkpoint and give owner the same short 7B command; await actual real result. Source review UI work is paused for this priority, not implemented yet. No environment/private config/dependency/schema migration changes. Continue until 05:00 London on 21 November.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

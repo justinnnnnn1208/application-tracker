@@ -83,8 +83,8 @@ class EventOut(StrictModel):
 
 
 class RequirementTerm(StrictModel):
-    value: Nonempty = Field(max_length=200)
-    quote: Nonempty = Field(max_length=2000)
+    value: Nonempty = Field(max_length=200, description='An exact contiguous substring of its own quote, without rephrasing or inferred labels.')
+    quote: Nonempty = Field(max_length=2000, description='A short exact contiguous source substring containing the value, with original words and punctuation.')
 
 
 class RequirementsData(StrictModel):
