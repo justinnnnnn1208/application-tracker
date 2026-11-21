@@ -182,7 +182,7 @@ class GreenhouseParser(HTMLParser):
             raise ValueError("Incomplete or mismatched public vacancy")
         identity = ats_identity(url)
         if canonical_url(self.og_url) != canonical_url(url) and (not identity or ats_identity(self.og_url) != identity):
-            raise ValueError("Mismatched public vacancy identity")
+            raise NeedsInput("Page metadata does not match the selected posting. Review the listing manually.")
         title = next(iter(titles))
         prefix = f"Job Application for {title} at "
         page_title = " ".join("".join(self.title).split())

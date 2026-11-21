@@ -58,6 +58,10 @@ Fallback model boundary pushed as ad5e1bf96bf1e8760b5ddc69ed9eb09c54faf4cb, remo
 
 Structured source guard pushed as fe0cd2eb37f94872a45a3b7b1cf9e218cbb7acb5, remote SHA verified. Grounding failures now include a fixed public schema category/index/field/reason only (education.0.value:term_not_in_quote), without rejected values/quotes. New ValueError subclass retains original reason strings; cache/eval consumers still reject it. JSON schema equality against the prior commit verified; prompt/validation criteria unchanged. Two diagnostic regressions first failed then passed. Full 399 API tests, production browser and 40-page regression pass. Actual synthetic native HTTP CLI verifies preflight then one failed case/eight NOT TESTED, field propagation/no marker echo; no real model quality. Push checked step. Finish fallback-path review until05:00; owner Mac result still awaited, no phase progression/network changes.
 
+## Fallback control checkpoint — 04:42 London
+
+Safe grounding positions pushed as a5151fd67ca3bf0162236583da18dfe8ef211ca8, remote SHA verified. Four new reproductions: unsupported/blank provider selector silently selected compatible mode, and a known Greenhouse HTML identity conflict reached fallback. Unsupported selector now gives static LLM_PROVIDER setup error, no model request; recognised/default selections unchanged. Known page mismatch raises NeedsInput directly, cannot be model-overridden. Full 406 API tests, production browser and 40-page field regression pass. No dependencies/migration/hosted calls/managed settings changes. Push tested step, then a final permitted live current-URL worker/identity/restore check using disposable data only. Model quality/live non-Greenhouse/full register/Adzuna-Find a Job still incomplete. Continue until05:00; don't mislabel completion or start Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

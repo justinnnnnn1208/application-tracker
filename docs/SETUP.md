@@ -336,3 +336,5 @@ LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model
 ```
 
 The second command runs from the repository root, separately from the chat. Keep Ollama open. The tracker checks `/api/show` with only the model name before sending vacancy text; cloud tags, remote aliases and unverifiable metadata stop with a setup message. A local loopback URL alone does not establish local inference. A successful model download/OK reply is not a passed requirements check. No OAuth change, credential sharing or new model download is needed if qwen2.5:7b is already installed.
+
+Unknown/blank LLM_PROVIDER selections now stop with a setup error instead of selecting a hosted-compatible provider. Use the exact value `ollama` for local extraction; `openai_compatible` is the other supported selection. Known page/posting identity conflicts require manual review and cannot be overridden by model fallback.

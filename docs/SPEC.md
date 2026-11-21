@@ -363,3 +363,7 @@ Only requested public vacancy fields may be returned by the fallback page model;
 ### Structured posting identity consistency (21 November 2026)
 
 When JSON-LD supplies a URL and both it and the selected source have recognised ATS identities, conflicting posting/board/region/provider identities stop extraction for manual review. Relative references resolve without a fetch. Retain the selected source URL; a publisher/custom URL or arbitrary job-ID query does not establish a new authoritative identity. This is source consistency, not employer verification.
+
+### Fallback selection and hard source conflicts (21 November 2026)
+
+Unsupported provider selectors stop with a configuration error, never silently choose hosted extraction. Preserve the documented default and explicit ollama/openai_compatible selections. A known Greenhouse page identity mismatch is a hard NeedsInput stop, not a reason to ask a model to override it.

@@ -122,6 +122,15 @@ def test_structured_page_keeps_selected_url_and_does_not_invent_custom_source_id
     assert extract_job(url,html).url==url
 
 
+def test_model_fallback_cannot_override_a_known_page_identity_mismatch():
+    from types import SimpleNamespace
+    from app.services.errors import NeedsInput
+    html='<title>Job Application for Engineer at Fixture</title><meta property="og:url" content="https://job-boards.greenhouse.io/fixture/jobs/2"><h1>Engineer</h1><div class="job__description">Python required.</div>'
+    provider=SimpleNamespace(extract=lambda *_:pytest.fail('Known source mismatch must stop before model fallback'))
+    with pytest.raises(NeedsInput,match='posting'):
+        extract_job('https://job-boards.greenhouse.io/fixture/jobs/1',html,provider)
+
+
 @pytest.mark.parametrize("title,description,expected", [("Graduate Engineer", "", "YES"), ("Senior Graduate Programme Manager", "", "NO"), ("Junior Developer", "", "YES"), ("Engineering Intern", "", "UNVERIFIED"), ("Associate Developer", "Benefits for graduates and associates", "UNVERIFIED"), ("Developer", "Minimum 3+ years of production experience", "NO")])
 def test_role_classification(title, description, expected):
     assert graduate_level(title, description) == expected

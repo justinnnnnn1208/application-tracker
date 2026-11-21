@@ -117,9 +117,12 @@ class Ollama(OpenAICompatible):
 
 
 def configured_provider():
-    model = os.environ.get("LLM_MODEL")
+    model = os.environ.get("LLM_MODEL", "").strip()
     if not model:
         return None
-    if os.environ.get("LLM_PROVIDER", "openai_compatible") == "ollama":
+    provider = os.environ.get("LLM_PROVIDER", "openai_compatible")
+    if provider not in {"ollama", "openai_compatible"}:
+        raise NeedsInput("Set LLM_PROVIDER to ollama or openai_compatible. No model request was made.")
+    if provider == "ollama":
         return Ollama(model, os.environ.get("LLM_BASE_URL", "http://127.0.0.1:11434/v1"))
     return OpenAICompatible(os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1"), model, os.environ.get("LLM_API_KEY", ""))

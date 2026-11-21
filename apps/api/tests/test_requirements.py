@@ -341,3 +341,20 @@ def test_grounding_diagnostic_identifies_only_schema_position_not_rejected_value
             requirements.extract('Python required. A degree is required.',client=client,attempts=1)
     assert error.value.fields==[expected]
     assert 'PRIVATE_REJECTED' not in str(error.value) and 'PRIVATE_REJECTED' not in str(error.value.fields)
+
+
+@pytest.mark.parametrize('provider',['ollma','OLLAMA',''])
+def test_unknown_provider_cannot_silently_select_hosted_extraction(monkeypatch,provider):
+    from app.integrations.llm.provider import configured_provider
+    configure(monkeypatch);monkeypatch.setenv('LLM_PROVIDER',provider)
+    with pytest.raises(NeedsInput,match='LLM_PROVIDER'):
+        configured_provider()
+
+
+@pytest.mark.parametrize('provider',[None,'openai_compatible','ollama'])
+def test_recognised_and_default_provider_selection_is_preserved(monkeypatch,provider):
+    from app.integrations.llm.provider import configured_provider,OpenAICompatible,Ollama
+    configure(monkeypatch)
+    if provider is None:monkeypatch.delenv('LLM_PROVIDER')
+    else:monkeypatch.setenv('LLM_PROVIDER',provider)
+    assert type(configured_provider()) is (Ollama if provider=='ollama' else OpenAICompatible)
