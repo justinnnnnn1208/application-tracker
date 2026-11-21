@@ -1,18 +1,20 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response
+from pydantic import Field, field_validator
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.db.models import Application, ApplicationEvent, Fact, Job, Profile
+from app.db.models import Application, ApplicationEvent, Fact, Job, JobEligibility, Profile, Task
 from app.db.session import get_session
 from app.services.jobs import ensure_job
 from app.services.sponsorship import effective_status, snapshot
 from app.services.sponsor_register import match as register_match
-from app.services.identity import find_existing, remember_source, possible_duplicates, AmbiguousIdentity
+from app.services.identity import ats_identity, find_existing, remember_source, possible_duplicates, AmbiguousIdentity
 from app.db.models import JobSource
-from app.schemas import EventOut, FactData, FactOut, JobData, JobOut, ProfileData, StatusChange
+from app.schemas import EventOut, FactData, FactOut, JobData, JobOut, ProfileData, StatusChange, StrictModel, Nonempty
+from app.services.urls import canonical_url
 
 router = APIRouter()
 DB = Annotated[Session, Depends(get_session)]
@@ -177,7 +179,78 @@ def events(id: str, session: DB):
 @router.get("/jobs/{id}/sources")
 def sources(id: str, session: DB):
     require(session, Job, id)
-    return [{"url": row.url, "method": row.method} for row in session.scalars(select(JobSource).where(JobSource.job_id == id).order_by(JobSource.created_at, JobSource.id))]
+    return [{"id": row.id, "url": row.url, "method": row.method} for row in session.scalars(select(JobSource).where(JobSource.job_id == id).order_by(JobSource.created_at, JobSource.id))]
+
+
+class SourceConfirmation(StrictModel):
+    snapshot: str = Field(pattern=r'^[a-f0-9]{64}$')
+    confirmed: bool = Field(strict=True)
+
+
+class SourceLink(SourceConfirmation):
+    url: Nonempty = Field(max_length=2048)
+
+    @field_validator('url')
+    @classmethod
+    def normalized_url(cls, value):
+        value = canonical_url(value)
+        if len(value) > 2048:
+            raise ValueError('Source URL is too long')
+        return value
+
+
+def require_source_review(job, data):
+    if not data.confirmed:
+        raise HTTPException(422, 'Confirm that you reviewed this source change.')
+    if data.snapshot != snapshot(job):
+        raise HTTPException(409, 'Vacancy changed. Reload the job and review its sources again.')
+
+
+@router.post('/jobs/{id}/sources', status_code=201)
+def link_source(id: str, data: SourceLink, session: DB, response: Response):
+    job = require(session, Job, id)
+    require_source_review(job, data)
+    old_key, new_key = ats_identity(job.url), ats_identity(data.url)
+    if old_key and new_key and old_key != new_key:
+        old_provider, old_board, _ = old_key.split(':')
+        new_provider, new_board, _ = new_key.split(':')
+        if (old_provider.removesuffix('-eu'), old_board) == (new_provider.removesuffix('-eu'), new_board):
+            raise HTTPException(422, 'These are distinct known posting IDs or regions. Keep their applications separate.')
+    try:
+        existing = find_existing(session, data.url)
+        if existing and existing.id != id:
+            session.rollback()
+            raise HTTPException(409, 'This listing belongs to another tracked job. No jobs or histories were merged.')
+        if not existing:
+            remember_source(session, job, data.url, 'owner_confirmed')
+        else:
+            response.status_code = 200
+        session.commit()
+    except (AmbiguousIdentity, IntegrityError):
+        session.rollback()
+        raise HTTPException(409, 'Source identity conflicts with existing records. No jobs or histories were merged.') from None
+    row = session.scalar(select(JobSource).where(JobSource.url == data.url))
+    return {'id': row.id, 'url': row.url, 'method': row.method}
+
+
+@router.delete('/jobs/{id}/sources/{source_id}', status_code=204)
+def unlink_source(id: str, source_id: str, data: SourceConfirmation, session: DB):
+    job = require(session, Job, id)
+    require_source_review(job, data)
+    row = require(session, JobSource, source_id)
+    if row.job_id != id:
+        raise HTTPException(404, 'Source not found for this job.')
+    if row.url == job.url or row.method != 'owner_confirmed':
+        raise HTTPException(409, 'Only a secondary owner-reviewed link can be removed; saved primary/automatic provenance is retained.')
+    evidence = session.get(JobEligibility, id)
+    if evidence and evidence.source_url == row.url:
+        raise HTTPException(409, 'This link supports a saved evidence review. Clear that review before removing the link.')
+    for task in session.scalars(select(Task).where(Task.kind == 'extract_url', Task.status.in_(['QUEUED', 'RUNNING']))):
+        if task.payload.get('url') == row.url:
+            raise HTTPException(409, 'An import is pending for this link. Review its result before removing the link.')
+    session.delete(row)
+    session.commit()
+    return Response(status_code=204)
 
 
 @router.get("/jobs/{id}/duplicates")

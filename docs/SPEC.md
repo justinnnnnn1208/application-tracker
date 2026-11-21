@@ -314,6 +314,10 @@ Read-only public Lever postings API supports explicit global/EU region, owner-en
 
 Treat Greenhouse and Lever global/EU instances as separate provider-ID scopes. Equal board/ID text across instances is insufficient evidence for automatic merging. Legacy/current URL variants within one instance may still dedupe. Cached-key migrations preserve existing jobs and histories; existing combined records are not automatically split.
 
+### Reviewed secondary listings (21 November 2026)
+
+Allow explicit owner confirmation that a new secondary listing is the same vacancy. Subsequent intake reuses the saved job/application/history; no similarity-only merge. Require current vacancy fingerprint and strict confirmation. Refuse a URL/identity belonging to another saved job and distinct known IDs/regions in the same provider board. This does not merge/delete two existing jobs or their histories. Only secondary owner-confirmed links can be removed after confirmation; retain primary/automatic provenance and block removal while URL intake is pending or saved evidence references it. No URL fetch, migration, Sheets write or new dependency is introduced. Fixture/worker/browser verification is not independent live cross-ATS acceptance.
+
 ### Exact start-date regression coverage (19 November 2026)
 
 Five additional genuine Marshall Wace snapshots expose three month-first exact start dates and two flexible ranges. The initial held-out failure is retained. Full labelled dates accept day-first/month-first order; partial, impossible or range dates stay unknown. These cases become regression data after the fix; report this consumption and shared-template limitation. The original 30-page manifest stays frozen; expanded 35-page results do not constitute independent multi-ATS or Phase 2 acceptance.

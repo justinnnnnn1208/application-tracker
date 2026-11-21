@@ -210,6 +210,10 @@ The same recognised Greenhouse, Lever or Ashby posting ID across supported offic
 
 Close titles with the same normalized employer/location can appear as review-only hints. Different programme numbers/years and different known requisitions within the same ATS board are excluded from these hints. Text similarity never automatically combines existing records or confirms that two openings are the same. Current intake identity support is not a claim of live Lever/Ashby discovery support.
 
+For a second listing that is not saved on another job, open **Link another listing for this vacancy** in that panel. Read both listings, enter its URL and confirm it is the same vacancy. Future imports of that URL reuse the existing job/application, preserving owner content, Notes and events. This saves a reviewed URL without fetching it. Distinct known IDs/regions on the same provider board are refused, as are URLs/identities owned by another saved job. Review those records separately; the control does not delete or merge existing histories.
+
+**Remove reviewed link** removes only a secondary manually linked URL after confirmation; it retains imported content and the job/history. Primary/automatic provenance cannot be removed here. A pending URL import or saved sponsorship evidence using that URL blocks removal until reviewed/cleared. A changed vacancy requires a fresh source review. No migration or new dependency is needed for these controls.
+
 ## Manual sponsorship evidence review
 
 In job details, expand Review role-specific evidence. Read the source and save a complete quote from the saved vacancy description/requirements, choose its saved listing URL, select an explicit Offered/Not offered finding, and confirm your review. Notes alone cannot establish policy. Leave unclear or conditional policy Unverified. The app checks quote provenance and your confirmation, not the statement’s meaning or immigration eligibility. Editing vacancy identity/content/location/dates invalidates the review. Previous evidence remains visible until reviewed again or cleared. Findings do not affect preference scores; sponsor licences remain unchecked.

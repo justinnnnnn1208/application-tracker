@@ -16,6 +16,12 @@ New root --check-model is first-failure/single-attempt, while --check-model-full
 
 Fast check pushed as 1c011d4, remote SHA verified. Owner downloaded 7B, then its first fast run failed Graphcore term_not_in_quote (JSON parsed; value absent from its own source quote); eight cases NOT TESTED. Prompt was missing that explicit relationship. New prompt/schema descriptions state literal value-in-own-quote, short contiguous quotes, no inferred degree expansions/company marketing. Validator unchanged. Retry feedback uses only a safe rejection code/reminder, never previous model values. Regression proved the missing instruction before fix and safe recovery after; 344 API tests, full browser and 38-page field regression passed. Push this checkpoint and give owner the same short 7B command; await actual real result. Source review UI work is paused for this priority, not implemented yet. No environment/private config/dependency/schema migration changes. Continue until 05:00 London on 21 November.
 
+## Reviewed new-source checkpoint — 04:00 London
+
+Prompt fix pushed as 3c0afba, SHA verified. Six new source-review API tests plus existing suite pass: 350 total. Typecheck/build, full disposable production browser and 38-page field/role regression also pass. UI links a new owner-reviewed secondary listing to an existing job; future intake preserves one application/owner content/Notes/events. Refuse another job's URL/known identity, distinct known same-board IDs/regions and stale/unconfirmed requests. Only manual secondary links removable; retain automatic/primary provenance and refuse pending URL intake or referenced saved evidence. Real worker and UI link/repeat/unlink paths verified; no existing-job histories merged/deleted, migrations/dependencies/Sheets/network settings unchanged. This is not live cross-ATS acceptance.
+
+Owner then showed bare ollama selecting glm-5.3-flash:cloud. Advised /bye, explicit local `ollama run qwen2.5:7b "Reply with OK"`, then pull and `LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model`. Await actual revised-prompt result. Next review: reject known cloud model selections for both local paths; loopback alone can proxy a cloud model. No private data sent. Continue authorised work until 05:00 London Nov21; do not mutate network settings or start Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

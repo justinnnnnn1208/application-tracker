@@ -441,6 +441,24 @@ def main():
                 restarted.get_by_role("button", name="View Browser worker engineer at Worker fixture company", exact=True).click()
                 expect(restarted.get_by_role("heading", name="Sources and possible duplicates", exact=True)).to_be_visible()
                 expect(restarted.get_by_role("link", name="https://boards.greenhouse.io/fixture/jobs/456", exact=True)).to_have_attribute("rel", "noopener noreferrer")
+                # Reviewed cross-source URLs reuse one application; undo removes only the link.
+                source_panel = restarted.get_by_role("heading", name="Sources and possible duplicates", exact=True).locator("..")
+                history_before = restarted.request.get(base + f"/jobs/{fixture_job['id']}/events").json()
+                source_panel.get_by_text("Link another listing for this vacancy", exact=True).click()
+                secondary = "https://example.org/reviewed-secondary"
+                source_panel.get_by_label("Additional listing URL", exact=True).fill(secondary)
+                expect(source_panel.get_by_role("button", name="Link reviewed listing", exact=True)).to_be_disabled()
+                source_panel.get_by_role("checkbox").check()
+                source_panel.get_by_role("button", name="Link reviewed listing", exact=True).click()
+                expect(source_panel.get_by_role("link", name=secondary, exact=True)).to_be_visible()
+                assert restarted.request.post(base + "/jobs", headers=origin, data={**original_data, "url": secondary}).json()["id"] == fixture_job["id"]
+                assert len(restarted.request.get(base + "/jobs").json()) == 4
+                restarted.once("dialog", lambda dialog: dialog.accept())
+                source_panel.get_by_role("button", name="Remove reviewed link", exact=True).click()
+                expect(source_panel.get_by_role("link", name=secondary, exact=True)).to_have_count(0)
+                expect(source_panel.get_by_text("Secondary link removed. Job and history retained.", exact=True)).to_be_visible()
+                assert restarted.request.get(base + f"/jobs/{fixture_job['id']}/events").json() == history_before
+                assert len(restarted.request.get(base + "/jobs").json()) == 4
                 restarted.get_by_role("button", name="Jobs", exact=True).click()
                 # Simulate an earlier Sheet import and verify automatic repair on API restart.
                 from sqlalchemy import select
