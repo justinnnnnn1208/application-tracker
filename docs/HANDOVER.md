@@ -34,6 +34,10 @@ Two genuine Cloudflare pages fetched through existing approved guards; initial p
 
 Model guard pushed as 134f2ed699e4e801a513f671ed2c58e7dab74936, remote SHA verified. Owner's revised real 7B result still awaited. No new permission needed for authorised independent Phase2 work until05:00; no Phase3. Update final checks/docs/push before another step. STATUS.md consolidated to remove stale current-network/model claims while retaining references/evidence.
 
+## Full metadata-date checkpoint — 04:18 London
+
+Legacy URL/real-page step pushed as a907be5e56c90aaa80b9537c8dade54ff70537ef, remote SHA verified. Next review reproduced five invalid known dates: metadata range/alternative/junk or impossible timestamp was silently truncated to its first ten characters. Complete ISO date/time validation fixes these; valid timestamps/leap days retained, ambiguous/malformed unknown. Ten regression cases; 93 affected tests and 40-page regression pass, full 384 API tests and production browser now pass. Only extraction.py/test_matching.py plus status/spec/handover for this step; no model/DB/dependency/network/Google changes. Finish checks then push. Revised real 7B result still awaited; continue until05:00 London Nov21, no Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

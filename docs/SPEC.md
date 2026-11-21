@@ -351,3 +351,7 @@ Selecting Ollama requires model metadata as well as loopback transport. Before s
 ### Real legacy-URL regression (21 November 2026)
 
 Two genuine Cloudflare pages exposed source rejection when Open Graph metadata names the legacy Greenhouse host. Recognise equal official provider/board/posting identities across supported URL forms, without crossing global/EU instances or accepting another board/ID/lookalike host. No redirect/network relaxation. Retain initial failures and annotation correction in fixtures/eval/REVIEW_NOV21.md. Current combined set is 40 same-ATS regression excerpts; no new positive dates or independent acceptance claim.
+
+### Complete metadata dates (21 November 2026)
+
+Validate the complete ISO calendar date/timestamp before taking its advertised calendar day. Ranges, trailing prose/junk and invalid times/offsets remain unknown rather than silently using the first ten characters. Preserve valid dates, leap days and timestamp offsets without inventing a start/deadline. This applies to structured JobPosting metadata and Greenhouse API deadline fields; labelled source dates retain their existing range guard.

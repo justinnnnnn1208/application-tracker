@@ -1,5 +1,5 @@
 """Read structured public JobPosting data. No tools or instructions from pages execute."""
-from datetime import date
+from datetime import date, datetime
 from html.parser import HTMLParser
 from urllib.parse import urlsplit
 from app.services.urls import canonical_url
@@ -55,10 +55,15 @@ def plain_html(value):
 def parse_date(value):
     if not isinstance(value, str):
         return None
+    value = value.strip()
     try:
-        return date.fromisoformat(value[:10])
+        if re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
+            return date.fromisoformat(value)
+        if re.fullmatch(r'\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}(?::\d{2}(?:[.,]\d+)?)?(?:[Zz]|[+-]\d{2}:?\d{2})?', value):
+            return datetime.fromisoformat(value.upper()).date()
     except ValueError:
-        return None
+        pass
+    return None
 
 
 def postings(value, depth=0):

@@ -1,7 +1,7 @@
 from pathlib import Path
 import pytest
 from app.services.evaluation import baseline, evaluate, load_cases
-from app.services.extraction import extract_job, labelled_date
+from app.services.extraction import extract_job, labelled_date, parse_date
 from app.services.matching import graduate_level
 from app.worker.tasks import run_once
 
@@ -22,6 +22,23 @@ def test_real_posting_targets():
 @pytest.mark.parametrize("value,expected", [("Application deadline: Midnight, 29th November 2026", "2026-11-29"), ("Applications deadline: 29 th November 2026", "2026-11-29"), ("Application deadline: 29th November", None), ("Application deadline: 31st February 2027", None), ("Application deadline: see website. Interview 29th November 2026", None)])
 def test_no_guessed_deadlines(value, expected):
     actual = labelled_date(value, r"Applications? deadline")
+    assert (actual.isoformat() if actual else None) == expected
+
+
+@pytest.mark.parametrize('value,expected', [
+    ('2027-09-06', '2027-09-06'),
+    ('2028-02-29T23:59:59Z', '2028-02-29'),
+    ('2027-09-06T23:30:00.123+01:00', '2027-09-06'),
+    ('2027-09-06 09:00:00+0000', '2027-09-06'),
+    ('2027-09-06/2027-09-07', None),
+    ('2027-09-06 or 2027-09-07', None),
+    ('2027-09-06junk', None),
+    ('2027-09-06T25:00:00Z', None),
+    ('2027-09-06T23:30:00+24:00', None),
+    ('2027-02-29T09:00:00Z', None),
+])
+def test_metadata_dates_validate_the_whole_value_instead_of_truncating(value, expected):
+    actual = parse_date(value)
     assert (actual.isoformat() if actual else None) == expected
 
 
