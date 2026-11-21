@@ -10,8 +10,25 @@ from app.schemas import RequirementsData
 from app.services.errors import NeedsInput
 from app.services.sponsorship import snapshot
 
+MODEL_SETUP_HINTS = {
+    'unavailable': 'Local Ollama could not complete extraction. Open Ollama, check ollama list, then retry.',
+    'configuration': 'Configure local Ollama: set LLM_PROVIDER=ollama, LLM_MODEL and a loopback LLM_BASE_URL in the private .env. No model call was made.',
+    'server_unreachable': 'Cannot connect to local Ollama. Open the Ollama app and check that LLM_BASE_URL points to its local address.',
+    'timed_out': 'Local Ollama exceeded the request timeout. First run ollama run with the configured model to finish loading it, then retry the check.',
+    'model_or_endpoint_missing': 'Local endpoint returned 404. Check ollama list, pull the configured model if missing, and check that LLM_BASE_URL points to Ollama.',
+    'structured_request_rejected': 'Local Ollama rejected the structured request. Update Ollama and verify the selected model supports this JSON-schema request.',
+    'local_access_denied': 'Local endpoint denied access. Check that LLM_BASE_URL points to Ollama, not the tracker or another service.',
+    'model_busy': 'Local Ollama is busy or rate-limiting. Let the current model request finish, then explicitly retry.',
+    'runtime_failure': 'Local Ollama reported a runtime error. Check the Ollama app for model-loading or memory errors before retrying.',
+    'redirect_refused': 'Local model endpoint redirected; no redirect was followed. Use the direct loopback Ollama address.',
+}
+
+
 class LocalModelUnavailable(NeedsInput):
-    """Model configuration/transport failed; semantic quality was not tested."""
+    """Bounded reason codes; never echo an HTTP body, URL or exception details."""
+    def __init__(self, message=None, *, reason='unavailable'):
+        self.reason = reason if reason in MODEL_SETUP_HINTS else 'unavailable'
+        super().__init__(message or MODEL_SETUP_HINTS[self.reason])
 
 
 MAX_CHARS = 16000
@@ -36,7 +53,7 @@ def public_text(job):
 def extract(text, *, client=None):
     config = configuration()
     if not config:
-        raise LocalModelUnavailable('Configure local Ollama with LLM_PROVIDER=ollama and LLM_MODEL. Remote model URLs are not used for this task.')
+        raise LocalModelUnavailable(reason='configuration')
     url, model = config
     source = text[:MAX_CHARS]
     owned_client = client is None
@@ -61,8 +78,20 @@ def extract(text, *, client=None):
                 return data, model, len(source), len(text) > MAX_CHARS
             except (ValueError, KeyError, TypeError, AttributeError):
                 continue
+            except httpx.TimeoutException:
+                raise LocalModelUnavailable(reason='timed_out') from None
+            except httpx.ConnectError:
+                raise LocalModelUnavailable(reason='server_unreachable') from None
+            except httpx.HTTPStatusError as error:
+                status = error.response.status_code
+                reason = 'redirect_refused' if 300 <= status < 400 else 'runtime_failure' if status >= 500 else {
+                    400: 'structured_request_rejected', 422: 'structured_request_rejected',
+                    401: 'local_access_denied', 403: 'local_access_denied',
+                    404: 'model_or_endpoint_missing', 429: 'model_busy',
+                }.get(status, 'unavailable')
+                raise LocalModelUnavailable(reason=reason) from None
             except httpx.HTTPError:
-                raise LocalModelUnavailable('Local Ollama could not complete extraction. Start Ollama and install the configured model, then request a new task.') from None
+                raise LocalModelUnavailable() from None
     finally:
         if owned_client:
             client.close()

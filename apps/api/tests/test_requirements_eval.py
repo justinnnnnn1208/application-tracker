@@ -87,3 +87,19 @@ def test_passing_limited_checks_are_explicit_but_do_not_accept_phase_two():
     assert all(row['checks_passed'] is True for row in result['results'])
     assert seen==['PASSED limited checks']*len(review.cases)
     assert result['phase_2_accepted'] is False
+
+
+def test_unavailable_reason_is_preserved_across_skips_without_echoing_exception_details():
+    from app.services.requirements import LocalModelUnavailable
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    calls=[]
+    def unavailable(text):
+        calls.append(text)
+        raise LocalModelUnavailable('SYNTHETIC_PRIVATE_RESPONSE_MARKER',reason='timed_out')
+    result=evaluate(cases,review,predict=unavailable)
+    assert len(calls)==1 and result['unavailable_reason']=='timed_out'
+    assert result['not_tested']==9 and result['minimum_term_recall'] is None
+    assert all(row['error_code']=='timed_out' for row in result['results'])
+    assert 'SYNTHETIC_PRIVATE' not in str(result)
+    assert 'ollama run' in result['setup_hint']

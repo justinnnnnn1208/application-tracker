@@ -245,3 +245,25 @@ def test_ollama_compatible_page_client_disables_proxy_and_redirects(monkeypatch)
     data=Ollama('fixture').extract('https://example.org/job','Fixture Engineer vacancy source.')
     assert len(calls)==1 and str(calls[0].url)=='http://127.0.0.1:11434/v1/chat/completions'
     assert data.description=='Fixture Engineer vacancy source.'
+
+
+@pytest.mark.parametrize('failure,reason',[
+    ('connect','server_unreachable'),('timeout','timed_out'),
+    (404,'model_or_endpoint_missing'),(400,'structured_request_rejected'),
+    (401,'local_access_denied'),(429,'model_busy'),(500,'runtime_failure'),
+    (307,'redirect_refused'),
+])
+def test_local_setup_failures_have_safe_actionable_reasons_without_retry_or_body_leak(monkeypatch,failure,reason):
+    configure(monkeypatch)
+    calls=[]
+    private='SYNTHETIC_PRIVATE_RESPONSE_MARKER'
+    def handle(request):
+        calls.append(request)
+        if failure=='connect':raise httpx.ConnectError(private,request=request)
+        if failure=='timeout':raise httpx.ReadTimeout(private,request=request)
+        return httpx.Response(failure,text=private,headers={'Location':'http://remote.example/secret'} if failure==307 else {})
+    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        with pytest.raises(requirements.LocalModelUnavailable) as caught:
+            requirements.extract('public fixture job text',client=client)
+    assert len(calls)==1 and caught.value.reason==reason
+    assert private not in str(caught.value) and 'remote.example' not in str(caught.value)

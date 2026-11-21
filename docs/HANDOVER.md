@@ -1,3 +1,13 @@
+# Current checkpoint — 21 November 2026
+
+**Critical question: none.** Owner explicitly authorised Phase 2 work until **05:00 London on 21 November**. They declined the public-host draft and said keep network settings unchanged: no draft/runtime/publication changes; do not repeat that request unless they revisit it. Future build sessions should proactively ask about a 05:00 cutoff; this session already has one. Phase 3/Sheets writes/submissions remain gated.
+
+Started clean at fb1e35b. Owner confirmed Mac update/startup/migration worked, then reported all nine real model cases NOT TESTED/unavailable. This is not a real quality result. Gave steps to open Ollama, list/pull qwen2.5:3b, run a short OK prompt, then retry; awaiting their output, never credentials. Cloud status remains restricted with only the two custom Greenhouse hosts; fresh Lever robots check CONNECT 403. Runtime skill networking guidance used, settings unchanged.
+
+Completed local diagnostic change: bounded safe reason codes/hints for connection, timeout, missing endpoint/model, rejected structured request, denied access, busy/runtime/redirect; evaluator retains the first reason through skipped cases and prints useful guidance without echoing HTTP body/URL/exception strings. Fresh 318 baseline, then 327 tests and 38-page field regression passed. Existing text assertion failed after a wording change and was preserved by fixing the message. Actual cloud check now reports server_unreachable, nine NOT TESTED, exit 2. Mac reason still unknown. No schema/dependencies/UI change. Push this checked step, then continue remaining Phase 2 scope within available access until 05:00.
+
+## Previous handover / retained evidence
+
 # Night-shift handover — 20 November 2026
 
 Prepared 04:53 London. Application work is verified and pushed; final user summary is due at 05:00.

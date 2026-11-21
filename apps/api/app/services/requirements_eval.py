@@ -62,7 +62,7 @@ def evaluate(cases, review, predict=None, progress=None):
     predict = predict or requirements.extract
     by_id = {case.id: (case, html) for case, html in cases}
     results, valid, expected_count, found_count, empty_count, empty_correct, forbidden_count = [], 0, 0, 0, 0, 0, 0
-    unavailable = False
+    unavailable = None
     for item in review.cases:
         case, html = by_id[item.id]
         expected_count += len(item.must_include_skills)
@@ -70,7 +70,7 @@ def evaluate(cases, review, predict=None, progress=None):
         result = {'id': item.id, 'source_sha256': case.sha256, 'state': 'failed', 'checks_passed': False, 'missing_skills': item.must_include_skills, 'forbidden_skills': []}
         try:
             if unavailable:
-                raise requirements.LocalModelUnavailable('Local model unavailable')
+                raise requirements.LocalModelUnavailable(reason=unavailable)
             job = extract_job(case.url, html)
             text = requirements.public_text(job)
             data, model, chars, truncated = predict(text)
@@ -86,9 +86,10 @@ def evaluate(cases, review, predict=None, progress=None):
                           checks_passed=not missing and not forbidden and (not item.empty_skills or not values),
                           skills=data.model_dump()['skills'], missing_skills=missing, forbidden_skills=forbidden,
                           expected_empty=item.empty_skills, empty_correct=not values if item.empty_skills else None)
-        except requirements.LocalModelUnavailable:
-            unavailable = True
-            result.update(state='not_tested', checks_passed=None, missing_skills=None, forbidden_skills=None, error='Local model unavailable; no semantic-quality conclusion.')
+        except requirements.LocalModelUnavailable as error:
+            unavailable = error.reason
+            result.update(state='not_tested', checks_passed=None, missing_skills=None, forbidden_skills=None,
+                          error_code=unavailable, error=requirements.MODEL_SETUP_HINTS[unavailable])
         except (NeedsInput, ValueError):
             # No model/source bodies or private configuration in errors/progress.
             result['error'] = 'Local extraction unavailable or output failed validation.'
@@ -101,6 +102,7 @@ def evaluate(cases, review, predict=None, progress=None):
             'development_checks_passed': False if failed_checks else None if not_tested else True,
             'cases_failing_development_checks': failed_checks,
             'not_tested': not_tested, 'quality_assessed': not unavailable,
+            'unavailable_reason': unavailable, 'setup_hint': requirements.MODEL_SETUP_HINTS.get(unavailable),
             'expected_skill_terms': expected_count, 'found_expected_terms': found_count,
             'minimum_term_recall': found_count / expected_count if expected_count and not unavailable else None,
             'expected_empty_cases': empty_count, 'correct_empty_cases': empty_correct,
@@ -137,7 +139,8 @@ def main():
     print(f"{report['schema_grounding_valid']}/{report['cases']} schema/grounding-valid; minimum term recall {report['minimum_term_recall']}; empty-case accuracy {report['empty_case_accuracy']}; Phase 2 acceptance remains unassessed.")
     print(f"Limited development checks: {'FAILED' if report['development_checks_passed'] is False else 'NOT TESTED' if report['development_checks_passed'] is None else 'PASSED'}; {report['cases_failing_development_checks']} cases failed checks. This is not Phase 2 acceptance.")
     if report['not_tested']:
-        print('NOT TESTED: local model unavailable; no semantic-quality pass/fail conclusion.')
+        print(f"NOT TESTED [{report['unavailable_reason']}]: {report['setup_hint']}")
+        print('No semantic-quality pass/fail conclusion; fix local setup and request another check.')
         return 2
     return 0 if report['development_checks_passed'] else 1
 

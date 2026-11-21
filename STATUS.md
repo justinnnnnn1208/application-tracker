@@ -72,3 +72,9 @@ python3 scripts/dev.py --migrate
 ```
 
 Open http://127.0.0.1:3000. Later starts use `python3 scripts/dev.py`. No new project dependencies or Google consent are needed. Optional Ollama/CSV/Reed setup is in docs/SETUP.md; never send keys, OAuth JSON or the private .env through chat.
+
+## 21 November checkpoint — model setup diagnosis
+
+Owner reported all nine Mac checks NOT TESTED (unavailable), which does not establish model-quality failure or success. Fresh baseline 318 tests passed. Structured diagnostics now preserve bounded connection/timeout/404/schema-request/access/busy/runtime/redirect reason codes and safe setup hints through evaluator skips and CLI output. HTTP bodies, URLs and exception details are never echoed. Nine new regression cases first failed, then the full 327-test suite and 38-page field regression passed. A cloud shortcut run returned server_unreachable/exit 2 with unknown quality metrics; the Mac cause remains unknown pending its command output. Existing remote-configuration rejection tests retained their assertion after wording was corrected.
+
+Owner explicitly requested work until 05:00 London on 21 November and proactive cutoff questions at future build-session starts; AGENTS/context record this, without repeating an already explicit instruction. Owner chose to keep network settings unchanged; do not prepare/apply/publish a network draft or ask for the same grant again unless they revisit it. Existing real-provider checks remain blocked/unverified.

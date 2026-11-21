@@ -20,6 +20,7 @@ Question-driven brainstorming can be done in conversation. No interviewing plugi
 - Desktop reminders are optional browser notifications while the tab is open; use macOS notification permissions. No closed-browser delivery is promised.
 - The website should open directly to the dashboard. No unlock page or lock/sign-out buttons. The backend credential remains server-side; services stay on localhost.
 - Send understandable progress updates: a rough phase bar, every Phase 1 acceptance criterion marked PASSED/FAILED/NOT TESTED with evidence, changes since the last update, work not reached, and any owner inputs needed. Percentages are rough indicators, not completion criteria or time estimates.
+- For future build sessions, ask at the start whether the owner wants work until 05:00 London. An explicit instruction already given for that session needs no repeated confirmation. Record the date; do not carry an old night’s cutoff into a later session.
 - Keep the code and folder structure minimal. Reuse existing components, native controls and installed dependencies; avoid extra services or abstractions. Keep essential verification and safety rules intact.
 - Preserve useful work across sessions. Read and update the shared handover rather than asking the owner to repeat settled requirements.
 - New commits should use the owner-provided Git author identity configured locally; do not override it with Codex or rewrite old history. Ask for the verified/noreply email if missing.
