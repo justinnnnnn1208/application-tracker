@@ -1,25 +1,21 @@
 # Current project status
 
-Reviewed: 21 November 2026 (Europe/London).
+Reviewed: 21 November 2026, 04:15 Europe/London.
 
-**Phase 2: roughly 90% implementation; acceptance incomplete.** Percentages are estimates, not quality certificates. Phase 1 was accepted for progression with explicit operational deferrals. Sheets stays read-only by default. Phase 3, submissions and environment publication are not authorised.
+**Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
 
-## Latest checked step — 21 November, 04:00 London
+## Current delivery
 
-Reviewed secondary listing controls: 350 API tests, TypeScript/production build, full disposable production browser (including link → repeat intake → unlink and unchanged history), and 38-page field/role regression passed. No dependency/migration change. Revised-prompt qwen2.5:7b result remains awaited after the real first-case term_not_in_quote failure. The owner reported bare `ollama` opened glm-5.3-flash:cloud; advised exiting and explicitly running the downloaded local qwen2.5:7b. Local endpoint alone does not prove a model runs locally; cloud-model guard is delivered: both local paths inspect model-name-only metadata before source text, refuse cloud tags/remote aliases/unverifiable metadata. Fourteen new regressions first failed then passed; full 364 API tests, production browser and 38-page field regression pass. Actual root cloud-name check returned remote_model_refused, 9 NOT TESTED, exit 2 without a model server. No semantic pass inferred.
-
-## Implemented and checked
-
-| Capability | Current behaviour and evidence |
+| Capability | Behaviour and evidence |
 |---|---|
-| Local tracker | Direct charcoal dashboard, jobs/deadlines/listing links, imported statuses, profile/CV fact review, worker and opt-in tab-open reminders. Owner confirmed 20 development-copy rows. Notes locally repair missing literal role/location fields; owner edits/history/raw Sheet values are preserved. |
-| Identity and dedupe | Canonical URLs and official provider/board/posting identities retain one application and traceable aliases. Global/EU namespaces are separate. Fuzzy matches are review hints; conflicting existing histories are not automatically merged or split. Owner-reviewed new secondary listings can be linked/unlinked with current-vacancy confirmation, existing-identity/conflicting-requisition guards and pending-import/evidence protection. Real worker and production browser checks preserve one application and its events. Fixture tests and fresh live saved-page → API → repeat preservation pass. |
-| Preference matching | Six deterministic explained criteria, reviewed-fact citations, active-job batch scoring, current/stale ranking, Good/Poor feedback and manual keyword/weight controls. Known sponsorship/immigration terms are excluded from scorable technology candidates, including leave/residency/settlement/work-rights phrases and separator variants. This is not personal/legal eligibility, proficiency or success probability. |
-| Public discovery | Greenhouse, Lever global/EU, Ashby and SmartRecruiters; Reed keyword search with private API key. SmartRecruiters/Reed cover the first 20 results with detailed text. Greenhouse live checks pass; other providers have synthetic contract/worker/browser coverage, with live compatibility unverified. No schedule or seeded sources. Repeated pending source requests reuse a task. |
-| Local requirement candidates | Explicit per-job Ollama tasks, source quotes/schema validation, bounded input/output/retries and stale/concurrent-source protection. No Notes/profile/facts/CV/legal inputs. Current technology candidates feed deterministic overlap; otherwise labelled finite-keyword fallback. Both Ollama paths enforce loopback endpoints and ignore shell proxies/redirects. Synthetic HTTP tests are not real model quality. |
-| Sponsorship review | Owner-confirmed source quote and saved listing URL, context fingerprint, stale/legacy rejection and clear action. Provenance checks do not establish the statement's meaning. Automatic role-policy assessment is not delivered; default remains Unverified. |
-| Licence signal | Dated owner-confirmed official-asset CSV upload, conservative exact organisation-name lookup, separate route/town/source/hash display. Full parsing precedes atomic cache replacement; snapshots are retained/backed up. This is not online provenance verification, legal-employer identity or role sponsorship. |
-| Safe updates/backups | Backup-verifying `python3 scripts/dev.py --migrate`, schema guard and non-destructive CLI restore. Migration head eb81a592c387; cached identity migrations preserve existing jobs/history. Restore now rejects incomplete/unsupported/duplicate-member archives; URI-safe read-only snapshots honour database paths containing #, literal percent escapes or spaces. No new dependencies; private configuration/encryption keys remain unchanged. |
+| Local tracker | Direct charcoal dashboard, jobs/deadlines/listing links, imported statuses, profile/CV fact review, worker and opt-in tab-open reminders. Owner confirmed 20 development-copy rows. Column E Notes repairs missing literal fields locally; owner edits/events/raw Sheet values survive. |
+| Discovery | Greenhouse, Lever global/EU, Ashby, SmartRecruiters and private-key Reed search. First 20 details for SmartRecruiters/Reed; full bounded board for other ATS. Manual, not scheduled. Pending requests reuse tasks. Greenhouse has live checks; other adapters have synthetic contract/worker/browser tests, live compatibility unverified. |
+| Identity and review | Canonical URL/official provider-board-ID aliases retain one application. Global/EU isolated; fuzzy titles are hints. Owner can link a new reviewed secondary listing; intake preserves content/Notes/events. Refuse another job's identity or distinct known same-board IDs/regions. Only manual secondary links removable, with pending-import/evidence guards. No existing-job history merge/delete. |
+| Matching | Six deterministic explained criteria, reviewed-fact citations, active-job batch scoring/current ranking, Good/Poor feedback and manual keywords/weights. Known immigration/visa terms excluded from technology overlap. Source/fact/preference changes invalidate scores. Preference heuristic, not legal eligibility/proficiency/success probability. |
+| Local requirements | Explicit per-job source-only native Ollama task, schema/quote grounding, bounded context/output/retries and stale/concurrent-source protection. Notes/profile/facts/CV/legal inputs excluded. Current terms feed deterministic overlap; otherwise labelled finite-keyword fallback. No real quality pass. |
+| Local-model guard | Both local paths enforce loopback/no shell proxy/no redirects; before source text inspect `/api/show` with model name only. Refuse cloud tags, advertised remote aliases and missing/malformed metadata. Explicit hosted provider unchanged; no hosted fallback. Official Ollama source contract reviewed; tests include real synthetic loopback HTTP. |
+| Sponsorship and register | Default Unverified. Owner-reviewed role quote/source/current context required for a manual finding; changed inputs invalidate it. Provenance is not semantic policy judgement. Dated official-asset CSV upload/exact name lookup remains a separate signal, never a score or role confirmation. Actual full official register verification pending. |
+| Backups and updates | Backup-verifying `scripts/dev.py --migrate`, schema guard, restore to new destination, corrupt/unsupported archive guards, URI-safe exact SQLite filenames. Migration head eb81a592c387; score preference-v5-immigration-neutral-terms. No new dependencies/private configuration changes. |
 
 ## Phase 1 acceptance record
 
@@ -34,63 +30,41 @@ Reviewed secondary listing controls: 350 API tests, TypeScript/production build,
 
 Native macOS notification delivery remains untested. These accepted deferrals are not passed operational checks.
 
-## Latest verification
 
-- **344 API tests passed**, one existing Starlette/httpx deprecation warning. From apps/api: `UV_CACHE_DIR=/tmp/tracker-uv-cache uv run --frozen pytest -q --tb=short`.
-- Latest frontend typecheck and production build passed on the SmartRecruiters UI; subsequent changes are backend/data/docs only.
-- Production browser passed: disposable real worker, direct dashboard/reload/restart, server-only credential/origin guards, CRUD/history, Notes repair, CV review/download, filters/deadlines, preferences/feedback/evidence, source controls, synthetic native Ollama task, register upload, backup/CLI restore, notification mocks and 1440/390/320px layouts.
-- Fresh live strict-ID Greenhouse import passed in temporary storage: 4 new + 1 duplicate, repeat 0 new + 5 duplicates; one application each, saved shortlist/history preserved, all Unverified. No applicant facts/model/Google/forms. Reports/capture hashes distinguish live evidence from fixtures.
-- Greenhouse malformed/conflicting board/ID/URL tests reproduced failures before hardening. They now skip invalid entries, preserve publisher custom links without trusting arbitrary query IDs, and allow literal EU listing scope returned by the shared API. One additional malformed-content test initially failed; explicit type validation fixed it, then the full suite passed.
-- Fifteen injected model-category cases preserve numeric points/fact citations and Unverified status. Nine previously uncovered legal-term cases reproduced a score penalty before the fix. Score version preference-v5-immigration-neutral-terms invalidates old scores; this lexical guard does not certify model semantics or legal eligibility.
-- Direct wire-level local tests cover both native and compatible protocols. The compatible case exposed an invalid empty Bearer header missed by MockTransport; omitting that header fixes keyless local requests, while configured keys keep authentication. These synthetic responses are not real model evaluation.
-- Local proxy regression reproduced failure before the direct-client fix and passed after. Backup review reproduced missing-DB/unsupported-manifest acceptance and URI-filename mistakes; strict format checks and URI-safe paths now pass targeted/full/browser checks. One percent-filename test first encoded a different SQLAlchemy path, was corrected to a rendered URL, and proves both app-driver and restored-row identity. No unresolved application-test failure at this checkpoint.
+## This night's checked changes
 
-## Clean delivery verification
+- Safe model setup/validation reasons; default root check makes one response attempt per case and stops first failure. Skipped cases stay NOT TESTED/null metrics; explicit --check-model-full retains retries/all cases. App extraction keeps initial attempt plus at most two validation retries.
+- Tightened instructions/schema descriptions to the unchanged literal value-in-own-quote contract after the real 7B failure. No grounding relaxation or rejected-value feedback.
+- Source review UI/API: 350 tests, typecheck/production build, full disposable production browser and 38-page regression passed at d66e0e6. Link → repeat intake → unlink retains one application/history.
+- Model locality: 14 regressions failed before the fix and pass afterwards; full 364 API tests, browser and 38-page regression passed at 134f2ed. Actual root cloud-tag invocation with no server correctly refused it: 9 NOT TESTED, exit 2; no semantic pass.
+- Fresh Cloudflare pages reproduced 2/2 strict URL failures. Accepting equal official posting identities fixes legacy/current metadata variants while distinct boards/IDs/regions/lookalike domains remain rejected. Final full **374 API tests** and production browser passed, including the genuine-page worker preservation test. Latest 40-page combined field/role regression passes; acceptance remains false.
+- Earlier clean tracked-file export 2857020 passed fresh pinned installs, 303 tests/build/browser and actual init → backup-verifying migrate → local dashboard/proxy/auth → clean Control+C. Later code has incremental checks above. This is Linux release verification, not the outstanding Mac operational restore/notification test.
 
-A tracked-file export of application commit 2857020d9923ab8b1347fee13bfd474802bfc553, without private configuration/storage or existing dependencies, passed fresh pinned API/npm installs, 303 API tests, typecheck/build and full production browser checks. The first cache-only install attempt lacked wheels; permitted normal package fetching succeeded. Fresh init → combined --migrate launcher → dashboard/proxy CRUD/auth → clean Control+C shutdown also passed with synthetic disposable data. No owner data was accessed and no managed-environment settings were changed. This is Linux release verification, not the outstanding Mac operational check. Subsequent score and compatible-header changes pass the final 318-test suite, browser and 38-page regression; dependencies/frontend/launch code are unchanged.
+## Real-page and model evidence
 
-## Real-page and model evaluation
+Original 30/35/38 manifests and historical failures stay frozen. Latest **manifest-nov21.json: 40 genuine excerpts/seven employer labels, all Greenhouse**. Current combined field/role regression has zero extraction failures/false YES and matches basic labels. Only **12 known deadlines, 3 exact start days (same Marshall Wace template), 33 role-level YES/NO labels**. Null matches and literal In-Office/Hybrid headers do not prove positive dates or geographic extraction. Automatic sponsorship abstains: 4 YES/14 NO labels, zero known-policy accuracy; zero false YES is not evidence-assessment quality. phase_2_accepted=false.
 
-Original 30 and 19 November 35 manifests stay frozen. `fixtures/eval/manifest-nov20.json` contains **38 genuine excerpts across six employer labels, all Greenhouse**. Three new GoCardless labels were frozen before initial prediction: Junior Data Analyst in Riga, Data Science Manager and Senior SRE in London. Initial fields/role controls matched; the 3-case-only probe exits 2 because it is below the 30-page dataset-readiness minimum. The combined regression exits 0. Future runs are regressions after label inspection.
+Two new Cloudflare pages initially failed source extraction; preserve reports/nov21-initial-heldout.json. An incorrect internship YES annotation was corrected to the established Unverified rubric after the source failure/code inspection; original labels retained, corrected reviewed-nov21.json/provenance/review explain it. These are consumed regressions, not fresh held-out role acceptance. Databricks/Samsara redirects were refused; no extra hosts or substitute proxies.
 
-Current field/role regression matches labels with zero extraction failures/false YES. Known coverage: 12 deadlines, 3 exact start dates, 32 role-level YES/NO labels. The three date positives share one Marshall Wace template; the new null-date controls do not improve positive-date coverage. The original Nov19 0/3 held-out date failure remains saved. Automatic sponsorship abstains (4 YES/14 NO labels; zero known-policy accuracy). Zero false YES from abstention does not measure evidence-assessment quality. **phase_2_accepted remains false.** See fixture review/provenance files.
+Separate local-model review still has nine hash-bound minimum-term/empty/company-background cases, not exhaustive education/experience semantics or precision. Actual Mac qwen2.5:3b result: **1/9 schema/grounding-valid, recall 0.1, empty-case accuracy 0.0, eight failed**. Actual first qwen2.5:7b fast run: **term_not_in_quote, 0/1 valid, eight NOT TESTED**. Prompt fix pushed as 3c0afba; revised real result awaited. The 4.7 GB download/OK reply does not verify extraction quality. Bare ollama opened glm-5.3-flash:cloud; select downloaded Qwen explicitly. Cloud has no real Ollama server/weights; synthetic fixtures are not model quality.
 
-`python3 scripts/dev.py --check-model` runs the local-model check from the project root, using the app model selectors while excluding app/OAuth/API/database settings from its child process. It starts no app/migrations and writes a new ignored report. Its actual cloud invocation reported NOT TESTED/exit 2, not a model pass. Normal app/migration startup is covered by launcher regression tests.
+## Remaining Phase 2 work
 
-The local-model runner separately reviews nine hash-bound public cases for minimum named-term recall, empty cases and company-background controls. It now reports per-case/overall limited checks separately from valid JSON. Actual native attempt: **9 NOT TESTED**, unknown metrics, exit 2 because no Ollama server/model exists here. No quality pass is claimed; education/experience semantics and exhaustive precision remain unassessed.
+1. Obtain/review the revised-prompt local 7B result and fix actual failures without relaxing grounding or cherry-picking cases.
+2. Independent multi-ATS/positive-date evaluation at agreed ≥90% deadline/location/graduate/start-date targets; zero false confirmations. Current same-ATS regressions are insufficient.
+3. Live non-Greenhouse adapter and full official register compatibility/provenance checks. **Owner declined changing network settings on 21 November**; do not repeat that request or mutate/publish a draft unless they revisit it. Private Mac/API credentials are unavailable here.
+4. Adzuna and Find a Job are not implemented. Verify permitted current public contracts/terms first; Reed is the initial aggregator. Do not invent endpoints or treat truncated adverts as complete vacancy text.
+5. Supervised handling of conflicting pre-existing duplicate histories; current aliases/review avoid destructive merges. Manual weight tuning is delivered; automatic learning is not.
 
-## Remaining Phase 2 acceptance work
+## Owner next step
 
-- Real Ollama execution/quality and independent multi-ATS/positive-date validation at agreed ≥90% field targets, with zero false confirmations.
-- Live Lever/Ashby/SmartRecruiters/Reed compatibility and actual official register-file provenance/format checks. Network-only draft approval is pending; no settings were changed/published. Private Mac/API credentials are not available here.
-- Adzuna and Find a Job API support are not implemented; Reed is the initial aggregator. Terms/current public contracts must be verified before further adapters.
-- Supervised resolution of conflicting pre-existing duplicate histories; current aliases/hints avoid destructive merges. Manual weight tuning is delivered, automatic learning is not.
-
-## Owner start
-
-Stop with Control+C, then from the Mac project root:
+From the Mac project root (no secrets in chat):
 
 ```sh
 git pull --ff-only origin dev/phase-1
-python3 scripts/dev.py --migrate
+LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model
 ```
 
-Open http://127.0.0.1:3000. Later starts use `python3 scripts/dev.py`. No new project dependencies or Google consent are needed. Optional Ollama/CSV/Reed setup is in docs/SETUP.md; never send keys, OAuth JSON or the private .env through chat.
+Paste the final check result. If bare Ollama opens a cloud chat, use /bye then `ollama run qwen2.5:7b "Reply with OK"` separately. These one-command model selectors do not change the app's private .env. If verified and selected for normal app use, update the existing private LLM_PROVIDER/LLM_MODEL entries as SETUP.md describes; preserve all other settings.
 
-## 21 November checkpoint — model setup diagnosis
-
-Owner reported all nine Mac checks NOT TESTED (unavailable), which does not establish model-quality failure or success. Fresh baseline 318 tests passed. Structured diagnostics now preserve bounded connection/timeout/404/schema-request/access/busy/runtime/redirect reason codes and safe setup hints through evaluator skips and CLI output. HTTP bodies, URLs and exception details are never echoed. Nine new regression cases first failed, then the full 327-test suite and 38-page field regression passed. A cloud shortcut run returned server_unreachable/exit 2 with unknown quality metrics; the Mac cause remains unknown pending its command output. Existing remote-configuration rejection tests retained their assertion after wording was corrected.
-
-Owner explicitly requested work until 05:00 London on 21 November and proactive cutoff questions at future build-session starts; AGENTS/context record this, without repeating an already explicit instruction. Owner chose to keep network settings unchanged; do not prepare/apply/publish a network draft or ask for the same grant again unless they revisit it. Existing real-provider checks remain blocked/unverified.
-
-## 21 November — real model failure and faster checks
-
-Owner supplied the actual Mac qwen2.5:3b full result: **1/9 schema/grounding-valid**, minimum term recall **0.1**, empty-case accuracy **0.0**, eight failed limited checks. This supersedes the earlier unavailable-only Mac observation; exact rejection reasons remain unknown. The model is not verified/accepted. Mac memory is 16 GB; qwen2.5:7b is a recommended candidate, not a tested replacement. Saved model settings have not been changed by this cloud session.
-
-The default root model check now stops after the first failed case and uses one response attempt; completed/planned/skipped coverage and safe rejection/schema-path codes are explicit. Whole-set metrics are unknown when incomplete. --check-model-full retains the old comprehensive/retrying diagnostic; app extraction keeps its normal at-most-three attempts. Native CLI/HTTP synthetic rejection proved one actual request, one retained failure, eight NOT TESTED, no body echo or false accuracy claim. Unit tests preserve full passing runs, default app retry limits, cancellation/privacy and setup handling. **343 API tests** and 38-page field regression passed; full production browser verification passed for this checkpoint. No dependencies/schema/UI changes.
-
-## 21 November — exact quote contract
-
-Owner’s first qwen2.5:7b fast run returned valid JSON but failed grounding on Graphcore with term_not_in_quote; eight cases were correctly skipped/NOT TESTED. The earlier prompt requested relevant source context but did not explicitly require the extracted value to occur inside its own quote. Tightened prompt and schema descriptions to match that unchanged validator, require short contiguous literal quotes, avoid inferred degree labels/company-background technologies, and omit unsupported entries. App retries now add only the safe rejection code/copying reminder, never rejected model values. Default fast diagnostic still makes one attempt.
-
-New regression reproduced the missing prompt contract before the fix, then proved retry recovery without echoing a rejected private marker. **344 API tests**, full production browser and the 38-page field regression passed. No validator relaxation, schema migration, dependencies or saved Mac model change. Real quality of the new prompt remains untested pending the owner’s next run.
+For the tracker, stop with Control+C, pull, then `python3 scripts/dev.py --migrate`; open http://127.0.0.1:3000. Later starts use `python3 scripts/dev.py`. No new dependencies, OAuth consent or Sheet write permission are needed for this delivery.

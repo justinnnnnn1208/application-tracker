@@ -1,0 +1,40 @@
+{
+  "cases": [
+    {
+      "id": "cloudflare-8245211",
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8245211",
+      "html": "pages/cloudflare-8245211.html",
+      "sha256": "7244583d5f2f2aa83c373f4c1d9a4a233193135b867255748253f937ef3df737",
+      "captured_on": "2026-11-21",
+      "reviewed_on": "2026-11-21",
+      "labels": {
+        "company": "Cloudflare",
+        "title": "Software Engineer Intern (2027) - London, UK",
+        "location": "In-Office",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "cloudflare-8143649",
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8143649",
+      "html": "pages/cloudflare-8143649.html",
+      "sha256": "0d6fbba494770e90afdc401e6d76b47c1c510ceb06f635fa881e93c46a37b74c",
+      "captured_on": "2026-11-21",
+      "reviewed_on": "2026-11-21",
+      "labels": {
+        "company": "Cloudflare",
+        "title": "Engineering Manager, Agentic Internet & Data Insights",
+        "location": "Hybrid",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "NO",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    }
+  ]
+}

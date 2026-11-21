@@ -35,6 +35,53 @@ def test_page_parser_excludes_form_and_script_and_checks_source():
             extract_job(url, html)
 
 
+@pytest.mark.parametrize('host,legacy', [
+    ('job-boards.greenhouse.io', 'boards.greenhouse.io'),
+    ('boards.greenhouse.io', 'job-boards.greenhouse.io'),
+    ('job-boards.eu.greenhouse.io', 'boards.eu.greenhouse.io'),
+    ('boards.eu.greenhouse.io', 'job-boards.eu.greenhouse.io'),
+])
+def test_official_same_posting_metadata_can_use_another_url_form(host, legacy):
+    url = f'https://{host}/fixture/jobs/1'
+    html = f'<title>Job Application for Junior Engineer at Fixture</title><meta property="og:url" content="https://{legacy}/fixture/jobs/1?gh_jid=1"><h1>Junior Engineer</h1><div class="job__location">London</div><div class="job__description"><p>Python required.</p></div>'
+    job = extract_job(url, html)
+    assert job.url == url and job.company == 'Fixture' and job.description == 'Python required.'
+
+
+@pytest.mark.parametrize('metadata', [
+    'https://boards.greenhouse.io/fixture/jobs/2',
+    'https://boards.greenhouse.io/another-board/jobs/1',
+    'https://boards.eu.greenhouse.io/fixture/jobs/1',
+    'https://example.org/fixture/jobs/1?gh_jid=1',
+    'https://boards.greenhouse.io.evil.example/fixture/jobs/1',
+])
+def test_posting_metadata_does_not_cross_identity_or_region_boundaries(metadata):
+    from app.services.errors import NeedsInput
+    html = f'<title>Job Application for Junior Engineer at Fixture</title><meta property="og:url" content="{metadata}"><h1>Junior Engineer</h1><div class="job__description">Python required.</div>'
+    with pytest.raises(NeedsInput):
+        extract_job('https://job-boards.greenhouse.io/fixture/jobs/1', html)
+
+
+def test_real_legacy_metadata_page_reuses_worker_history_without_a_model(client, monkeypatch):
+    from types import SimpleNamespace
+    from app.worker import tasks
+    source = 'https://job-boards.greenhouse.io/cloudflare/jobs/8245211'
+    job = client.post('/api/jobs', json={'url': source.replace('job-boards.', 'boards.'), 'company': 'Cloudflare', 'title': 'Owner title', 'notes': 'Owner note'}).json()
+    client.patch(f"/api/jobs/{job['id']}/status", json={'status': 'SHORTLISTED', 'expected_status': 'DISCOVERED'})
+    before = client.get(f"/api/jobs/{job['id']}/events").json()
+    monkeypatch.setattr(tasks, 'configured_provider', lambda: SimpleNamespace(extract=lambda *_: pytest.fail('No model fallback for this real structured page')))
+    page = (Path(__file__).resolve().parents[3] / 'fixtures/eval/pages/cloudflare-8245211.html').read_text()
+    task = client.post('/api/tasks/extract', json={'url': source, 'page_html': page}).json()
+    assert run_once(client.app.state.engine, client.app.state.settings)
+    result = next(row for row in client.get('/api/tasks').json() if row['id'] == task['id'])
+    assert result['status'] == 'SUCCEEDED' and result['result'] == {'job_id': job['id'], 'created': False}
+    jobs = client.get('/api/jobs').json()
+    assert len(jobs) == 1 and jobs[0]['title'] == 'Owner title' and jobs[0]['notes'] == 'Owner note'
+    assert 'Typescript/Javascript' in jobs[0]['description'] and jobs[0]['status'] == 'SHORTLISTED'
+    assert jobs[0]['sponsorship'] == 'UNVERIFIED'
+    assert client.get(f"/api/jobs/{job['id']}/events").json() == before
+
+
 @pytest.mark.parametrize("title,description,expected", [("Graduate Engineer", "", "YES"), ("Senior Graduate Programme Manager", "", "NO"), ("Junior Developer", "", "YES"), ("Engineering Intern", "", "UNVERIFIED"), ("Associate Developer", "Benefits for graduates and associates", "UNVERIFIED"), ("Developer", "Minimum 3+ years of production experience", "NO")])
 def test_role_classification(title, description, expected):
     assert graduate_level(title, description) == expected

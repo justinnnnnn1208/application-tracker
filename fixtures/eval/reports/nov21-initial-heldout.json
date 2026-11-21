@@ -1,0 +1,57 @@
+{
+  "pages": 2,
+  "dataset_ready": false,
+  "extraction_failures": 2,
+  "accuracy": {
+    "company": 0.0,
+    "title": 0.0,
+    "location": 0.0,
+    "deadline": 0.0,
+    "start_date": 0.0,
+    "graduate": 0.0,
+    "sponsorship": 0.0
+  },
+  "known_labels": {
+    "company": 2,
+    "title": 2,
+    "location": 2,
+    "deadline": 0,
+    "start_date": 0,
+    "graduate": 2,
+    "sponsorship": 0
+  },
+  "known_label_accuracy": {
+    "company": 0.0,
+    "title": 0.0,
+    "location": 0.0,
+    "deadline": null,
+    "start_date": null,
+    "graduate": 0.0,
+    "sponsorship": null
+  },
+  "predicted_confirmed_yes": 0,
+  "labelled_confirmed_yes": 0,
+  "false_confirmed_yes": 0,
+  "mismatches": [
+    {
+      "id": "cloudflare-8245211",
+      "fields": [
+        "extraction_failed"
+      ]
+    },
+    {
+      "id": "cloudflare-8143649",
+      "fields": [
+        "extraction_failed"
+      ]
+    }
+  ],
+  "phase_2_accepted": false,
+  "limits": [
+    "Saved-page evaluation: 2 postings and 1 employer labels. See accompanying review for development/held-out status and ATS coverage.",
+    "Automatic sponsorship remains UNVERIFIED; zero false YES is not proof of evidence-assessment or manual-review quality.",
+    "Exact start-date labels: 0. Null matches do not demonstrate positive-date extraction; shared-template examples do not establish generalisation.",
+    "Field targets: at least 0.9 for deadline/location/graduate/start_date; zero false confirmed YES. Full Phase 2 scope still incomplete."
+  ],
+  "mode": "role-classification"
+}

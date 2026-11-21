@@ -228,17 +228,17 @@ Imports use bounded pagination and fail before saving a partial board if later p
 
 ## Local Ollama requirement extraction (20 November 2026)
 
-The owner chose local Ollama. Start with **qwen2.5:3b**, a small initial model; its actual extraction quality still needs checking. Install/open the official Ollama Mac app from https://ollama.com/download/mac, then in Terminal:
+The owner chose local Ollama. The initial qwen2.5:3b failed the real development checks. For the reported 16 GB Mac, **qwen2.5:7b** is the next candidate, not a quality-verified model. It has already been downloaded on the owner’s Mac; only pull it if missing. Install/open the official Ollama Mac app from https://ollama.com/download/mac, then in Terminal:
 
 ```sh
-ollama pull qwen2.5:3b
+ollama pull qwen2.5:7b
 ```
 
 Keep Ollama running. Add or update these entries in the private root `.env`, preserving every other setting and avoiding duplicate entries:
 
 ```dotenv
 LLM_PROVIDER=ollama
-LLM_MODEL=qwen2.5:3b
+LLM_MODEL=qwen2.5:7b
 LLM_BASE_URL=http://127.0.0.1:11434/v1
 ```
 
@@ -246,7 +246,7 @@ No API key is needed for this local connection. Do not paste your full `.env` in
 
 In job details → Source requirements, click **Extract requirements locally**. The actual vacancy description is required; Notes are excluded. The worker calls the native local API with a schema and no tools, validates copied terms/quotes, then displays them with their model name. Recalculate the preference score afterwards. Scoring remains deterministic and uses reviewed facts; no applicant facts, CVs or legal values are sent to the model. Education/experience candidates do not establish personal eligibility. If extraction is missing/stale, matching retains the explicitly labelled finite-keyword fallback.
 
-The first 16000 source characters are processed with bounded context/output; truncated inputs are flagged. Source changes invalidate the cache. Three invalid responses stop without saving; an unavailable model/server asks for setup rather than retrying indefinitely. Remote/LAN model URLs are rejected for this task. Current automated coverage uses a synthetic local HTTP fixture; **actual qwen2.5:3b quality is not yet verified**. Do not treat quoted source membership as semantic correctness or Phase 2 acceptance.
+The first 16000 source characters are processed with bounded context/output; truncated inputs are flagged. Source changes invalidate the cache. Three invalid responses stop without saving; an unavailable model/server asks for setup rather than retrying indefinitely. Remote/LAN model URLs are rejected for this task. Current automated coverage uses a synthetic local HTTP fixture; **actual revised-prompt qwen2.5:7b quality is not yet verified**. Do not treat quoted source membership as semantic correctness or Phase 2 acceptance.
 
 ## Sponsor register CSV (separate informational signal)
 

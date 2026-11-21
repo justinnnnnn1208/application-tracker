@@ -1,0 +1,36 @@
+{
+  "labels_frozen_at": "2026-11-21T04:09:51.699003+00:00",
+  "predictor_base_commit": "134f2ed699e4e801a513f671ed2c58e7dab74936",
+  "method": "Existing approved fetcher with robots/rate/size/redirect guards; real public Greenhouse pages. Preserve original title/og metadata/logo/header/description; exclude forms/buttons/scripts/styles/SVG. No generated metadata or applicant data. Decoded UTF-8 raw originals remain ignored locally. Visible text reviewed before prediction.",
+  "limits": [
+    "Two same-ATS controls, not independent multi-ATS acceptance.",
+    "Location labels retain literal non-geographic header values In-Office/Hybrid; London appears in intern title/description.",
+    "No new positive exact dates/deadlines or role-specific sponsorship policy. Export-licence sponsorship is not a visa offer.",
+    "Databricks/Samsara public pages redirected; refused rather than following unapproved hosts."
+  ],
+  "postings": [
+    {
+      "id": "cloudflare-8245211",
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8245211",
+      "captured_at": "2026-11-21T04:07:51.649677+00:00",
+      "raw_sha256": "4e87d72977e73cb7dec81c3967a39a4999816ee513ddf0c81effe3b9a07598de",
+      "excerpt_sha256": "7244583d5f2f2aa83c373f4c1d9a4a233193135b867255748253f937ef3df737"
+    },
+    {
+      "id": "cloudflare-8143649",
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8143649",
+      "captured_at": "2026-11-21T04:08:02.013005+00:00",
+      "raw_sha256": "daa6af6205b8800195af61efcb3a72ef44bdb273040558dfa996ecd4defdc288",
+      "excerpt_sha256": "0d6fbba494770e90afdc401e6d76b47c1c510ceb06f635fa881e93c46a37b74c"
+    }
+  ],
+  "annotation_correction": {
+    "corrected_at": "2026-11-21T04:11:16.332857+00:00",
+    "case": "cloudflare-8245211",
+    "field": "graduate",
+    "initial": "YES",
+    "corrected": "UNVERIFIED",
+    "reason": "The existing LABEL_REVIEW.md explicitly leaves internship eligibility UNVERIFIED. Initial annotation incorrectly treated an internship as a graduate/junior YES. Initial source probe extracted neither page; the original labels/report remain retained. Classifier code was inspected before this correction, so these cases must be reported as consumed regression data, not independent role-level acceptance.",
+    "corrected_labels": "reviewed-nov21.json"
+  }
+}

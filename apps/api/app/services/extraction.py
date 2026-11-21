@@ -3,6 +3,7 @@ from datetime import date
 from html.parser import HTMLParser
 from urllib.parse import urlsplit
 from app.services.urls import canonical_url
+from app.services.identity import ats_identity
 import json
 import re
 
@@ -172,8 +173,11 @@ class GreenhouseParser(HTMLParser):
 
     def job(self, url):
         titles = set(" ".join(value.split()) for value in self.titles)
-        if len(titles) != 1 or not self.description or not self.og_url or canonical_url(self.og_url) != canonical_url(url):
+        if len(titles) != 1 or not self.description or not self.og_url:
             raise ValueError("Incomplete or mismatched public vacancy")
+        identity = ats_identity(url)
+        if canonical_url(self.og_url) != canonical_url(url) and (not identity or ats_identity(self.og_url) != identity):
+            raise ValueError("Mismatched public vacancy identity")
         title = next(iter(titles))
         prefix = f"Job Application for {title} at "
         page_title = " ".join("".join(self.title).split())
@@ -203,7 +207,7 @@ def extract_job(url: str, html: str, provider=None) -> JobData:
     if len(found) > 1:
         raise NeedsInput("This page contains multiple jobs. Paste the URL of one specific vacancy or add it manually.")
     if not found:
-        if urlsplit(url).hostname == "job-boards.greenhouse.io":
+        if urlsplit(url).hostname in {"job-boards.greenhouse.io", "boards.greenhouse.io", "job-boards.eu.greenhouse.io", "boards.eu.greenhouse.io"}:
             try:
                 greenhouse = GreenhouseParser()
                 greenhouse.feed(html)

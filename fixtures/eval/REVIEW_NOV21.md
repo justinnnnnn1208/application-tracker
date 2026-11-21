@@ -1,0 +1,20 @@
+# Real-source regression added on 21 November 2026
+
+Two genuine Cloudflare public posting pages were fetched through the unchanged approved Greenhouse hosts, using the existing robots/rate/size/redirect guards. Public board metadata selected the actual IDs; normal current Greenhouse URLs returned the pages. Original title, Open Graph metadata, logo, visible header and description are preserved. Forms, buttons, scripts, styles and SVG are excluded. No generated field metadata, model, applicant data, Google access or form interaction. Raw decoded UTF-8 pages stay ignored locally; provenance-nov21.json binds capture times/raw/excerpt hashes.
+
+| Posting | Reviewed fields | Limits |
+|---|---|---|
+| Software Engineer Intern (2027) - London, UK, 8245211 | Cloudflare; literal header location In-Office; no full deadline/start date; graduate classification Unverified | Currently pursuing a degree, not a graduate-role eligibility guarantee; London is explicit in title/description, while the header lacks geography |
+| Engineering Manager, Agentic Internet & Data Insights, 8143649 | Cloudflare; literal header location Hybrid; graduate NO; no full deadline/start date | Management experience explicitly required; not a UK graduate recommendation |
+
+Both have no explicit role-specific visa sponsorship finding. The export-control paragraph's “sponsorship for an export license” is not an offer/refusal of employment visa sponsorship. Historical company initiative dates and internship duration do not establish a start date or deadline.
+
+Initial source probe at unchanged parser commit 134f2ed699e4e801a513f671ed2c58e7dab74936 rejected **2/2** pages. Their actual og:url refers to the legacy boards.greenhouse.io URL with gh_jid, while the fetched URL is job-boards.greenhouse.io. The strict string comparison was rejecting the same authoritative board/posting identity. The initial report and initial labels remain frozen as reports/nov21-initial-heldout.json and heldout-nov21.json. Exit 2 also reflects the two-case size below the 30-page readiness minimum.
+
+**Annotation correction:** the intern was initially marked YES by mistake. LABEL_REVIEW.md explicitly leaves internships Unverified. Corrected in reviewed-nov21.json and the combined manifest; original labels retained, with reason/time in provenance. The initial source failures produced no role predictions, but classifier code was inspected before this correction. These cases are consumed regression inputs, not independent role-level acceptance or a fresh held-out pass.
+
+The source fix accepts only equal authoritative Greenhouse provider/board/posting identities across official URL variants. Different board/ID/global-EU region and lookalike/custom domains remain refused. Source/header consistency and script/form exclusion remain in force; no redirect or network-policy relaxation. Four variant tests failed before the fix and pass afterwards; five conflicting-source controls remain rejected. An actual worker test using the saved genuine page fills a missing description without model fallback, preserving one existing application, owner title/Notes, shortlist and events.
+
+Corrected two-case regression has no extraction/field/role errors; exit 2 remains because size is below 30. Combined manifest-nov21.json has **40 excerpts across seven employer labels, still one ATS** and passes field/role regression with zero false YES from automatic abstention. The prior 30/35/38 manifests and historical reports stay frozen. Still only 12 known deadlines and 3 exact start days from one Marshall Wace template; no new positive dates. The literal In-Office/Hybrid location labels do not prove geographic extraction. No semantic-model, independent multi-ATS or Phase 2 acceptance claim.
+
+Other attempted public page controls from Databricks/Samsara redirected to publisher domains. They were refused by the existing fetcher rather than followed; those hosts were not added. The owner declined changing network settings this session. No blocked source was obtained through a substitute proxy.

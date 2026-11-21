@@ -28,6 +28,12 @@ Source review pushed as d66e0e6e5157821ca5d201c2724de06789d76c47; remote SHA ver
 
 Next independent work: genuine held-out controls using only already permitted Greenhouse hosts, respecting fetch/robots/rate limits. Broader ATS hosts remain blocked and the owner declined changing policy. Await revised-prompt local 7B output; no new download requested. Continue until 05:00 London Nov21, no Phase3.
 
+## Real-page source checkpoint — 04:15 London
+
+Two genuine Cloudflare pages fetched through existing approved guards; initial predictor at 134f2ed rejected both due to legacy/current og:url mismatch. Initial report/labels frozen. Source fix accepts only equal official provider/board/ID across known variants, with global/EU separation and board/ID/lookalike negatives. Four variant regressions failed first; guards pass. Final full 374-test API suite and production browser pass, including genuine-page worker preservation. Current 40-page combined regression matches fields/roles, still one ATS/no new positive dates; latest manifest-nov21.json, original 30/35/38 unchanged. Initial internship YES was an annotation error against LABEL_REVIEW.md; corrected to Unverified after source-failure/code inspection, original labels retained. Record as consumed regression, never fresh independent role success. Details in REVIEW_NOV21.md/provenance. Databricks/Samsara redirects refused, no new host/draft/proxy.
+
+Model guard pushed as 134f2ed699e4e801a513f671ed2c58e7dab74936, remote SHA verified. Owner's revised real 7B result still awaited. No new permission needed for authorised independent Phase2 work until05:00; no Phase3. Update final checks/docs/push before another step. STATUS.md consolidated to remove stale current-network/model claims while retaining references/evidence.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

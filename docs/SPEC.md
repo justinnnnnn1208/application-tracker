@@ -347,3 +347,7 @@ SmartRecruiters supports an explicit company board's first 20 postings and detai
 ### Local model identity check (21 November 2026)
 
 Selecting Ollama requires model metadata as well as loopback transport. Before sending public vacancy text, inspect the selected model name via `/api/show`; refuse explicit cloud tags, advertised remote models/hosts and missing/malformed local model metadata. Apply this to native requirements and compatible page extraction, without hosted fallback. No applicant data is added. Tests/metadata validation do not establish semantic-quality acceptance.
+
+### Real legacy-URL regression (21 November 2026)
+
+Two genuine Cloudflare pages exposed source rejection when Open Graph metadata names the legacy Greenhouse host. Recognise equal official provider/board/posting identities across supported URL forms, without crossing global/EU instances or accepting another board/ID/lookalike host. No redirect/network relaxation. Retain initial failures and annotation correction in fixtures/eval/REVIEW_NOV21.md. Current combined set is 40 same-ATS regression excerpts; no new positive dates or independent acceptance claim.
