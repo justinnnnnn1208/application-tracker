@@ -46,6 +46,10 @@ Date fix pushed as 71b0c8b3d3fcd89faace9428cee727bbebce416e, remote SHA verified
 
 Secondary identity fix pushed as 3ca1f87a4f4df08b56fe49165b4aca750ad778bc, remote SHA verified. Threaded regression then reproduced two conflicting accepted source links for the same vacancy. Source confirmation now performs a portable no-value-change Job row write, refreshes current content and validates sources within that short transaction. SQLite ignores SELECT FOR UPDATE, so that alone would not suffice. One accepted link/one conflict now verified by overlapping requests; job/events unchanged. Full 387 API tests and production browser pass. No new lock service/table/migration/dependency. This is current SQLite integration evidence, not a PostgreSQL concurrency certificate. Update docs/push this step; continue authorised Phase2 until05:00, model result awaited, no network changes/Phase3.
 
+## Fallback page-model checkpoint — 04:30 London
+
+Concurrent source fix pushed as 05b1522c47ba078031168b4307c0dca77d7f9da0, remote SHA verified. Fallback page provider accepted model-generated Notes (JobData contains owner fields) and validated values against unseen text beyond its 24000-character input. Three reproductions failed before fix. Explicit requested-public-field allowlist rejects owner Notes/extra fields; ground strings/dates against exactly the sent prefix. Keep original source description, model never rewrites it. Full 390 API tests, production browser and latest 40-page regression pass. No dependencies/schema/privacy/network changes or real model quality claim. Push passing step, then continue Phase2 review until05:00; Mac revised-prompt 7B still awaited, no Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

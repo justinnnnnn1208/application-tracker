@@ -236,7 +236,7 @@ Before building matching, save about 30 real job pages and hand-label: sponsorsh
 ## 12. Open items
 
 - Development-copy configuration and columns were supplied and the owner confirmed all 20 rows imported. Live single-cell write verification is deferred; do not ask for settled configuration again. See [SETUP.md](SETUP.md).
-- Local Ollama was selected on 20 November 2026; qwen2.5:3b is the initial recommendation. Installation and real quality still need verification.
+- Local Ollama was selected on 20 November 2026. The initial qwen2.5:3b failed real checks; qwen2.5:7b is the next candidate for the reported 16 GB Mac. Revised-prompt real quality still needs verification.
 - Confirm the Leeds international student advice check on current visa rules.
 
 ## 13. UI design reference
@@ -355,3 +355,7 @@ Two genuine Cloudflare pages exposed source rejection when Open Graph metadata n
 ### Complete metadata dates (21 November 2026)
 
 Validate the complete ISO calendar date/timestamp before taking its advertised calendar day. Ranges, trailing prose/junk and invalid times/offsets remain unknown rather than silently using the first ten characters. Preserve valid dates, leap days and timestamp offsets without inventing a start/deadline. This applies to structured JobPosting metadata and Greenhouse API deadline fields; labelled source dates retain their existing range guard.
+
+### Fallback page-model boundary (21 November 2026)
+
+Only requested public vacancy fields may be returned by the fallback page model; owner Notes, URLs, status/legal fields and other extras are rejected. Ground values/dates against the exact bounded text sent to the model, not unseen trailing text. Retain the original source description. Schema/source membership checks are not a semantic-quality certificate.

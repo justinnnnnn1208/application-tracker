@@ -122,6 +122,28 @@ def test_llm_hallucinated_employer_is_rejected():
         OpenAICompatible("https://model.example.org/v1", "fixture", client=client).extract("https://fixture.example.org", "Graduate engineer at Fixture employer")
 
 
+@pytest.mark.parametrize('case',['notes','employer_outside_input','date_outside_input'])
+def test_page_model_cannot_supply_owner_notes_or_validate_unseen_tail(case):
+    source='Fixture Engineer vacancy. '
+    content={'company':'Fixture','title':'Engineer'}
+    if case=='notes':
+        content['notes']='MODEL GENERATED OWNER NOTE'
+    elif case=='employer_outside_input':
+        source+='x'*24000+' Unseen Tail Employer';content['company']='Unseen Tail Employer'
+    else:
+        source+='x'*24000+' 2027-09-06';content['deadline']='2027-09-06'
+    calls=[]
+    def handle(request):
+        body=json.loads(request.content);calls.append(body)
+        sent=json.loads(body['messages'][-1]['content'])['untrusted_job_text']
+        assert len(sent)<=24000 and 'Unseen Tail Employer' not in sent and '2027-09-06' not in sent
+        return httpx.Response(200,json={'choices':[{'message':{'content':json.dumps(content)}}]})
+    with httpx.Client(transport=httpx.MockTransport(handle)) as network:
+        with pytest.raises(NeedsInput,match='three attempts'):
+            OpenAICompatible('https://model.example.org/v1','fixture',client=network).extract('https://example.org/job',source)
+    assert len(calls)==3
+
+
 @pytest.mark.parametrize("format", ["txt", "docx", "pdf"])
 def test_cv_formats_copy_verbatim_local_text(format):
     text = "Education\nFixture degree completed in 2027"
