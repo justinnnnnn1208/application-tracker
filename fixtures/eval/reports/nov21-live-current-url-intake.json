@@ -1,0 +1,42 @@
+{
+  "reviewed_at": "2026-11-21T04:44:15.352648+00:00",
+  "application_commit": "74a76ac0aad15f6742aae4233f4257b0daec84ae",
+  "state": "PASSED",
+  "method": "Disposable migrated API TestClient -> persisted URL task -> actual worker function -> permitted live robots/page fetch. No saved HTML substitution, model, profile/Google/form calls. Two current public Cloudflare postings, repeated intake and a publisher-advertised legacy alias submitted to the API without fetching the legacy host.",
+  "live_postings_created": 2,
+  "repeat_created": false,
+  "retained_shortlist_notes_events": true,
+  "all_default_unverified": true,
+  "restored_counts": {
+    "jobs": 2,
+    "applications": 2,
+    "application_events": 3,
+    "job_sources": 3
+  },
+  "restored_owner_note_verified": true,
+  "captures": [
+    {
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8245211",
+      "captured_at": "2026-11-21T04:43:54.485430+00:00",
+      "decoded_utf8_sha256": "4e87d72977e73cb7dec81c3967a39a4999816ee513ddf0c81effe3b9a07598de"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8143649",
+      "captured_at": "2026-11-21T04:44:04.813042+00:00",
+      "decoded_utf8_sha256": "daa6af6205b8800195af61efcb3a72ef44bdb273040558dfa996ecd4defdc288"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8245211",
+      "captured_at": "2026-11-21T04:44:15.306385+00:00",
+      "decoded_utf8_sha256": "4e87d72977e73cb7dec81c3967a39a4999816ee513ddf0c81effe3b9a07598de"
+    }
+  ],
+  "phase_2_accepted": false,
+  "limits": [
+    "Current Greenhouse only; not independent multi-ATS or real model evaluation.",
+    "Legacy alias identity verified via API intake, not a live legacy-host fetch.",
+    "Temporary public jobs and synthetic owner note; no owner database or OAuth/Sheet data used.",
+    "SQLite database and empty storage restored into a new temporary destination; separate browser/CLI tests cover storage bytes. Not the outstanding Mac operational restore.",
+    "No network/environment draft/publication change; only the two existing approved public hosts used."
+  ]
+}

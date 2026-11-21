@@ -1,6 +1,6 @@
 # Current project status
 
-Reviewed: 21 November 2026, 04:15 Europe/London.
+Reviewed: 21 November 2026, before the 05:00 Europe/London cutoff.
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
 
@@ -45,6 +45,7 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 - Structured-page review reproduced four accepted known posting-ID/board/region conflicts. Compare recognised IDs when metadata supplies a URL; conflicting known identities stop for manual review. Keep the selected primary URL and do not invent an ID from publisher/custom query links. Seven positive/negative controls and 103 affected tests pass; full **397 API tests**, production browser and 40-page regression pass.
 - Grounding diagnostics now retain only fixed category/index/field/reason (for example education.0.value), never rejected values/quotes. Two missing-path regressions fixed. JSON schema unchanged; full **399 API tests**, production browser and 40-page regression pass. Actual synthetic native CLI verified metadata → one rejected case/eight NOT TESTED, field retained/no rejected-marker echo; not real model quality.
 - Fallback control review reproduced unknown provider selectors silently choosing the compatible provider, and a model being reached after a known Greenhouse page mismatch. Reject unsupported selectors with a static setup error; a known page mismatch is a hard review stop. Default/explicit valid providers preserved. Full **406 API tests**, browser and 40-page regression pass.
+- Fresh final live check at 74a76ac passed: 2 current Cloudflare URL tasks created 2 applications, repeat created zero, legacy publisher alias reused the same job through API intake, shortlist/Notes/events stayed intact. Restore verified 2 jobs/2 applications/3 events/3 sources and Notes. Report: fixtures/eval/reports/nov21-live-current-url-intake.json. Greenhouse only; no model/Google/forms or owner data.
 - Earlier clean tracked-file export 2857020 passed fresh pinned installs, 303 tests/build/browser and actual init → backup-verifying migrate → local dashboard/proxy/auth → clean Control+C. Later code has incremental checks above. This is Linux release verification, not the outstanding Mac operational restore/notification test.
 
 ## Real-page and model evidence
