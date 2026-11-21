@@ -111,3 +111,25 @@ def test_pending_known_alias_also_protects_a_reviewed_link_from_removal(client):
     assert finished['status']=='SUCCEEDED' and finished['result']=={'job_id':job['id'],'created':False}
     assert len(client.get('/api/jobs').json())==1
     assert len(client.get(f"/api/jobs/{job['id']}/events").json())==1
+
+
+def test_simultaneous_distinct_source_reviews_cannot_both_claim_one_vacancy(client,monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier, BrokenBarrierError
+    from app.routers import tracker
+    job=create(client);path=f"/api/jobs/{job['id']}/sources"
+    original=tracker.find_existing;boundary=Barrier(2)
+    def paused(session,url):
+        # Reproduce overlapping requests after their initial source validation.
+        # With serialised review, only one reaches this point; bounded wait exits.
+        try:boundary.wait(timeout=1)
+        except BrokenBarrierError:pass
+        return original(session,url)
+    monkeypatch.setattr(tracker,'find_existing',paused)
+    def link(id):
+        return client.post(path,json=review(job,f'https://job-boards.greenhouse.io/fixture/jobs/{id}')).status_code
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results=list(pool.map(link,[123,456]))
+    assert sorted(results)==[201,422]
+    assert len(client.get(path).json())==2
+    assert len(client.get('/api/jobs').json())==1

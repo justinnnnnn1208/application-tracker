@@ -42,6 +42,10 @@ Legacy URL/real-page step pushed as a907be5e56c90aaa80b9537c8dade54ff70537ef, re
 
 Date fix pushed as 71b0c8b3d3fcd89faace9428cee727bbebce416e, remote SHA verified. Source review found/reproduced two gaps: unknown/custom primary could accept conflicting known IDs via secondary links; a queued official alias could lose its only identity mapping during unlink and create a second job. Compare incoming ID against every saved primary/secondary source; pending alias identities protect removal too. No new abstractions/schema/dependencies. Two tests failed before fix, then 25 affected tests pass; full 386 API tests and production browser pass. Pending-alias test now also verifies actual successful worker reuse, not merely the old job still existing. Update final checks/docs/push. Keep unchanged network policy; model result awaited; continue until05:00, no Phase3.
 
+## Concurrent source-review checkpoint — 04:25 London
+
+Secondary identity fix pushed as 3ca1f87a4f4df08b56fe49165b4aca750ad778bc, remote SHA verified. Threaded regression then reproduced two conflicting accepted source links for the same vacancy. Source confirmation now performs a portable no-value-change Job row write, refreshes current content and validates sources within that short transaction. SQLite ignores SELECT FOR UPDATE, so that alone would not suffice. One accepted link/one conflict now verified by overlapping requests; job/events unchanged. Full 387 API tests and production browser pass. No new lock service/table/migration/dependency. This is current SQLite integration evidence, not a PostgreSQL concurrency certificate. Update docs/push this step; continue authorised Phase2 until05:00, model result awaited, no network changes/Phase3.
+
 ## Previous handover / retained evidence
 
 # Night-shift handover — 20 November 2026

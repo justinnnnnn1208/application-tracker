@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import Field, field_validator
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -199,9 +199,13 @@ class SourceLink(SourceConfirmation):
         return value
 
 
-def require_source_review(job, data):
+def require_source_review(job, data, session):
     if not data.confirmed:
         raise HTTPException(422, 'Confirm that you reviewed this source change.')
+    # Serialise review of this vacancy with a portable row write, without
+    # changing any value. SQLite does not implement SELECT FOR UPDATE.
+    session.execute(update(Job).where(Job.id == job.id).values(id=Job.id))
+    session.refresh(job)
     if data.snapshot != snapshot(job):
         raise HTTPException(409, 'Vacancy changed. Reload the job and review its sources again.')
 
@@ -209,7 +213,7 @@ def require_source_review(job, data):
 @router.post('/jobs/{id}/sources', status_code=201)
 def link_source(id: str, data: SourceLink, session: DB, response: Response):
     job = require(session, Job, id)
-    require_source_review(job, data)
+    require_source_review(job, data, session)
     new_key = ats_identity(data.url)
     old_keys = {ats_identity(job.url)} | {ats_identity(url) for url in session.scalars(select(JobSource.url).where(JobSource.job_id == id))}
     for old_key in old_keys:
@@ -239,7 +243,7 @@ def link_source(id: str, data: SourceLink, session: DB, response: Response):
 @router.delete('/jobs/{id}/sources/{source_id}', status_code=204)
 def unlink_source(id: str, source_id: str, data: SourceConfirmation, session: DB):
     job = require(session, Job, id)
-    require_source_review(job, data)
+    require_source_review(job, data, session)
     row = require(session, JobSource, source_id)
     if row.job_id != id:
         raise HTTPException(404, 'Source not found for this job.')
