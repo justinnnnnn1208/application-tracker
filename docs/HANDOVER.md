@@ -1,14 +1,14 @@
-# Active handover — 23 November 2026
+# Closed handover — 23 November 2026
 
 **Owner input pending:** focused Canonical Qwen result; Find a Job public API documentation or a decision on manual/pasted-link support. Do not assume either answer. These block remaining acceptance/scope decisions; they do not authorise a network change or Phase 3.
 
 ## Session and boundaries
 
-- Owner authorised this session until **06:00 Europe/London on 23 November**, today only. Not24 November; future sessions should ask their own cutoff. Current checkpoint is before the cutoff, not a claim of closure.
+- Owner authorised this session until **06:00 Europe/London on 23 November**, today only. Not24 November; future sessions should ask their own cutoff. Closed at the actual 06:00 cutoff. Independent application work was checked/pushed by 04:44; the remaining interval awaited required owner evidence, not additional tests. No new Qwen/Find a Job answer arrived. The environment resumed at 05:51 with the same clean committed state; no changes were reapplied.
 - Phase 2 only, roughly 90% implemented; acceptance incomplete. Phase 3 is not authorised. Google remains read-only; no original/development-copy writes, submissions, hosted applicant processing or real form interaction.
 - Owner declined cloud network changes. Existing two approved Greenhouse hosts remain; no draft mutation/publication or repeated network-grant request.
-- Branch **dev/phase-1**. Started clean atbbb6578 (406 tests). Latest application code **2b713ae008857952185c11b3b6ee93b63d3bb14b**; latest checked evidence/docs1049d80 pushed, remote SHA verified. New commits use owner author/committer justinnnnnn1208. No dependency/lock/schema migration changes; head eb81a592c387.
-- No unfinished application edits. This handover refresh is documentation only. Do not reapply completed work. Keep code/structure minimal and preserve owner data.
+- Branch **dev/phase-1**. Started clean atbbb6578 (406 tests). Latest application code **2b713ae008857952185c11b3b6ee93b63d3bb14b**; evidence/docs1049d80 and condensed handover c55f112 pushed, remote SHA verified. This closing documentation update must also be pushed/verified before the final response. New commits use owner author/committer justinnnnnn1208. No dependency/lock/schema migration changes; head eb81a592c387.
+- No unfinished application edits. Closing documentation only; final worktree/remote verification required after committing it. Do not reapply completed work. Keep code/structure minimal and preserve owner data.
 
 ## Owner's actual model evidence
 
@@ -73,3 +73,7 @@ LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --
 Paste the Canonical result/failure fields, not credentials. A selected PASSED plus overall NOT TESTED is expected because8 other cases are deliberately skipped. If it passes, request a new full9 run. No new download needed; avoid bare Ollama's cloud chat. Normal app: `python3 scripts/dev.py`, open http://127.0.0.1:3000. No new dependencies or migration this session.
 
 Optional later public source check: `python3 scripts/dev.py --check-discovery lever --board palantir --employer Palantir` uses existing host approvals, no import/model/Google. Unapproved access stays NOT TESTED; do not change cloud settings. See SETUP.md. Do not request settled Sheet columns/copy configuration again.
+
+## Closing audit
+
+At 05:51 the worktree was clean at c55f112 and matched the remote. Delivered paths exclude private/generated data; original frozen manifests/nine-case review/dependency locks are unchanged; all 48+2 saved-source checksums match; every new commit uses the owner author/committer. The disposable Python 3.13 install/data export was removed after checks, preserving project files. No unresolved application test failures. After this closing note, verify the final remote SHA and report it.

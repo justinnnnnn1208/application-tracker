@@ -1,8 +1,10 @@
 # Current project status
 
-Reviewed: 23 November 2026 (Europe/London); active session authorised until 06:00 today.
+Reviewed: 23 November 2026 (Europe/London); session closed at 06:00.
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
+
+Independent work was completed and pushed before the waiting interval. Required owner model/source evidence did not arrive before the 06:00 cutoff; Phase 2 remains open. Closing audit passed: clean pushed state, frozen baselines/locks preserved, owner authorship, source checksums valid and no private/generated delivery paths. No Phase 3 progression.
 
 ## 23 November model follow-up
 
