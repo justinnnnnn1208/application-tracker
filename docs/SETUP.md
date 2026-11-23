@@ -360,3 +360,17 @@ New Greenhouse page/board extractions can use an explicit Available Locations bo
 The model diagnostic prints CHECKING local setup and public extraction before each attempted case so the current case is visible while Ollama loads/responds. Completed attempts record elapsed_seconds and print check time (setup plus extraction); skipped cases get no invented timing. This is diagnostic time, not model-quality evidence or a speed guarantee. Control+C still cancels without starting tracker services.
 
 Public discovery can reuse robots rules in memory for up to5 minutes (at most32 origins, separate HTTP/HTTPS/hosts). Each vacancy URL is still checked against the rules and current host approval; crawl delay/default spacing remain. Server no-store/no-cache/short max-age and Age shorten or disable reuse. Failed expiry refresh stops; no stale fallback or automatic retry. Restarting the worker clears this cache. This reduces duplicate robots requests, not the number of job-detail requests or Ollama inference time.
+
+### Isolated public-source check (no tracker import)
+
+From the project root, while no other discovery import is running:
+
+```sh
+python3 scripts/dev.py --check-discovery lever --board palantir --employer Palantir
+```
+
+This exercises the existing public adapter and writes a new private `.local/discovery-check-*.json` report, without starting/migrating/opening the tracker database, importing jobs, Google OAuth, a model, or application forms. No API token is needed. It uses existing host approvals and network settings; it does not add hosts or change the cloud environment. If access/configuration is unavailable, the result is NOT TESTED. Do not interpret that as a model or field-accuracy failure.
+
+Options match existing source settings: `--board` and public `--employer` for Lever/Ashby/SmartRecruiters; `--region eu` only for Lever. Greenhouse uses `--board` and optional employer. Reed uses `--query` instead of board/employer and needs its existing private REED_API_KEY. Only that selected check receives the key; tracker/Google/model credentials and database settings are excluded. Public proxy/TLS settings are retained for permitted network access. Host requirements remain boards-api.greenhouse.io, api.lever.co/api.eu.lever.co, api.ashbyhq.com, api.smartrecruiters.com or www.reed.co.uk respectively. Unapproved hosts remain blocked; no approval is granted by this command.
+
+The report includes counts/skips, up to20 public metadata samples and description lengths/hashes, not full descriptions or Notes. COMPLETED means an adapter returned postings, not semantic accuracy or Phase2 acceptance. An empty board stays NOT TESTED. SmartRecruiters/Reed still read only the first20 details; other ATS retain bounded full-board behavior. Control+C cancels without starting the app or importing anything. Paste the final summary when ready; no .env, keys or credentials.

@@ -118,3 +118,49 @@ def test_case_selector_requires_model_check_mode(tmp_path,monkeypatch,case):
     monkeypatch.setattr(module.sys,'argv',['scripts/dev.py','--case',case])
     with pytest.raises(SystemExit) as error:module.main()
     assert error.value.code==2
+
+
+def test_source_check_isolated_environment_and_no_tracker_services(tmp_path,monkeypatch,capsys):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py','--check-discovery','lever','--board','fixture','--employer','Fixture'])
+    marker='synthetic-private-source-marker'
+    monkeypatch.delenv('URL_FETCH_ALLOWED_HOSTS',raising=False)
+    (tmp_path/'.env').write_text(f'APP_ACCESS_TOKEN={marker}\nDATABASE_URL=sqlite:///never-open.db\nREED_API_KEY={marker}\nLLM_API_KEY={marker}\nURL_FETCH_ALLOWED_HOSTS=api.lever.co\n')
+    calls=[]
+    def run(command,*,cwd,env):
+        calls.append((command,env))
+        assert not {'APP_ACCESS_TOKEN','DATABASE_URL','REED_API_KEY','LLM_API_KEY','OAUTH_ENCRYPTION_KEY'} & env.keys()
+        assert env['URL_FETCH_ALLOWED_HOSTS']=='api.lever.co'
+        return SimpleNamespace(returncode=2)
+    monkeypatch.setattr(module.subprocess,'run',run)
+    assert module.main()==2
+    command,env=calls[0]
+    assert command[1:3]==['-m','app.services.discovery_check']
+    assert command[command.index('--provider')+1]=='lever'
+    assert marker not in capsys.readouterr().out
+    assert not (tmp_path/'never-open.db').exists()
+
+
+def test_reed_check_forwards_only_its_required_private_key(tmp_path,monkeypatch):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py','--check-discovery','reed','--query','graduate technology'])
+    monkeypatch.setenv('REED_API_KEY','synthetic-required-reed-key')
+    monkeypatch.setenv('LLM_API_KEY','synthetic-excluded-model-key')
+    calls=[]
+    monkeypatch.setattr(module.subprocess,'run',lambda command,**kwargs:(calls.append((command,kwargs['env'])) or SimpleNamespace(returncode=2)))
+    assert module.main()==2
+    assert calls[0][1]['REED_API_KEY']=='synthetic-required-reed-key'
+    assert 'LLM_API_KEY' not in calls[0][1]
+
+
+@pytest.mark.parametrize('flags',[
+    ['--board','fixture'],['--region','global'],['--employer','Fixture'],['--query','software'],
+    ['--check-discovery','lever','--migrate'],['--check-discovery','lever','--case','canonical-7661586'],
+    ['--check-model','--check-discovery','lever'],
+])
+def test_source_flags_cannot_accidentally_start_or_migrate_tracker(tmp_path,monkeypatch,flags):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py',*flags])
+    monkeypatch.setattr(module.subprocess,'run',lambda *_args,**_kwargs:pytest.fail('No subprocess for invalid mode flags'))
+    with pytest.raises(SystemExit) as error:module.main()
+    assert error.value.code==2

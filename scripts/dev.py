@@ -1,4 +1,4 @@
-"""Run the local app or check its configured model against public fixtures."""
+"""Run the local app or isolated public model/source diagnostics."""
 import argparse
 import os
 from pathlib import Path
@@ -17,10 +17,15 @@ def main():
     mode.add_argument("--migrate", action="store_true", help="Back up/verify existing SQLite data, apply migrations, then start")
     mode.add_argument("--check-model", action="store_true", help="Public model check: one response per case, stop at the first failed check; no app startup")
     mode.add_argument("--check-model-full", action="store_true", help="Full public model diagnostic run, including validation retries and later cases after failure")
+    mode.add_argument('--check-discovery', choices=('greenhouse', 'lever', 'ashby', 'smartrecruiters', 'reed'), help='Read public source without importing or starting tracker services')
     parser.add_argument("--case", help="With a model check, diagnose just this reviewed case; other cases remain NOT TESTED")
+    for name in ('board', 'employer', 'region', 'query'):
+        parser.add_argument('--' + name, help='Public discovery check source setting')
     args = parser.parse_args()
     if args.case is not None and not (args.check_model or args.check_model_full):
         parser.error('--case requires --check-model or --check-model-full')
+    if not args.check_discovery and any(getattr(args, name) is not None for name in ('board', 'employer', 'region', 'query')):
+        parser.error('Source settings require --check-discovery')
     os.umask(0o077)
     environment = os.environ.copy()
     environment.setdefault("NEXT_TELEMETRY_DISABLED", "1")
@@ -30,28 +35,41 @@ def main():
             if line.strip() and not line.lstrip().startswith("#"):
                 key, value = line.split("=", 1)
                 environment.setdefault(key.strip(), value.strip())
-    if args.check_model or args.check_model_full:
+    if args.check_model or args.check_model_full or args.check_discovery:
         interpreter = ROOT / "apps/api/.venv/bin/python"
         if not interpreter.is_file():
             print("Install API dependencies first: run uv sync --frozen from apps/api, then return to the project root.")
             return 2
-        report = ROOT / ".local" / f"requirements-check-{uuid4().hex}.json"
-        # This public-data check needs only model selectors, never app/OAuth/API
-        # credentials, database settings or an inherited Python module path.
+        kind = 'discovery' if args.check_discovery else 'requirements'
+        report = ROOT / ".local" / f"{kind}-check-{uuid4().hex}.json"
+        # Diagnostics exclude tracker/OAuth/database settings and inherited Python paths.
+        # Only a selected Reed check receives its required provider read key.
         public_environment = {"PATH": environment.get("PATH", os.defpath), "PYTHONUTF8": "1", "PYTHONNOUSERSITE": "1"}
-        public_environment.update({key: environment[key] for key in ("LLM_PROVIDER", "LLM_MODEL", "LLM_BASE_URL") if key in environment})
+        if args.check_discovery:
+            keys = ['URL_FETCH_ALLOWED_HOSTS', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY',
+                    'http_proxy', 'https_proxy', 'all_proxy', 'no_proxy', 'SSL_CERT_FILE', 'SSL_CERT_DIR']
+            if args.check_discovery == 'reed':
+                keys.append('REED_API_KEY')
+            command = [str(interpreter), '-m', 'app.services.discovery_check', '--provider', args.check_discovery, '--output', str(report)]
+            for name in ('board', 'employer', 'region', 'query'):
+                if getattr(args, name) is not None:
+                    command += ['--' + name, getattr(args, name)]
+        else:
+            keys = ['LLM_PROVIDER', 'LLM_MODEL', 'LLM_BASE_URL']
+            command = [str(interpreter), "-m", "app.services.requirements_eval",
+                       "--manifest", str(ROOT / "fixtures/eval/manifest-nov20.json"),
+                       "--review", str(ROOT / "fixtures/eval/requirements-review.json"),
+                       "--output", str(report)] + (["--fail-fast", "--single-attempt"] if args.check_model else []) + (["--case", args.case] if args.case is not None else [])
+        public_environment.update({key: environment[key] for key in keys if key in environment})
         try:
-            result = subprocess.run([str(interpreter), "-m", "app.services.requirements_eval",
-                                     "--manifest", str(ROOT / "fixtures/eval/manifest-nov20.json"),
-                                     "--review", str(ROOT / "fixtures/eval/requirements-review.json"),
-                                     "--output", str(report)] + (["--fail-fast", "--single-attempt"] if args.check_model else []) + (["--case", args.case] if args.case is not None else []), cwd=ROOT / "apps/api", env=public_environment)
+            result = subprocess.run(command, cwd=ROOT / "apps/api", env=public_environment)
         except KeyboardInterrupt:
-            print('Model check cancelled; no tracker services or migrations were started.')
+            print('Public check cancelled; no tracker services or migrations were started.')
             if report.is_file():
-                print(f"Public model-check report: {report.relative_to(ROOT)}")
+                print(f"Public {'source' if args.check_discovery else 'model'}-check report: {report.relative_to(ROOT)}")
             return 130
         if report.is_file():
-            print(f"Public model-check report: {report.relative_to(ROOT)}", flush=True)
+            print(f"Public {'source' if args.check_discovery else 'model'}-check report: {report.relative_to(ROOT)}", flush=True)
         return result.returncode
     if len(environment.get("APP_ACCESS_TOKEN", "")) < 32:
         sys.exit("Run python scripts/init_local.py or configure APP_ACCESS_TOKEN (32+ characters).")

@@ -44,6 +44,10 @@ The public diagnostic announces each attempted case before waiting and records/p
 
 Public fetches reuse robots rules for at most5 minutes in a32-origin in-memory worker cache. Every target still gets path-rule/host-approval checks, default5-second rate spacing and declared crawl delay. Separate scheme/host origins; expired/refused refresh never falls back to stale rules. Respect no-store/no-cache/max-age and CDN Age.465 full API tests, production browser and48-page geographic regression pass; controlled HTTP checks prove fewer redundant requests with preserved denial/rate/auth handling. Not a measured live speed guarantee. No dependencies/config/network-policy changes.
 
+## Isolated public-source diagnostics
+
+Added --check-discovery using existing adapters, explicit public source flags and existing host approval only. No tracker startup/migration/DB import, model, Google or form actions. Source metadata samples/description hashes only; counts/skips/empty/access limits explicit, no semantic/Phase2 pass. Filtered child environment excludes app/OAuth/DB/model secrets; only selected Reed receives its read key.490 full API tests pass, including all-five-provider dispatch, no SQLite/engine use, private-marker exclusion, report non-overwrite/cancel and mode-isolation controls. Native allowed-host check remains to run; no new network permission granted.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |
