@@ -47,7 +47,12 @@ SYSTEM_PROMPT = (
     'Each entry has value and quote. Each value must occur verbatim inside its own quote, and that quote must be copied verbatim from the source. '
     'Choose a short contiguous source phrase containing the value; prefer quotes under 200 characters. Never rephrase, join separate passages or add ellipses. '
     'Copy one exact technology name per skills entry. Education and experience values must also be literal source phrases: do not expand degree names, infer levels or invent labels. '
+    'Skills means named programming languages, operating systems, databases, frameworks, platforms or tools. '
+    'Do not put communication, teamwork, sales activities, business interest or other general abilities in skills. '
     'Only include technologies explicitly used or requested in this role, not company marketing/product background or benefits/course advertisements. '
+    'The quote must explain the candidate requirement or role use, not merely name a company product. '
+    'For example, if a company introduction says its product uses COBOL but the role asks the candidate to use HubSpot, extract HubSpot only, with its role-use quote. '
+    'If the role states no named technology requirements or use, return skills=[] even when company background names technologies. Education and experience may still have entries. '
     'Each distinct term appears once per list. If an entry cannot satisfy these copying rules, omit it. '
     'Do not infer applicant eligibility, dates, sponsorship, scores or personal facts.'
 )

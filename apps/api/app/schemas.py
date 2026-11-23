@@ -94,7 +94,7 @@ class RequirementGroundingError(ValueError):
 
 
 class RequirementsData(StrictModel):
-    skills: list[RequirementTerm] = Field(default_factory=list, max_length=50)
+    skills: list[RequirementTerm] = Field(default_factory=list, max_length=50, description='Named technology tools or platforms explicitly used or required for this role. Exclude general abilities, sales activities and company/product background. Empty when none are stated.')
     education: list[RequirementTerm] = Field(default_factory=list, max_length=20)
     experience: list[RequirementTerm] = Field(default_factory=list, max_length=20)
 

@@ -367,3 +367,7 @@ When JSON-LD supplies a URL and both it and the selected source have recognised 
 ### Fallback selection and hard source conflicts (21 November 2026)
 
 Unsupported provider selectors stop with a configuration error, never silently choose hosted extraction. Preserve the documented default and explicit ollama/openai_compatible selections. A known Greenhouse page identity mismatch is a hard NeedsInput stop, not a reason to ask a model to override it.
+
+### Focused model diagnosis (23 November 2026)
+
+Allow an explicit reviewed-case selection in the public model checker. Non-selected cases remain NOT TESTED; full metrics unknown and Phase2 unaccepted. A focused case pass is not full-suite success. Technology candidates must be named role-specific tools/platforms, excluding general abilities and company/product marketing. Semantic instruction changes do not relax source/quote/schema constraints or change frozen review labels.
