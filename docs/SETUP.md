@@ -356,3 +356,5 @@ Saved requirements are tied to the vacancy and extraction instructions/schema/op
 ### Work-mode-only source locations
 
 New Greenhouse page/board extractions can use an explicit Available Locations body paragraph/list when the header is only Hybrid/In-Office/Remote or empty. This does not infer a city from a company footer or replace a concrete header. Existing owner-edited locations are preserved; old nonempty source values are not automatically rewritten. Ordinary enrichment of blank/Notes-derived fields still applies. Review/edit any old work-mode-only value in Jobs if necessary. No migration or reimport is needed for existing history.
+
+The model diagnostic prints CHECKING local setup and public extraction before each attempted case so the current case is visible while Ollama loads/responds. Completed attempts record elapsed_seconds and print check time (setup plus extraction); skipped cases get no invented timing. This is diagnostic time, not model-quality evidence or a speed guarantee. Control+C still cancels without starting tracker services.

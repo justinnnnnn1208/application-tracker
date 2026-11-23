@@ -3,6 +3,7 @@ import argparse
 from datetime import date
 import json
 from pathlib import Path
+from time import monotonic
 
 from pydantic import Field, model_validator
 
@@ -85,9 +86,13 @@ def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False, cas
             if progress:
                 progress(item.id, 'NOT TESTED (stopped after failure)')
             continue
+        started = None
         try:
             if unavailable:
                 raise requirements.LocalModelUnavailable(reason=unavailable)
+            started = monotonic()
+            if progress:
+                progress(item.id, 'CHECKING local setup and public extraction')
             job = extract_job(case.url, html)
             text = requirements.public_text(job)
             data, model, chars, truncated = predict(text)
@@ -114,6 +119,8 @@ def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False, cas
         except (NeedsInput, ValueError):
             # No model/source bodies or private configuration in errors/progress.
             result['error'] = 'Local extraction unavailable or output failed validation.'
+        if started is not None:
+            result['elapsed_seconds'] = round(monotonic() - started, 2)
         results.append(result)
         if fail_fast and result['checks_passed'] is False:
             stopped = True
@@ -173,6 +180,9 @@ def main():
         print('Evaluation inputs/output could not be validated. Check paths, checksums, review labels and use a new output filename.')
         return 2
     print(f"Completed {report['completed_cases']}/{report['cases']} cases; schema/grounding-valid {report['schema_grounding_valid']}/{report['completed_cases']}; {report['not_tested']} NOT TESTED.")
+    times = [f"{row['id']} {row['elapsed_seconds']}s" for row in report['results'] if 'elapsed_seconds' in row]
+    if times:
+        print('Check elapsed (setup + extraction): ' + ', '.join(times))
     print(f"Minimum term recall {report['minimum_term_recall']}; empty-case accuracy {report['empty_case_accuracy']}; Phase 2 acceptance remains unassessed.")
     print(f"Limited development checks: {'FAILED' if report['development_checks_passed'] is False else 'NOT TESTED' if report['development_checks_passed'] is None else 'PASSED'}; {report['cases_failing_development_checks']} cases failed checks. This is not Phase 2 acceptance.")
     for row in report['results']:

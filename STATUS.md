@@ -36,6 +36,10 @@ At08b2c4d, a clean tracked export passed pinned API install/438 tests under CPyt
 
 A work-mode-only header previously hid explicit geographic body sections. Greenhouse page/board intake now uses only labelled Available Locations paragraphs/immediate lists when the header is empty or a recognised work mode. Concrete headers, conflicts and existing owner values stay unchanged. Three Cloudflare labels refined in a separate post-inspection geographic manifest, preserving old sources/labels/reports: old literal target45/48, new geographic target48/48. Consumed regression, not new held-out evidence. Full449 API tests, three additional real-page queue→location-score/history tests and production browser pass. No automatic owner-data repair or inferred location/visa policy.
 
+## Model-check wait feedback
+
+The public diagnostic announces each attempted case before waiting and records/prints setup-plus-extraction seconds; skipped cases have no timing. No prompt/model options/validation changes.453 full API tests pass, including synthetic native CLI output/timing, focused partial coverage and before-generation progress. Real Qwen quality still awaits owner evidence.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |

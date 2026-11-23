@@ -34,6 +34,10 @@ Tracked-file export at08b2c4d: pinned API install and438 tests passed under CPyt
 
 Live/fresh-install evidence pushed as145afcf, remote SHA verified. Work-mode-only headers were real scoring inputs, not geography. Greenhouse page/board intake now uses only explicit Available Locations paragraph/immediate list when header empty/work mode, not general city mentions. Concrete headers, conflicting sections and existing owner edits preserved; no migration/automatic old-field rewrite. Three Cloudflare labels refined in separate post-inspection geographic-review-nov23.json/manifest-nov23-geographic.json, with original source bytes/manifests/reports retained. Old literal labels45/48, new geographic labels48/48; consumed annotation refinement, not held-out proof.449 full API tests, three extra real-page API/worker score/history checks (London20pts, Lisbon0), production browser and geographic48-page regression passed. No new deps/schema/model/Google/network/forms. Ready to push this checked step; focused owner model and FindJob answers still pending; continue until06:00 today.
 
+## Model-check progress checkpoint
+
+Geography step pushed asd17f552, remote SHA verified. Added pre-attempt CHECKING output and elapsed_seconds plus CLI check-time summary to make long local waits understandable. No prompt/schema/options/validator change, so pending owner focused result remains relevant. Skipped cases have no invented timing; setup failures retain NOT TESTED semantics.453 full API tests pass, including actual synthetic native CLI progress/timing/partial exit controls and before-generation callback test. No browser/UI changes since last passed smoke. Ready to push; owner model/FindJob replies pending;06:00 cutoff unchanged.
+
 ## Prior closed checkpoint (retained context)
 
 # Night-shift handover — 21 November 2026

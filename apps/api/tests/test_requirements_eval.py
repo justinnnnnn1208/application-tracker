@@ -85,7 +85,7 @@ def test_passing_limited_checks_are_explicit_but_do_not_accept_phase_two():
     result=evaluate(cases,review,predict=abstain,progress=lambda id,state:seen.append(state))
     assert result['development_checks_passed'] is True and result['cases_failing_development_checks']==0
     assert all(row['checks_passed'] is True for row in result['results'])
-    assert seen==['PASSED limited checks']*len(review.cases)
+    assert seen==['CHECKING local setup and public extraction','PASSED limited checks']*len(review.cases)
     assert result['phase_2_accepted'] is False
 
 
@@ -179,8 +179,25 @@ def test_targeted_native_cli_never_turns_one_case_into_a_full_pass(tmp_path,vali
         assert result.returncode==(2 if valid else 1)
         assert report['completed_cases']==1 and report['not_tested']==8 and report['phase_2_accepted'] is False
         assert report['results'][1]['checks_passed'] is valid
+        assert report['results'][1]['elapsed_seconds'] >= 0
+        assert 'canonical-7661586: CHECKING local setup and public extraction' in result.stdout
+        assert 'Check elapsed (setup + extraction): canonical-7661586' in result.stdout
         assert report['minimum_term_recall'] is None and report['empty_case_accuracy'] is None
         assert not report['stopped_after_failure']
         assert [path for path,_ in calls]==['/api/show','/api/chat']
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
+
+
+def test_progress_announces_selected_case_before_slow_model_work():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    seen=[]
+    def predict(text):
+        assert seen[-1]==('canonical-7661586','CHECKING local setup and public extraction')
+        return RequirementsData(),'synthetic',len(text),False
+    report=evaluate(cases,review,predict=predict,case_id='canonical-7661586',progress=lambda id,state:seen.append((id,state)))
+    result=next(row for row in report['results'] if row['id']=='canonical-7661586')
+    assert result['elapsed_seconds']>=0
+    assert all('elapsed_seconds' not in row for row in report['results'] if row['id']!='canonical-7661586')
+    assert report['not_tested']==8 and report['phase_2_accepted'] is False
