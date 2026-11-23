@@ -168,10 +168,9 @@ def test_another_jobs_analysis_does_not_invalidate_unrelated_scores(client,monke
 
 def test_tampered_cache_does_not_supply_scores_or_ui_terms(client,monkeypatch):
     configure(monkeypatch);job=create(client)
-    from app.services.sponsorship import snapshot
     with Session(client.app.state.engine) as session:
         row=session.get(Job,job['id'])
-        session.add(JobRequirements(job_id=job['id'],payload={'skills':[{'value':'Fabricated','quote':'Not in source'}]},inputs_hash=snapshot(row),model='fixture',source_chars=10,truncated=False))
+        session.add(JobRequirements(job_id=job['id'],payload={'skills':[{'value':'Fabricated','quote':'Not in source'}]},inputs_hash=requirements.inputs_hash(row),model='fixture',source_chars=10,truncated=False))
         session.commit()
     data=client.get(f"/api/jobs/{job['id']}/requirements").json()
     assert data['state']=='stale' and data['data'] is None
@@ -358,3 +357,42 @@ def test_recognised_and_default_provider_selection_is_preserved(monkeypatch,prov
     if provider is None:monkeypatch.delenv('LLM_PROVIDER')
     else:monkeypatch.setenv('LLM_PROVIDER',provider)
     assert type(configured_provider()) is (Ollama if provider=='ollama' else OpenAICompatible)
+
+
+def test_prompt_version_change_invalidates_cached_terms_without_deleting_them(client,monkeypatch):
+    configure(monkeypatch);job=create(client)
+    client.post('/api/facts',json={'category':'skill','content':'Elixir','source':'Reviewed fixture','verified':True})
+    monkeypatch.setattr(requirements,'extract',lambda text:(RequirementsData.model_validate(output()),'fixture-local',len(text),False))
+    client.post('/api/tasks/requirements',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    path=f"/api/jobs/{job['id']}/requirements"
+    assert client.get(path).json()['state']=='current'
+    client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    result=client.get(f"/api/jobs/{job['id']}/match").json()
+    assert next(row['points'] for row in result['breakdown'] if row['criterion']=='skills')==20
+    before=client.get(f"/api/jobs/{job['id']}/events").json()
+    monkeypatch.setattr(requirements,'EXTRACTION_VERSION','changed-semantic-rules',raising=False)
+    changed=client.get(path).json()
+    assert changed['state']=='stale' and changed['data'] is None
+    assert client.get(f"/api/jobs/{job['id']}/match").json()['stale'] is True
+    assert client.get('/api/matches').json()[job['id']]['score'] is None
+    client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    fallback=client.get(f"/api/jobs/{job['id']}/match").json()
+    assert next(row['points'] for row in fallback['breakdown'] if row['criterion']=='skills')==0
+    with Session(client.app.state.engine) as session:
+        row=session.get(JobRequirements,job['id'])
+        assert row is not None and row.payload['skills'][0]['value']=='Elixir'
+    client.post('/api/tasks/requirements',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    assert client.get(path).json()['state']=='current'
+    assert client.get(f"/api/jobs/{job['id']}/events").json()==before
+    saved=client.get(f"/api/jobs/{job['id']}").json()
+    assert saved['notes']=='PRIVATE OWNER NOTE' and saved['sponsorship']=='UNVERIFIED'
+
+
+def test_source_only_legacy_requirement_cache_needs_fresh_extraction(client,monkeypatch):
+    configure(monkeypatch);job=create(client)
+    from app.services.sponsorship import snapshot
+    with Session(client.app.state.engine) as session:
+        row=session.get(Job,job['id'])
+        session.add(JobRequirements(job_id=job['id'],payload=output(),inputs_hash=snapshot(row),model='fixture-old-prompt',source_chars=100,truncated=False));session.commit()
+    data=client.get(f"/api/jobs/{job['id']}/requirements").json()
+    assert data['state']=='stale' and data['data'] is None

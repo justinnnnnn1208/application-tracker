@@ -348,3 +348,7 @@ LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --
 ```
 
 Only that public case reaches the model. All nine reviewed rows remain in the report; the other eight are NOT TESTED, with full-set metrics unknown. A selected-case pass therefore leaves the overall limited checks NOT TESTED (exit 2); a selected failure is FAILED (exit 1). This is diagnosis, not acceptance or a replacement for a later complete run. Unknown IDs stop before any model call. --case requires an explicit model-check mode; it never launches the tracker or migrations. The same private-environment filtering remains in force.
+
+## Refresh extraction after rule updates
+
+Saved requirements are tied to the vacancy and extraction instructions/schema/options/input limit. Older cache entries remain stored but show “out of date” and do not supply matching terms. Use Extract requirements locally after the chosen model passes its checks, then recalculate the preference match. Source edits still invalidate cached terms. Job fields, Notes, facts and application events are retained; no migration/new dependency is needed for this rule-version change. Public model reports include an extraction signature for comparing runs.

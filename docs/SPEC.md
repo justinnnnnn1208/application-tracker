@@ -375,3 +375,7 @@ Allow an explicit reviewed-case selection in the public model checker. Non-selec
 ### Explicit New Grad titles (23 November 2026)
 
 Recognise explicit New Grad/New-Grad titles as graduate role-level signals. Senior/manager titles still take precedence; internships remain Unverified even when their title includes Graduate/New Grad. This is role classification, not personal eligibility. Score version changes invalidate prior scores for recalculation, preserving job fields/application events and retaining stale feedback as such. Fresh real control labels and the first failed prediction remain recorded; no positive exact-date or multi-ATS claim follows from this fix.
+
+### Extraction-rule cache binding (23 November 2026)
+
+Bind cached public requirements to both source context and extraction-rule version. Changed instructions/schema/options/input bound require a fresh extraction before previous candidates can influence ranking. Preserve legacy payloads, Notes and application history; never silently reuse stale semantic output. Public evaluation reports may record the non-personal extractor signature. No personal/legal data is added to model input.

@@ -121,7 +121,8 @@ def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False, cas
             progress(item.id, 'NOT TESTED' if result['checks_passed'] is None else 'PASSED limited checks' if result['checks_passed'] else 'FAILED limited checks')
     not_tested = sum(row['state'] == 'not_tested' for row in results)
     failed_checks = sum(row['checks_passed'] is False for row in results)
-    return {'cases': len(review.cases), 'schema_grounding_valid': valid, 'failed': len(review.cases) - valid - not_tested,
+    return {'cases': len(review.cases), 'extraction_version': requirements.EXTRACTION_VERSION,
+            'schema_grounding_valid': valid, 'failed': len(review.cases) - valid - not_tested,
             'completed_cases': len(review.cases) - not_tested, 'selected_case': case_id,
             'stopped_after_failure': any(row.get('error_code') == 'stopped_after_failure' for row in results),
             'development_checks_passed': False if failed_checks else None if not_tested else True,

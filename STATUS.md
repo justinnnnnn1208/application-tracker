@@ -12,6 +12,10 @@ Fresh baseline406 API tests pass. Owner’s actual revised-prompt qwen2.5:7b run
 
 Four new genuine controls were labelled before first prediction. The initial source/field parsing passed, but explicit Deliveroo New Grad was Unverified:3/4 role accuracy,0/1 known-positive accuracy. Initial report retained. New Grad recognition and internship precedence fix this; latest44-page regression matches fields/roles, still Greenhouse only,12 known deadlines/3 shared-template exact start days/34 known role labels. No Phase2 acceptance. Score v6 makes previous scores stale for recalculation and preserves history/Notes. Full419 API tests and production browser pass; its initial old explanation-string assertion was updated to match the delivered explanation.
 
+## Requirement-cache rule version
+
+Two regressions reproduced stale semantic output surviving a rule change. Cache keys now bind source and extractor signature; legacy rows retained but stale, and old terms are excluded from scores until refreshed. No schema migration or data deletion. Full421 API tests, strengthened cache/ranking preservation check, typecheck/build, production browser and44-page regression pass. Public model reports include the signature. Model quality remains unassessed beyond owner results above.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |
