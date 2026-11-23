@@ -38,6 +38,10 @@ Live/fresh-install evidence pushed as145afcf, remote SHA verified. Work-mode-onl
 
 Geography step pushed asd17f552, remote SHA verified. Added pre-attempt CHECKING output and elapsed_seconds plus CLI check-time summary to make long local waits understandable. No prompt/schema/options/validator change, so pending owner focused result remains relevant. Skipped cases have no invented timing; setup failures retain NOT TESTED semantics.453 full API tests pass, including actual synthetic native CLI progress/timing/partial exit controls and before-generation callback test. No browser/UI changes since last passed smoke. Ready to push; owner model/FindJob replies pending;06:00 cutoff unchanged.
 
+## Public-fetch overhead checkpoint
+
+Model progress step pushed as9e1e5f5, remote SHA verified. Batch discovery previously fetched robots for every page. A bounded32-origin worker-memory cache now reuses rules up to5 minutes while checking every URL/current host approval and retaining default5-second spacing/crawl delay. Separate origins; no stale fallback after failed expiry refresh; respect no-store/no-cache/max-age/CDN Age. Two duplicate-request tests first failed, then passed;465 full API tests, production browser and48-page geographic regression pass. No dependency/settings/network/owner-data change. Controlled performance/request-count proof only; next run disposable live convergence under committed cache code, then continue genuine date-source search within unchanged policy. Owner model/FindJob replies still pending;06:00 today cutoff.
+
 ## Prior closed checkpoint (retained context)
 
 # Night-shift handover — 21 November 2026

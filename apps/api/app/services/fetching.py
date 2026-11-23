@@ -14,6 +14,8 @@ USER_AGENT = "GraduateTracker/0.1"
 PROXY_DNS_HOSTS = {"boards-api.greenhouse.io", "job-boards.greenhouse.io"}
 BLOCKED = ("linkedin.com", "indeed.com", "indeed.co.uk")
 _last_request = {}
+_robots_cache = {}
+ROBOTS_TTL = 300
 
 
 def validate_public_url(url: str):
@@ -48,8 +50,10 @@ def fetch_page(url: str, *, auth=None) -> str:
     approved = {value.strip().lower() for value in os.environ.get("URL_FETCH_ALLOWED_HOSTS", "").split(",") if value.strip()}
     if host not in approved:
         raise NeedsInput("Fetching this host is not enabled. Check its terms, approve the host in URL_FETCH_ALLOWED_HOSTS, or paste the page HTML.")
+    parts = urlsplit(url)
+    origin = (parts.scheme, parts.netloc)
     with httpx.Client(timeout=20, follow_redirects=False, headers={"User-Agent": USER_AGENT}) as client:
-        def get(target, limit, request_auth=None):
+        def get(target, limit, request_auth=None, *, metadata=False):
             validate_public_url(target)
             delay = max(0, 5 - (monotonic() - _last_request.get(host, -100)))
             if delay:
@@ -66,12 +70,31 @@ def fetch_page(url: str, *, auth=None) -> str:
                     result.extend(chunk)
                     if len(result) > limit:
                         raise NeedsInput("The job page is too large. Use manual entry.")
-                return result.decode("utf-8", errors="replace")
+                text = result.decode("utf-8", errors="replace")
+                return (text, response.headers) if metadata else text
 
         try:
-            robots = get(urljoin(url, "/robots.txt"), 200_000)
-            rules = RobotFileParser()
-            rules.parse(robots.splitlines())
+            cached = _robots_cache.get(origin)
+            if cached and monotonic() < cached[0]:
+                rules = cached[1]
+            else:
+                robots, headers = get(urljoin(url, "/robots.txt"), 200_000, metadata=True)
+                rules = RobotFileParser()
+                rules.parse(robots.splitlines())
+                ttl = ROBOTS_TTL
+                age = headers.get('age', '0')
+                age = int(age) if age.isdigit() and len(age) <= 10 else 0
+                for directive in headers.get('cache-control', '').lower().split(','):
+                    name, _, value = directive.strip().partition('=')
+                    if name.strip() in {'no-cache', 'no-store'}:
+                        ttl = 0
+                    if name.strip() == 'max-age':
+                        value = value.strip(' "')
+                        ttl = min(ttl, max(0, int(value) - age)) if value.isdigit() and len(value) <= 10 else 0
+                if ttl:
+                    if len(_robots_cache) >= 32:
+                        _robots_cache.pop(next(iter(_robots_cache)))
+                    _robots_cache[origin] = (monotonic() + ttl, rules)
             if not rules.can_fetch(USER_AGENT, url):
                 raise NeedsInput("robots.txt disallows fetching this job page. Use manual entry.")
             # Honour declared delays in addition to the default per-host delay.

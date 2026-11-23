@@ -40,6 +40,10 @@ A work-mode-only header previously hid explicit geographic body sections. Greenh
 
 The public diagnostic announces each attempted case before waiting and records/prints setup-plus-extraction seconds; skipped cases have no timing. No prompt/model options/validation changes.453 full API tests pass, including synthetic native CLI output/timing, focused partial coverage and before-generation progress. Real Qwen quality still awaits owner evidence.
 
+## Public-fetch overhead
+
+Public fetches reuse robots rules for at most5 minutes in a32-origin in-memory worker cache. Every target still gets path-rule/host-approval checks, default5-second rate spacing and declared crawl delay. Separate scheme/host origins; expired/refused refresh never falls back to stale rules. Respect no-store/no-cache/max-age and CDN Age.465 full API tests, production browser and48-page geographic regression pass; controlled HTTP checks prove fewer redundant requests with preserved denial/rate/auth handling. Not a measured live speed guarantee. No dependencies/config/network-policy changes.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |
