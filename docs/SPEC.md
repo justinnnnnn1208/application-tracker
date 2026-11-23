@@ -379,3 +379,5 @@ Recognise explicit New Grad/New-Grad titles as graduate role-level signals. Seni
 ### Extraction-rule cache binding (23 November 2026)
 
 Bind cached public requirements to both source context and extraction-rule version. Changed instructions/schema/options/input bound require a fresh extraction before previous candidates can influence ranking. Preserve legacy payloads, Notes and application history; never silently reuse stale semantic output. Public evaluation reports may record the non-personal extractor signature. No personal/legal data is added to model input.
+
+23 November verification note: additional genuine same-ATS controls exposed explicit Early Career/manager-intern role errors and a description-H1 parsing failure. These are fixed under the existing role-label rubric with retained initial reports;48-page consumed regression is not independent Phase2 acceptance. No scope or agreed target change.

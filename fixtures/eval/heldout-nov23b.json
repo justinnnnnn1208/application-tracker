@@ -1,0 +1,76 @@
+{
+  "cases": [
+    {
+      "id": "andurilindustries-5255902007",
+      "url": "https://job-boards.greenhouse.io/andurilindustries/jobs/5255902007",
+      "html": "pages/andurilindustries-5255902007.html",
+      "sha256": "fa8acd2a2a86b4ea913146c52c85f2dc16e79a783738700d46899e562892346c",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Anduril Industries",
+        "title": "2027 Software Engineer Intern",
+        "location": "London, England, United Kingdom",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "cloudflare-8328914",
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8328914",
+      "html": "pages/cloudflare-8328914.html",
+      "sha256": "5308d1424df8b77a7dba9782d2ab23b7cebf36ad0fecb844e4d9e470563ac623",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Cloudflare",
+        "title": "Product Manager Intern (2027) - London, UK",
+        "location": "In-Office",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "sharkninjaoperatingllc-4726669006",
+      "url": "https://job-boards.greenhouse.io/sharkninjaoperatingllc/jobs/4726669006",
+      "html": "pages/sharkninjaoperatingllc-4726669006.html",
+      "sha256": "bf4452ad579d5d7d0797b5ee16f3e279ebdc47ba563e92f0c673c048c51e9617",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "SharkNinja",
+        "title": "Electronical Engineer Intern",
+        "location": "UK - London, Battersea Power Station",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "affirm-8011718003",
+      "url": "https://job-boards.greenhouse.io/affirm/jobs/8011718003",
+      "html": "pages/affirm-8011718003.html",
+      "sha256": "025e2656c48ec8239619e49a7e187d03df85d492d7c735072adfa6f0ef21cdee",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Affirm",
+        "title": "Software Engineer I, Early Career (London)",
+        "location": "London",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "CONFIRMED_NO",
+        "sponsorship_quote": "Please note that visa sponsorship is not available for this position."
+      }
+    }
+  ]
+}

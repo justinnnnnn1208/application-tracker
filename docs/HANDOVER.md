@@ -18,6 +18,10 @@ Role step pushed as fd97e3d, remote SHA verified. Requirement-cache concern repr
 
 Cache step pushed as e4cac864, remote SHA verified. Benchmark previously returned0 with sub-target fields; now explicit target states use both overall/known accuracy, missing known labels remain NOT TESTED, and CLI fails actual low fields. Seven new metric/CLI controls pass; full428 API tests pass. Fresh44-page development report reports/nov23-explicit-field-targets.json passes fields, no acceptance claim. No extractor/model/data labels changed. Direct approved Greenhouse detail APIs confirm the excluded Axon community and Blenheim/Fospha publisher names, so they do not resolve brand ambiguity; exclusions remain, no guessed identity. Focused owner model/FindJob replies still pending. Continue to06:00 today.
 
+## Additional genuine control checkpoint
+
+Field reporting pushed as a491c2d, remote SHA verified. Four more real postings frozen before prediction at that commit. Initial graduate1/4/known-positive0/1 and one SharkNinja extraction failure preserved in nov23b-initial-heldout.json. Description H1 subheading was wrongly treated as a second job header; explicit Early Career and Product Manager Intern role levels missed. Narrow parser fix ignores description subheadings only, keeping external conflicting headings/known IDs blocked; title spelling remains literal. Role-level internship precedence/Early Career support now score v7, with both v5/v6 score/feedback staleness preservation tested. Full438 API tests, production browser and48-page regression pass; 12 employers, all Greenhouse, still12 deadlines/3 same-template start dates/35 known role labels. Sponsorship4 YES/15 NO still abstained; not policy quality. REVIEW_NOV23B.md explains controls/exclusions/limits. No model result/FindJob answer yet; no Phase3/network/write changes. Next: live disposable discovery plus pasted-link preservation check; continue until06:00 today.
+
 ## Prior closed checkpoint (retained context)
 
 # Night-shift handover — 21 November 2026

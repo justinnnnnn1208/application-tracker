@@ -1,0 +1,43 @@
+{
+  "labels_frozen_at": "2026-11-23T04:00:11.736282+00:00",
+  "predictor_base_commit": "a491c2d88d116ca36469d29fff130a5d307a4211",
+  "method": "Actual public posting fetch through unchanged approved Greenhouse robots/rate/size/redirect guards; original title/og metadata/logo/header/description excerpted without form/script/button/input/SVG. Raw originals remain ignored. Literal visible-text labels frozen before first prediction. Candidate URLs from pinned SimplifyJobs lists recorded in provenance-nov23.json. No model, owner data, Google or form interaction.",
+  "limits": [
+    "Targeted same-ATS controls, not representative or multi-ATS validation.",
+    "Internships remain Unverified by the existing label rubric; explicit Early Career and new-graduate cohort establish Affirm role level, not personal eligibility.",
+    "Cloudflare manager internship is an internship, not a leadership opening.",
+    "No exact date positives: August2027 and May-September2027 remain unknown exact days.",
+    "Cloudflare location literal In-Office is not geographic precision; title/body provide London.",
+    "Affirm explicitly refuses role sponsorship; automatic state still abstains, not a policy inference."
+  ],
+  "postings": [
+    {
+      "url": "https://job-boards.greenhouse.io/andurilindustries/jobs/5255902007",
+      "captured_at": "2026-11-23T03:59:04.530823+00:00",
+      "raw_sha256": "02a1c073bb4592ea4c5e745889cdf0beebe0468d07a34e78d028f531fccb663e",
+      "id": "andurilindustries-5255902007",
+      "excerpt_sha256": "fa8acd2a2a86b4ea913146c52c85f2dc16e79a783738700d46899e562892346c"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/cloudflare/jobs/8328914",
+      "captured_at": "2026-11-23T03:59:14.891323+00:00",
+      "raw_sha256": "9cb51b72aaa2db218d19375d45d833955163a549d17ee20814a071015c723c5a",
+      "id": "cloudflare-8328914",
+      "excerpt_sha256": "5308d1424df8b77a7dba9782d2ab23b7cebf36ad0fecb844e4d9e470563ac623"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/sharkninjaoperatingllc/jobs/4726669006",
+      "captured_at": "2026-11-23T03:59:25.341406+00:00",
+      "raw_sha256": "58c1ff02b1799bf3fe9f29559841fe26edaedf73a3d06b459734d7f17098329f",
+      "id": "sharkninjaoperatingllc-4726669006",
+      "excerpt_sha256": "bf4452ad579d5d7d0797b5ee16f3e279ebdc47ba563e92f0c673c048c51e9617"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/affirm/jobs/8011718003",
+      "captured_at": "2026-11-23T03:59:35.687805+00:00",
+      "raw_sha256": "74c4dc22df3a6b275b3dca2eb268258452dabef6e29089540d85df0888a850b2",
+      "id": "affirm-8011718003",
+      "excerpt_sha256": "025e2656c48ec8239619e49a7e187d03df85d492d7c735072adfa6f0ef21cdee"
+    }
+  ]
+}

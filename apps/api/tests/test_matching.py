@@ -220,7 +220,8 @@ def test_explicit_new_grad_titles_and_internship_precedence(title,expected):
     assert graduate_level(title,'')==expected
 
 
-def test_old_scoring_version_stays_unranked_until_recalculated_without_history_loss(client):
+@pytest.mark.parametrize("old_version", ["preference-v5-immigration-neutral-terms", "preference-v6-explicit-new-grad"])
+def test_old_scoring_version_stays_unranked_until_recalculated_without_history_loss(client, old_version):
     from sqlalchemy.orm import Session
     from app.db.models import Job,MatchResult
     from app.services import matching
@@ -228,7 +229,7 @@ def test_old_scoring_version_stays_unranked_until_recalculated_without_history_l
     history=client.get(f"/api/jobs/{job['id']}/events").json()
     with Session(client.app.state.engine) as session:
         data=matching.inputs(session,session.get(Job,job['id']))
-        data['version']='preference-v5-immigration-neutral-terms'
+        data['version']=old_version
         session.add(MatchResult(job_id=job['id'],score=0,breakdown=[],inputs_hash=matching.fingerprint(data),feedback='good'))
         session.commit()
     assert client.get(f"/api/jobs/{job['id']}/match").json()['stale'] is True
@@ -242,3 +243,34 @@ def test_old_scoring_version_stays_unranked_until_recalculated_without_history_l
     assert client.get(f"/api/jobs/{job['id']}/events").json()==history
     saved=client.get(f"/api/jobs/{job['id']}").json()
     assert saved['notes']=='Owner note' and saved['sponsorship']=='UNVERIFIED'
+
+
+@pytest.mark.parametrize(('title','expected'), [
+    ('Software Engineer I, Early Career (London)', 'YES'),
+    ('Software Engineer, Early-Career', 'YES'),
+    ('Product Manager Intern (2027) - London, UK', 'UNVERIFIED'),
+    ('Early Career Product Management Internship', 'UNVERIFIED'),
+    ('Senior Early Career Programme Manager', 'NO'),
+    ('Product Manager', 'NO'),
+    ('Engineer', 'UNVERIFIED'),
+])
+def test_explicit_early_career_and_internship_role_level(title, expected):
+    from app.services.matching import graduate_level
+    assert graduate_level(title, 'Our benefits support early career growth.') == expected
+
+
+def test_description_subheading_does_not_become_a_second_greenhouse_job():
+    from app.services.extraction import extract_job
+    html = '<title>Job Application for Engineering Intern at Fixture</title><meta property="og:url" content="https://job-boards.greenhouse.io/fixture/jobs/7"><h1>Engineering Intern</h1><div class="job__location">London</div><div class="job__description"><h1>Electrical Design Engineering Intern</h1><p>Start date: August 2027</p><p>Python preferred.</p></div>'
+    job = extract_job('https://job-boards.greenhouse.io/fixture/jobs/7', html)
+    assert job.title == 'Engineering Intern' and job.company == 'Fixture'
+    assert 'Electrical Design Engineering Intern' in job.description
+    assert job.start_date is None
+
+
+def test_distinct_greenhouse_headings_outside_description_still_require_review():
+    from app.services.extraction import extract_job
+    from app.services.errors import NeedsInput
+    html = '<title>Job Application for Engineer at Fixture</title><meta property="og:url" content="https://job-boards.greenhouse.io/fixture/jobs/7"><h1>Engineer</h1><h1>Another vacancy</h1><div class="job__description">Python required.</div>'
+    with pytest.raises(NeedsInput):
+        extract_job('https://job-boards.greenhouse.io/fixture/jobs/7', html)

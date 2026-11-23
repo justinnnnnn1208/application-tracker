@@ -139,7 +139,9 @@ class GreenhouseParser(HTMLParser):
             self.og_url = attrs.get("content")
         if tag == "title":
             self.in_title = True
-        if tag == "h1":
+        # Rich vacancy bodies can repeat the role as an H1 with different wording.
+        # Only headings outside that description identify the selected posting.
+        if tag == "h1" and self.capture != "description":
             self.in_h1 = True
             self.heading = []
         if tag == "div":

@@ -20,6 +20,10 @@ Two regressions reproduced stale semantic output surviving a rule change. Cache 
 
 The offline evaluator now explicitly checks each agreed ≥90% field target on both all labels and known labels. Failed known dates cannot hide behind null matches; no known labels means NOT TESTED, not a pass. CLI returns1 for failed checks and2 for otherwise untested/incomplete coverage. Full428 API tests pass, including seven new metric/CLI regressions. The44-page regression passes these development field checks; only3 same-template start dates and one ATS still prevent independent acceptance. Historical reports/labels remain frozen.
 
+## Further real controls
+
+Four more genuine postings were labelled before prediction: one SharkNinja extraction failure (a differently worded description H1), plus missed Early Career and Product Manager Intern levels. Initial report retained; graduate1/4 and known-positive0/1 before fixes. Ignore description H1 as a vacancy identifier, recognise explicit Early Career titles, and apply internship-Unverified before leadership checks. Senior non-intern programmes remain NO; v7 invalidates old scores/feedback. Updated48-page regression matches fields/roles with no extraction failures; still one ATS/3 shared-template exact start days. No acceptance claim. See REVIEW_NOV23B.md.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |
@@ -31,7 +35,7 @@ The offline evaluator now explicitly checks each agreed ≥90% field target on b
 | Local requirements | Explicit per-job source-only native Ollama task, schema/quote grounding, bounded context/output/retries and stale/concurrent-source protection. Notes/profile/facts/CV/legal inputs excluded. Current terms feed deterministic overlap; otherwise labelled finite-keyword fallback. No real quality pass. |
 | Local-model guard | Both local paths enforce loopback/no shell proxy/no redirects; before source text inspect `/api/show` with model name only. Refuse cloud tags, advertised remote aliases and missing/malformed metadata. Explicit hosted provider unchanged; no hosted fallback. Official Ollama source contract reviewed; tests include real synthetic loopback HTTP. |
 | Sponsorship and register | Default Unverified. Owner-reviewed role quote/source/current context required for a manual finding; changed inputs invalidate it. Provenance is not semantic policy judgement. Dated official-asset CSV upload/exact name lookup remains a separate signal, never a score or role confirmation. Actual full official register verification pending. |
-| Backups and updates | Backup-verifying `scripts/dev.py --migrate`, schema guard, restore to new destination, corrupt/unsupported archive guards, URI-safe exact SQLite filenames. Migration head eb81a592c387; score preference-v6-explicit-new-grad. No new dependencies/private configuration changes. |
+| Backups and updates | Backup-verifying `scripts/dev.py --migrate`, schema guard, restore to new destination, corrupt/unsupported archive guards, URI-safe exact SQLite filenames. Migration head eb81a592c387; score preference-v7-explicit-early-career. No new dependencies/private configuration changes. |
 
 ## Phase 1 acceptance record
 
