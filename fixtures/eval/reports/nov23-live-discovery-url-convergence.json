@@ -1,0 +1,60 @@
+{
+  "reviewed_at": "2026-11-23T04:05:14.129116+00:00",
+  "application_commit": "08b2c4d6c16e431f7082362f9c9490989dbd5bff",
+  "state": "PASSED",
+  "method": "Disposable migrated API TestClient -> persisted pasted-URL and discovery tasks -> actual worker -> live approved robots/page/board API. Direct vacancy first, then actual whole public board; no HTML substitution, model, Google, owner data or form actions.",
+  "direct_url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8645263002",
+  "first_discovery": {
+    "postings_read": 5,
+    "jobs_created": 4,
+    "duplicates": 1,
+    "warnings": 0
+  },
+  "repeat_discovery": {
+    "postings_read": 5,
+    "jobs_created": 0,
+    "duplicates": 5,
+    "warnings": 0
+  },
+  "repeat_url_created": false,
+  "retained_shortlist_notes_events": true,
+  "all_default_unverified": true,
+  "restored_counts": {
+    "jobs": 5,
+    "applications": 5,
+    "application_events": 6,
+    "job_sources": 5,
+    "discovery_sources": 1,
+    "tasks": 4
+  },
+  "captures": [
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8645263002",
+      "captured_at": "2026-11-23T04:04:37.007147+00:00",
+      "decoded_utf8_sha256": "dd40dcd25983f5bb61ae485ef78fd23b8ab7c23bba4af8312073fd2d5ef810e6"
+    },
+    {
+      "url": "https://boards-api.greenhouse.io/v1/boards/mw-tech-grad/jobs?content=true",
+      "captured_at": "2026-11-23T04:04:52.772583+00:00",
+      "decoded_utf8_sha256": "3ffce001f7c30a5e70f481e4fc59fe340e5bb8ccb4d430a342249a797bb7894f"
+    },
+    {
+      "url": "https://boards-api.greenhouse.io/v1/boards/mw-tech-grad/jobs?content=true",
+      "captured_at": "2026-11-23T04:05:03.752968+00:00",
+      "decoded_utf8_sha256": "3ffce001f7c30a5e70f481e4fc59fe340e5bb8ccb4d430a342249a797bb7894f"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8645263002",
+      "captured_at": "2026-11-23T04:05:14.085965+00:00",
+      "decoded_utf8_sha256": "dd40dcd25983f5bb61ae485ef78fd23b8ab7c23bba4af8312073fd2d5ef810e6"
+    }
+  ],
+  "phase_2_accepted": false,
+  "limits": [
+    "Two intake channels for the same real vacancy within Greenhouse, not two independent ATS providers.",
+    "One application retained without merging/deleting existing independent histories.",
+    "Only current same-ATS board/page compatibility; no model-quality/date generalisation conclusion.",
+    "Disposable SQLite restore, not owner Mac operational restore.",
+    "Network settings unchanged; only existing approved Greenhouse hosts."
+  ]
+}

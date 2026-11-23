@@ -24,6 +24,14 @@ The offline evaluator now explicitly checks each agreed ≥90% field target on b
 
 Four more genuine postings were labelled before prediction: one SharkNinja extraction failure (a differently worded description H1), plus missed Early Career and Product Manager Intern levels. Initial report retained; graduate1/4 and known-positive0/1 before fixes. Ignore description H1 as a vacancy identifier, recognise explicit Early Career titles, and apply internship-Unverified before leadership checks. Senior non-intern programmes remain NO; v7 invalidates old scores/feedback. Updated48-page regression matches fields/roles with no extraction failures; still one ATS/3 shared-template exact start days. No acceptance claim. See REVIEW_NOV23B.md.
 
+## Live intake convergence
+
+Fresh disposable live check at08b2c4d: pasted Marshall Wace vacancy first, then actual public board discovery. Five postings returned4 new/1 duplicate; repeat board returned0 new/5 duplicates; repeat pasted URL reused the same job/application. Shortlist, synthetic note and events survived; all sponsorship Unverified. Backup restored5 jobs/5 applications/6 events/5 sources/1 discovery source/4 tasks. Same-ATS intake channels, not two independent ATS providers or owner Mac restore. Public report retained; no model/Google/forms/network changes.
+
+## Fresh Python3.13 compatibility
+
+At08b2c4d, a clean tracked export passed pinned API install/438 tests under CPython3.13.5, pinned npm install/typecheck/production build, production browser and actual combined-launcher initialisation/start/stop/backup-verifying restart with a preserved disposable job. Linux only, not macOS. Default npm cache was outside writable roots; writable /tmp cache fixed installation without changing locks or disabling integrity. No owner config/data used. Report nov23-python313-clean-install.json.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |
@@ -70,11 +78,11 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 
 ## Real-page and model evidence
 
-Original 30/35/38/40 manifests and historical failures stay frozen. Latest **manifest-nov23.json: 44 genuine excerpts/nine employer labels, all Greenhouse**. Current combined field/role regression has zero extraction failures/false YES and matches basic labels. Only **12 known deadlines, 3 exact start days (same Marshall Wace template), 34 role-level YES/NO labels**. Null matches and literal In-Office/Hybrid headers do not prove positive dates or geographic extraction. Automatic sponsorship abstains: 4 YES/14 NO labels, zero known-policy accuracy; zero false YES is not evidence-assessment quality. phase_2_accepted=false.
+Original 30/35/38/40 manifests and historical failures stay frozen. Latest **manifest-nov23b.json: 48 genuine excerpts/12 employer labels, all Greenhouse**. Current combined field/role regression has zero extraction failures/false YES and matches basic labels. Only **12 known deadlines, 3 exact start days (same Marshall Wace template), 35 role-level YES/NO labels**. Null matches and literal In-Office/Hybrid headers do not prove positive dates or geographic extraction. Automatic sponsorship abstains: 4 YES/15 NO labels, zero known-policy accuracy; zero false YES is not evidence-assessment quality. phase_2_accepted=false.
 
 Two new Cloudflare pages initially failed source extraction; preserve reports/nov21-initial-heldout.json. An incorrect internship YES annotation was corrected to the established Unverified rubric after the source failure/code inspection; original labels retained, corrected reviewed-nov21.json/provenance/review explain it. These are consumed regressions, not fresh held-out role acceptance. Databricks/Samsara redirects were refused; no extra hosts or substitute proxies.
 
-Separate local-model review still has nine hash-bound minimum-term/empty/company-background cases, not exhaustive education/experience semantics or precision. Actual Mac qwen2.5:3b result: **1/9 schema/grounding-valid, recall 0.1, empty-case accuracy 0.0, eight failed**. Actual first qwen2.5:7b fast run: **term_not_in_quote, 0/1 valid, eight NOT TESTED**. Prompt fix pushed as 3c0afba; revised real result awaited. The 4.7 GB download/OK reply does not verify extraction quality. Bare ollama opened glm-5.3-flash:cloud; select downloaded Qwen explicitly. Cloud has no real Ollama server/weights; synthetic fixtures are not model quality.
+Separate local-model review still has nine hash-bound minimum-term/empty/company-background cases, not exhaustive education/experience semantics or precision. Actual Mac qwen2.5:3b result: **1/9 schema/grounding-valid, recall 0.1, empty-case accuracy 0.0, eight failed**. Actual first qwen2.5:7b fast run: **term_not_in_quote, 0/1 valid, eight NOT TESTED**. Prompt fix pushed as 3c0afba; today’s subsequent owner result (Graphcore pass, Canonical failure) and current focused rerun request are recorded at the top. The 4.7 GB download/OK reply does not verify extraction quality. Bare ollama opened glm-5.3-flash:cloud; select downloaded Qwen explicitly. Cloud has no real Ollama server/weights; synthetic fixtures are not model quality.
 
 ## Remaining Phase 2 work
 
@@ -90,7 +98,7 @@ From the Mac project root (no secrets in chat):
 
 ```sh
 git pull --ff-only origin dev/phase-1
-LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model
+LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --case canonical-7661586
 ```
 
 Paste the final check result. If bare Ollama opens a cloud chat, use /bye then `ollama run qwen2.5:7b "Reply with OK"` separately. These one-command model selectors do not change the app's private .env. If verified and selected for normal app use, update the existing private LLM_PROVIDER/LLM_MODEL entries as SETUP.md describes; preserve all other settings.

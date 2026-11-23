@@ -306,7 +306,7 @@ The current scoring version excludes additional known leave/residency/settlement
 
 ## Model check says NOT TESTED
 
-Open Ollama on the Mac, then run `ollama list`. If the configured model is missing, run `ollama pull qwen2.5:3b`. Test generation with `ollama run qwen2.5:3b "Reply with OK"`, then retry `python3 scripts/dev.py --check-model` from the project root. If the command is unavailable, the Mac app binary is `/Applications/Ollama.app/Contents/Resources/ollama`; use it in place of `ollama`. Keep the app running.
+Open Ollama on the Mac, then run `ollama list`. If the selected local model is missing, use its exact name from your private configuration; the current candidate is `qwen2.5:7b`. The earlier3B failed quality checks. For the current candidate, test generation with `ollama run qwen2.5:7b "Reply with OK"`, then retry `python3 scripts/dev.py --check-model` from the project root. If the command is unavailable, the Mac app binary is `/Applications/Ollama.app/Contents/Resources/ollama`; use it in place of `ollama`. Keep the app running.
 
 The new check prints a safe reason code: server_unreachable means connection failed; timed_out suggests warming the selected model first; model_or_endpoint_missing is a 404 and requires checking model installation and local address; structured_request_rejected suggests checking Ollama/model schema support. Access/busy/runtime/redirect failures have separate hints. These are setup/transport diagnostics, not semantic quality scores. No response body, credential or private config URL is printed. The first unavailable request stops further case calls and leaves metrics unknown.
 

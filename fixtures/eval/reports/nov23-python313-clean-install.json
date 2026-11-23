@@ -1,0 +1,27 @@
+{
+  "reviewed_at": "2026-11-23T04:08:23.758003+00:00",
+  "application_commit": "08b2c4d6c16e431f7082362f9c9490989dbd5bff",
+  "environment": "Fresh tracked-file export on Linux, CPython3.13.5; not a macOS run",
+  "state": "PASSED",
+  "checks": {
+    "pinned_api_install": "uv sync --frozen --python /usr/bin/python3.13; PASSED",
+    "api_tests": "438 PASSED; existing Starlette/httpx deprecation warning",
+    "pinned_web_install": "npm ci --ignore-scripts --no-audit --no-fund with writable /tmp cache; PASSED",
+    "frontend_typecheck": "PASSED",
+    "frontend_production_build": "PASSED",
+    "production_browser": "PASSED on Python3.13, disposable data, 1440/390/320px",
+    "combined_launcher": "Fresh private init, actual --migrate startup, direct dashboard/proxy CRUD, Control+C stops children, second --migrate verifies backup and preserves disposable job, second clean stop; PASSED"
+  },
+  "lock_hashes": {
+    "apps/api/uv.lock": "6dcbca70ddd4f7c9227533a22e16d760504b51de65041ac97042f27f4263496b",
+    "apps/web/package-lock.json": "d3fbd146baebdbd940372980387a6de83b444ff56edda1d689660d7d1e15a016"
+  },
+  "initial_problem": "Default npm cache outside writable roots caused install failure; rerun with writable /tmp cache passed. No integrity checks disabled or dependency/lock changes.",
+  "limits": [
+    "Python version compatibility on Linux is not macOS integration/notification/operational-restore proof.",
+    "No owner data/configuration/OAuth/Sheets/model/application forms used.",
+    "No network policy/publication changes; package presets unchanged.",
+    "No actual model quality or independent multi-ATS/date acceptance."
+  ],
+  "phase_2_accepted": false
+}
