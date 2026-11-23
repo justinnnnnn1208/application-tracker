@@ -58,7 +58,9 @@ def load_review(path, cases):
     return review
 
 
-def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False):
+def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False, case_id=None):
+    if case_id is not None and case_id not in {item.id for item in review.cases}:
+        raise ValueError('Choose a reviewed case ID')
     predict = predict or requirements.extract
     by_id = {case.id: (case, html) for case, html in cases}
     results, valid, expected_count, found_count, empty_count, empty_correct, forbidden_count = [], 0, 0, 0, 0, 0, 0
@@ -69,6 +71,13 @@ def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False):
         expected_count += len(item.must_include_skills)
         empty_count += int(item.empty_skills)
         result = {'id': item.id, 'source_sha256': case.sha256, 'state': 'failed', 'checks_passed': False, 'missing_skills': item.must_include_skills, 'forbidden_skills': []}
+        if case_id is not None and item.id != case_id:
+            result.update(state='not_tested', checks_passed=None, missing_skills=None, forbidden_skills=None,
+                          error_code='not_selected', error='Not selected for this diagnostic run.')
+            results.append(result)
+            if progress:
+                progress(item.id, 'NOT TESTED (not selected)')
+            continue
         if stopped:
             result.update(state='not_tested', checks_passed=None, missing_skills=None, forbidden_skills=None,
                           error_code='stopped_after_failure', error='Not run: an earlier case failed the limited checks.')
@@ -113,7 +122,8 @@ def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False):
     not_tested = sum(row['state'] == 'not_tested' for row in results)
     failed_checks = sum(row['checks_passed'] is False for row in results)
     return {'cases': len(review.cases), 'schema_grounding_valid': valid, 'failed': len(review.cases) - valid - not_tested,
-            'completed_cases': len(review.cases) - not_tested, 'stopped_after_failure': stopped and not_tested > 0,
+            'completed_cases': len(review.cases) - not_tested, 'selected_case': case_id,
+            'stopped_after_failure': any(row.get('error_code') == 'stopped_after_failure' for row in results),
             'development_checks_passed': False if failed_checks else None if not_tested else True,
             'cases_failing_development_checks': failed_checks,
             'not_tested': not_tested, 'quality_assessed': not unavailable and not not_tested,
@@ -136,6 +146,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True, help='New JSON report path; existing files are never overwritten')
     parser.add_argument('--fail-fast', action='store_true', help='Stop model calls after the first failed limited check; skipped cases remain NOT TESTED')
     parser.add_argument('--single-attempt', action='store_true', help='One model response per case, without schema/grounding retries')
+    parser.add_argument('--case', help='Diagnose one reviewed case; all other cases remain NOT TESTED')
     args = parser.parse_args()
     if not requirements.configuration():
         print('NOT TESTED: configure a local Ollama model first. No remote calls or application database access attempted.')
@@ -147,7 +158,7 @@ def main():
         review = load_review(args.review, cases)
         print(f"Checking {len(review.cases)} public cases; {'stopping at first failure' if args.fail_fast else 'full run'}; {'one response' if args.single_attempt else 'up to three validation attempts'} per case.", flush=True)
         predict = (lambda text: requirements.extract(text, attempts=1)) if args.single_attempt else None
-        report = evaluate(cases, review, predict=predict, fail_fast=args.fail_fast,
+        report = evaluate(cases, review, predict=predict, fail_fast=args.fail_fast, case_id=args.case,
                           progress=lambda id, state: print(f'{id}: {state}', flush=True))
         report['attempts_per_case'] = 1 if args.single_attempt else 3
         args.output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -176,7 +187,7 @@ def main():
         return 2
     if report['stopped_after_failure']:
         print(f"Stopped after the first failed case; {report['not_tested']} cases were NOT TESTED. No full-set accuracy claim.")
-    return 0 if report['development_checks_passed'] else 1
+    return 2 if report['development_checks_passed'] is None else 0 if report['development_checks_passed'] else 1
 
 
 if __name__ == '__main__':

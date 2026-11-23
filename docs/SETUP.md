@@ -338,3 +338,13 @@ LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model
 The second command runs from the repository root, separately from the chat. Keep Ollama open. The tracker checks `/api/show` with only the model name before sending vacancy text; cloud tags, remote aliases and unverifiable metadata stop with a setup message. A local loopback URL alone does not establish local inference. A successful model download/OK reply is not a passed requirements check. No OAuth change, credential sharing or new model download is needed if qwen2.5:7b is already installed.
 
 Unknown/blank LLM_PROVIDER selections now stop with a setup error instead of selecting a hosted-compatible provider. Use the exact value `ollama` for local extraction; `openai_compatible` is the other supported selection. Known page/posting identity conflicts require manual review and cannot be overridden by model fallback.
+
+## Focus on one public model-check failure
+
+To diagnose a known reviewed case without rerunning earlier passed cases:
+
+```sh
+LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --case canonical-7661586
+```
+
+Only that public case reaches the model. All nine reviewed rows remain in the report; the other eight are NOT TESTED, with full-set metrics unknown. A selected-case pass therefore leaves the overall limited checks NOT TESTED (exit 2); a selected failure is FAILED (exit 1). This is diagnosis, not acceptance or a replacement for a later complete run. Unknown IDs stop before any model call. --case requires an explicit model-check mode; it never launches the tracker or migrations. The same private-environment filtering remains in force.

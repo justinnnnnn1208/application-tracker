@@ -128,3 +128,59 @@ def test_fail_fast_does_not_stop_passing_cases_or_claim_phase_acceptance():
     assert report['not_tested']==0 and report['completed_cases']==len(review.cases)
     assert report['stopped_after_failure'] is False and report['development_checks_passed'] is True
     assert report['phase_2_accepted'] is False
+
+
+def test_targeted_case_preserves_skipped_coverage():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    calls=[]
+    def predict(text):
+        calls.append(text);return RequirementsData(),'synthetic',len(text),False
+    report=evaluate(cases,review,predict=predict,case_id='canonical-7661586',fail_fast=True)
+    assert len(calls)==1 and 'Sales Development Representative' in calls[0]
+    assert report['completed_cases']==1 and report['not_tested']==8 and report['schema_grounding_valid']==1
+    assert report['development_checks_passed'] is None and report['quality_assessed'] is False
+    assert report['minimum_term_recall'] is None and report['empty_case_accuracy'] is None
+    assert report['phase_2_accepted'] is False
+    assert all(row['error_code']=='not_selected' for row in report['results'] if row['id']!='canonical-7661586')
+
+
+def test_unknown_target_case_fails_before_model_calls():
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    with pytest.raises(ValueError,match='reviewed case'):
+        evaluate(cases,review,predict=lambda _:pytest.fail('No model call'),case_id='unknown')
+
+
+@pytest.mark.parametrize('valid',[True,False])
+def test_targeted_native_cli_never_turns_one_case_into_a_full_pass(tmp_path,valid):
+    import json,os,subprocess,sys
+    from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
+    from threading import Thread
+    calls=[]
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self,*_):pass
+        def do_POST(self):
+            body=json.loads(self.rfile.read(int(self.headers['Content-Length'])));calls.append((self.path,body))
+            if self.path=='/api/show':
+                assert body=={'model':'synthetic-case-fixture'}
+                payload={'model_info':{'general.architecture':'fixture'}}
+            else:
+                assert self.path=='/api/chat' and 'Sales Development Representative' in body['messages'][-1]['content']
+                skills=[] if valid else [{'value':'Ubuntu','quote':'Ubuntu is the fastest growing Linux distribution'}]
+                payload={'done':True,'message':{'content':json.dumps({'skills':skills})}}
+            raw=json.dumps(payload).encode();self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(raw)));self.end_headers();self.wfile.write(raw)
+    server=ThreadingHTTPServer(('127.0.0.1',0),Handler);thread=Thread(target=server.serve_forever,daemon=True);thread.start()
+    report_path=tmp_path/'public.json'
+    try:
+        env={'PATH':os.environ['PATH'],'LLM_PROVIDER':'ollama','LLM_MODEL':'synthetic-case-fixture','LLM_BASE_URL':f'http://127.0.0.1:{server.server_port}/v1'}
+        result=subprocess.run([sys.executable,'-m','app.services.requirements_eval','--manifest',str(ROOT/'fixtures/eval/manifest-nov21.json'),'--review',str(ROOT/'fixtures/eval/requirements-review.json'),'--output',str(report_path),'--case','canonical-7661586','--fail-fast','--single-attempt'],env=env,capture_output=True,text=True,timeout=15)
+        report=json.loads(report_path.read_text())
+        assert result.returncode==(2 if valid else 1)
+        assert report['completed_cases']==1 and report['not_tested']==8 and report['phase_2_accepted'] is False
+        assert report['results'][1]['checks_passed'] is valid
+        assert report['minimum_term_recall'] is None and report['empty_case_accuracy'] is None
+        assert not report['stopped_after_failure']
+        assert [path for path,_ in calls]==['/api/show','/api/chat']
+    finally:
+        server.shutdown();server.server_close();thread.join(timeout=2)

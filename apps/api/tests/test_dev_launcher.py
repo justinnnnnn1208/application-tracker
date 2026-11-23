@@ -98,3 +98,23 @@ def test_cancelled_model_check_returns_without_starting_services_or_traceback(tm
     monkeypatch.setattr(module.subprocess,'run',cancelled)
     assert module.main()==130
     assert 'cancelled' in capsys.readouterr().out
+
+
+def test_targeted_case_uses_isolated_fast_runner(tmp_path,monkeypatch):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py','--check-model','--case','canonical-7661586'])
+    calls=[]
+    monkeypatch.setattr(module.subprocess,'run',lambda command,**kwargs:(calls.append((command,kwargs)) or SimpleNamespace(returncode=2)))
+    assert module.main()==2
+    command,kwargs=calls[0]
+    assert command[command.index('--case')+1]=='canonical-7661586'
+    assert '--fail-fast' in command and '--single-attempt' in command
+    assert 'DATABASE_URL' not in kwargs['env'] and 'APP_ACCESS_TOKEN' not in kwargs['env']
+
+
+@pytest.mark.parametrize("case",["canonical-7661586", ""])
+def test_case_selector_requires_model_check_mode(tmp_path,monkeypatch,case):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py','--case',case])
+    with pytest.raises(SystemExit) as error:module.main()
+    assert error.value.code==2

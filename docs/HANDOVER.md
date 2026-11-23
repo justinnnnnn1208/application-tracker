@@ -1,3 +1,13 @@
+# Active session — 23 November 2026
+
+**Cutoff: 06:00 Europe/London today, 23 November**, explicitly confirmed by owner; do not carry the prior 21 November cutoff or the initially mistyped 24 November date forward. Phase 2 only; no Phase 3/Sheet writes/network-setting changes. Started clean at bbb6578. Fresh baseline:406 API tests passed.
+
+Owner supplied actual revised-prompt 7B result after pulling bbb6578: Graphcore PASSED limited checks, Canonical FAILED term_not_in_quote at skills.4.value; completed2/9,1 valid,7 NOT TESTED; aggregate metrics unknown. Report on owner's Mac: .local/requirements-check-b5deb7428563435aacc08db111a645c6.json. No actual response terms available. Canonical's frozen review expects no named technology requirements, so attempted five skills also indicates over-extraction; do not assume which values were returned.
+
+Current work: focused --check-model --case CASE diagnostic, preserving all9 rows and8 untested/null aggregate metrics. Unknown ID rejected before model calls; option cannot start app/migrations accidentally. Targeted pass returns NOT TESTED/exit2 overall; actual selected failure exits1. Default/full behavior unchanged. Tests first reproduced missing selector, then affected tests passed; full413 API tests passed, including native synthetic CLI partial-run/exit/privacy behavior. Next: general technology-vs-soft-skill/company-background instruction, without case-specific blacklists or validator relaxation. Push tested steps and request one focused Canonical rerun once ready; continue independent Phase2 work until06:00.
+
+## Prior closed checkpoint (retained context)
+
 # Night-shift handover — 21 November 2026
 
 **Critical permission/plan-change question: none.** Phase 2 acceptance is incomplete; owner input/evidence remains necessary below. The owner explicitly declined changing network settings this session: do not repeat the network-draft request or mutate/apply/publish an environment draft unless they revisit it.

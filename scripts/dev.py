@@ -17,7 +17,10 @@ def main():
     mode.add_argument("--migrate", action="store_true", help="Back up/verify existing SQLite data, apply migrations, then start")
     mode.add_argument("--check-model", action="store_true", help="Public model check: one response per case, stop at the first failed check; no app startup")
     mode.add_argument("--check-model-full", action="store_true", help="Full public model diagnostic run, including validation retries and later cases after failure")
+    parser.add_argument("--case", help="With a model check, diagnose just this reviewed case; other cases remain NOT TESTED")
     args = parser.parse_args()
+    if args.case is not None and not (args.check_model or args.check_model_full):
+        parser.error('--case requires --check-model or --check-model-full')
     os.umask(0o077)
     environment = os.environ.copy()
     environment.setdefault("NEXT_TELEMETRY_DISABLED", "1")
@@ -41,7 +44,7 @@ def main():
             result = subprocess.run([str(interpreter), "-m", "app.services.requirements_eval",
                                      "--manifest", str(ROOT / "fixtures/eval/manifest-nov20.json"),
                                      "--review", str(ROOT / "fixtures/eval/requirements-review.json"),
-                                     "--output", str(report)] + (["--fail-fast", "--single-attempt"] if args.check_model else []), cwd=ROOT / "apps/api", env=public_environment)
+                                     "--output", str(report)] + (["--fail-fast", "--single-attempt"] if args.check_model else []) + (["--case", args.case] if args.case is not None else []), cwd=ROOT / "apps/api", env=public_environment)
         except KeyboardInterrupt:
             print('Model check cancelled; no tracker services or migrations were started.')
             if report.is_file():

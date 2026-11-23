@@ -1,8 +1,12 @@
 # Current project status
 
-Reviewed: 21 November 2026, 05:00 Europe/London.
+Reviewed: 23 November 2026 (Europe/London); active session authorised until 06:00 today.
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
+
+## 23 November model follow-up
+
+Fresh baseline406 API tests pass. Owner’s actual revised-prompt qwen2.5:7b run: Graphcore PASSED, Canonical FAILED term_not_in_quote at skills.4.value;1/2 valid,7 NOT TESTED. No full-set metrics/acceptance. Canonical expects an empty technology list, so its attempted fifth skill also indicates over-extraction, with actual values unknown. Focused-case diagnostic verified:413 API tests pass, including native synthetic CLI partial-run/exit/privacy checks. Selected pass stays NOT TESTED overall; all eight excluded cases remain untested. No phase progression or network change.
 
 ## Current delivery
 
