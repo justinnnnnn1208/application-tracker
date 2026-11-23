@@ -46,7 +46,11 @@ Public fetches reuse robots rules for at most5 minutes in a32-origin in-memory w
 
 ## Isolated public-source diagnostics
 
-Added --check-discovery using existing adapters, explicit public source flags and existing host approval only. No tracker startup/migration/DB import, model, Google or form actions. Source metadata samples/description hashes only; counts/skips/empty/access limits explicit, no semantic/Phase2 pass. Filtered child environment excludes app/OAuth/DB/model secrets; only selected Reed receives its read key.490 full API tests pass, including all-five-provider dispatch, no SQLite/engine use, private-marker exclusion, report non-overwrite/cancel and mode-isolation controls. Native allowed-host check remains to run; no new network permission granted.
+Added --check-discovery using existing adapters, explicit public source flags and existing host approval only. No tracker startup/migration/DB import, model, Google or form actions. Source metadata samples/description hashes only; counts/skips/empty/access limits explicit, no semantic/Phase2 pass. Filtered child environment excludes app/OAuth/DB/model secrets; only selected Reed receives its read key.490 full API tests pass on both Python3.12 and3.13 (Linux), including all-five-provider dispatch, no SQLite/engine use, private-marker exclusion, report non-overwrite/cancel and mode-isolation controls. Actual root Greenhouse check returned5 postings/0 skipped/5 description hashes in10.31s; public report retained. Empty host-approval override correctly returned NOT TESTED/exit2, without HTTP imports or app startup. No new network permission granted.
+
+## Fresh numeric-date controls
+
+Two actual Figma internships were labelled before prediction and correctly retained unknown exact dates despite four numeric start options and application-rate limits. Metadata/role labels matched; no known date/graduate/policy positives, so overall NOT TESTED and no acceptance claim. Separate two-case controls, not padding into48-page regression. Wider targeted date search found no additional exact-day evidence; sources/limitations recorded.
 
 ## Current delivery
 

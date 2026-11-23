@@ -1,0 +1,40 @@
+{
+  "cases": [
+    {
+      "id": "figma-6152695004",
+      "url": "https://job-boards.greenhouse.io/figma/jobs/6152695004",
+      "html": "pages/figma-6152695004.html",
+      "sha256": "d38b28413c05e9971879acd23cec7f2671ef67f73baf084b468d8aaee9eb01f1",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Figma",
+        "title": "Software Engineer Intern (London, United Kingdom) (Summer 2027)",
+        "location": "London, England",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "figma-6143238004",
+      "url": "https://job-boards.greenhouse.io/figma/jobs/6143238004",
+      "html": "pages/figma-6143238004.html",
+      "sha256": "e5c4e13ffb85d1d1c7b3882cfebc5b71252f7ac43adcb361704dac0891156e20",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Figma",
+        "title": "Software Engineer Intern (Summer 2027)",
+        "location": "San Francisco, CA \u2022 New York, NY",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    }
+  ]
+}

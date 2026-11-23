@@ -1,0 +1,74 @@
+{
+  "checked_at": "2026-11-23T04:34:40.147933+00:00",
+  "provider": "greenhouse",
+  "board": "mw-tech-grad",
+  "employer": "Marshall Wace",
+  "region": "global",
+  "state": "COMPLETED",
+  "phase_2_accepted": false,
+  "quality_assessed": false,
+  "limits": [
+    "Public adapter compatibility only, not hand-labelled field accuracy or model quality.",
+    "No tracker database/services/imports, OAuth, profile/CV/facts or application forms.",
+    "Existing host approval, robots, limits and delays apply; no settings changed.",
+    "SmartRecruiters/Reed read the first20 details; other ATS read their bounded full board."
+  ],
+  "postings_read": 5,
+  "skipped": 0,
+  "descriptions_present": 5,
+  "samples": [
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646947002",
+      "company": "Marshall Wace - Graduate & Associate roles",
+      "title": "Quant Developer - Quant Associate Programme - 2027",
+      "location": "London, New York",
+      "deadline": null,
+      "start_date": null,
+      "description_chars": 2506,
+      "description_sha256": "6c8102bcf41750d751af49d550c56c1f6b6364a9c6c5794d069ed99e06f87158"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8636830002",
+      "company": "Marshall Wace - Graduate & Associate roles",
+      "title": "Quant Research - Quant Associate Programme - 2027",
+      "location": "London/New York",
+      "deadline": null,
+      "start_date": null,
+      "description_chars": 3140,
+      "description_sha256": "546622a32613523198c846fb875968440c868392d18eb3fc05d12aa920c90ebe"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646984002",
+      "company": "Marshall Wace - Graduate & Associate roles",
+      "title": "Software/Infrastructure Graduate - 2027 - Hong Kong",
+      "location": "Hong Kong",
+      "deadline": null,
+      "start_date": "2027-09-06",
+      "description_chars": 2916,
+      "description_sha256": "e6919679a55668a98e0005158eaf960cba2c54b5546f00537d84a4ec7f6b18df"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8645263002",
+      "company": "Marshall Wace - Graduate & Associate roles",
+      "title": "Software/Infrastructure Graduate - 2027 - London",
+      "location": "London",
+      "deadline": null,
+      "start_date": "2027-09-06",
+      "description_chars": 2913,
+      "description_sha256": "1bba1df3d6781f59054972303370e00088891b7f12b7053b353d54511b4a99e0"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/mw-tech-grad/jobs/8646976002",
+      "company": "Marshall Wace - Graduate & Associate roles",
+      "title": "Software/Infrastructure Graduate -  2027 - Singapore",
+      "location": "Singapore",
+      "deadline": null,
+      "start_date": "2027-09-06",
+      "description_chars": 2915,
+      "description_sha256": "1ca3f22417e978c9aa169c6412a6d4c66ac5911cb8e83c38346e62d248744254"
+    }
+  ],
+  "elapsed_seconds": 10.31,
+  "application_commit": "2b713ae008857952185c11b3b6ee93b63d3bb14b",
+  "method": "Actual root --check-discovery greenhouse --board mw-tech-grad --employer Marshall Wace; existing approved host only; no tracker services/database/import/model/Google/form actions."
+}

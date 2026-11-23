@@ -1,0 +1,9 @@
+# Numeric start-date options — 23 November 2026
+
+Two genuine Figma internships were discovered from the actual approved public Greenhouse API. Its advertised legacy listing URLs were checked with the existing ATS identity matcher before fetching equivalent current approved-host URLs. No legacy/custom host or application form was accessed. Original metadata/title/header/description excerpts and raw-response hashes/capture times are recorded in provenance-date-controls-nov23.json. Labels were frozen before prediction at2b713ae.
+
+Both the London6152695004 and US6143238004 roles offer “5/3, 5/17, 6/1 or 6/14” start dates, with no year in that sentence and no single selected start day. The Summer2027 title is not permission to choose one option or infer a unique full date. The five-applications-per30-days and90-day reapplication rules are not a calendar application deadline. Both roles remain internship-Unverified; no explicit role-specific sponsorship offer/refusal appears. The US role is a non-UK control, not a recommendation.
+
+First prediction: both source extractions succeeded and all supplied labels matched, including unknown exact dates. There are zero known date/graduate/sponsorship labels in these two controls. Overall field_checks_passed remains null/NOT TESTED and phase_2_accepted=false. This is targeted unknown-date behavior, not positive-date generalisation or Phase2 acceptance. No code/label changes followed the run. Keep the two-case controls separate from the48-page development regression; do not present it as a new acceptance-sized benchmark.
+
+The wider date search also read lightweight public boards for HubSpot/Figma/Roblox/Ramp and two PDT/Sigma pages. Those raw discovery/capture files remain ignored, unlabelled and unpredicted; they supply no exact-date positive evidence. Custom publisher URLs were not converted into trusted ATS identities from query IDs. No network settings, model/Google/owner data or form actions.

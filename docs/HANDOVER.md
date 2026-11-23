@@ -46,6 +46,10 @@ Model progress step pushed as9e1e5f5, remote SHA verified. Batch discovery previ
 
 Cache step pushed asa4497e7, remote SHA verified. Fresh actual cached live convergence passed5jobs/5apps/6events and repeat/no duplicate/history/Notes/restore. HTTP trace7 requests: job-page robots explicitly max-age0 and were refetched twice, API robots reused once. This is one fewer robots call, not a broad speed guarantee. Added isolated --check-discovery command to let owner later check non-Greenhouse compatibility through existing Mac adapters without DB import/model/Google/forms or cloud settings changes. Explicit public flags only, isolated child env; Reed key only for selected Reed. Report metadata/description hashes, no Notes/fulltext; empty/access NOT TESTED, COMPLETED not quality/acceptance.490 full API tests pass including no DB/engine calls, five-provider dispatch, output/private/cancel and root mode boundaries. Native allowed-host probe pending after tool commit; focused Qwen/FindJob replies still pending; continue to06:00.
 
+## Native source check and fresh date controls
+
+Source diagnostic pushed as2b713ae, remote SHA verified. Actual root Greenhouse check read5 public Marshall Wace postings/0 skipped and produced metadata/hash-only report in10.31s, no tracker services/DB imports/model/Google/forms. Empty host-approval override returned NOT TESTED/exit2, no settings changed. Public native report retained. Two actual Figma internship controls frozen before prediction: four numeric month/day start options without a unique full date, plus application quotas not deadlines. Both parsed/matched metadata and remained unknown dates; no known date/graduate/policy positives so overall NOT TESTED, not acceptance. Keep separate from48-page consumed regression; REVIEW_DATE_CONTROLS_NOV23.md explains. Current code also passed490 full API tests under Python3.13 using the earlier pinned isolated environment; Linux, not a Mac run. No dependency/private-setting change. Owner model/FindJob replies pending; cutoff06:00 today.
+
 ## Prior closed checkpoint (retained context)
 
 # Night-shift handover — 21 November 2026
