@@ -1,0 +1,44 @@
+{
+  "pages": 4,
+  "dataset_ready": false,
+  "extraction_failures": 0,
+  "accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": 1.0,
+    "start_date": 1.0,
+    "graduate": 1.0,
+    "sponsorship": 1.0
+  },
+  "known_labels": {
+    "company": 4,
+    "title": 4,
+    "location": 4,
+    "deadline": 0,
+    "start_date": 0,
+    "graduate": 1,
+    "sponsorship": 0
+  },
+  "known_label_accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": null,
+    "start_date": null,
+    "graduate": 1.0,
+    "sponsorship": null
+  },
+  "predicted_confirmed_yes": 0,
+  "labelled_confirmed_yes": 0,
+  "false_confirmed_yes": 0,
+  "mismatches": [],
+  "phase_2_accepted": false,
+  "limits": [
+    "Saved-page evaluation: 4 postings and 3 employer labels. See accompanying review for development/held-out status and ATS coverage.",
+    "Automatic sponsorship remains UNVERIFIED; zero false YES is not proof of evidence-assessment or manual-review quality.",
+    "Exact start-date labels: 0. Null matches do not demonstrate positive-date extraction; shared-template examples do not establish generalisation.",
+    "Field targets: at least 0.9 for deadline/location/graduate/start_date; zero false confirmed YES. Full Phase 2 scope still incomplete."
+  ],
+  "mode": "role-classification"
+}

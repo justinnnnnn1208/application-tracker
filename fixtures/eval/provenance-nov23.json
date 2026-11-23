@@ -1,0 +1,54 @@
+{
+  "labels_frozen_at": "2026-11-23T03:40:18.333083+00:00",
+  "predictor_base_commit": "ff3288ef577bac38393b0166d1f510cf7e5f0226",
+  "method": "Candidate links from public SimplifyJobs GitHub lists, then actual approved Greenhouse robots/page fetch through unchanged app guards. Original public title/og metadata/logo/header/description excerpted; forms/buttons/scripts/styles/SVG excluded. Raw originals remain ignored locally. Manual visible-text review before first prediction, applying the existing internship-Unverified rubric. No model/Google/applicant/owner DB/form calls.",
+  "discovery_references": [
+    {
+      "repository": "SimplifyJobs/New-Grad-Positions",
+      "commit": "9670151c4f60350646b466b2bfd940f8567d878b"
+    },
+    {
+      "repository": "SimplifyJobs/Summer2027-Internships",
+      "commit": "5342de5312f81d6a977b78e8c1fd26825b8e1a5a"
+    }
+  ],
+  "limits": [
+    "Targeted early-career controls, not random or multi-ATS validation.",
+    "One explicit New Grad positive; three internships remain Unverified, not personal eligibility decisions.",
+    "No full exact start day/deadline. June/summer/year windows and corporate dates do not become job dates.",
+    "Right-to-work statements do not establish visa sponsorship offer/refusal.",
+    "Location labels retain literal platform text, including employer suffixes; not independent geographic precision.",
+    "Axon talent-community and Blenheim/Fospha captures excluded before prediction because publisher/employer brand identity was not resolved; this selection limitation is explicit.",
+    "EU Greenhouse links were not fetched under unchanged host policy."
+  ],
+  "postings": [
+    {
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8398982",
+      "captured_at": "2026-11-23T03:36:24.761316+00:00",
+      "raw_sha256": "4afc50735d2bf629587cb4e8402187b0ddfaf41d068e836412eec867dffc9f16",
+      "id": "deliveroo-8398982",
+      "excerpt_sha256": "c99f78672f8904e445d8029f0354f3d195f1ada53452ab8db101ce90bb92ec3e"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/capstoneinvestmentadvisors/jobs/8867730002",
+      "captured_at": "2026-11-23T03:36:45.537204+00:00",
+      "raw_sha256": "b14d80be2234ac93ef45c1297a04e91fc0437095928af2e7285ea9b72d3b06b2",
+      "id": "capstoneinvestmentadvisors-8867730002",
+      "excerpt_sha256": "8d700b346731032387543fda375911419f9a874c7df7bb72bf28c557dc5c8d51"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627",
+      "captured_at": "2026-11-23T03:36:55.896731+00:00",
+      "raw_sha256": "159365a2c9e5a9fbf81fc5f6ee25b1cc5bdf077e0d70fe862dace65a1344d16e",
+      "id": "deliveroo-8202627",
+      "excerpt_sha256": "aae85f83e8a604a5f129e1c8667041365bcd4eb816032b8782f1add37a084163"
+    },
+    {
+      "url": "https://job-boards.greenhouse.io/point72/jobs/8885733002",
+      "captured_at": "2026-11-23T03:37:16.452608+00:00",
+      "raw_sha256": "42cb0caa0b4def9baf1c1e204990c1e85c01a6880f75e92eb2a4add17a20723c",
+      "id": "point72-8885733002",
+      "excerpt_sha256": "4f5a84312342cb00fb2d9c6c7224382e72ab9d11f2088cfce8cfd9b4becbfbcb"
+    }
+  ]
+}

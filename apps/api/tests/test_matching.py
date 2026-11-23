@@ -207,3 +207,38 @@ def test_imported_stubs_require_details_and_enrichment_preserves_owner_history(c
         assert enriched.description == "Python vacancy" and enriched.location == "London"
     assert client.post("/api/tasks/match", json={"job_id": job["id"]}).status_code == 202
     assert client.get("/api/jobs").json()[0]["status"] == "DISCOVERED"
+
+
+@pytest.mark.parametrize('title,expected',[
+    ('Software Engineer, New Grad','YES'),
+    ('New-Grad Software Engineer','YES'),
+    ('Senior New Grad Programme Manager','NO'),
+    ('Graduate Software Engineering Intern','UNVERIFIED'),
+    ('New Grad Software Engineering Internship','UNVERIFIED'),
+])
+def test_explicit_new_grad_titles_and_internship_precedence(title,expected):
+    assert graduate_level(title,'')==expected
+
+
+def test_old_scoring_version_stays_unranked_until_recalculated_without_history_loss(client):
+    from sqlalchemy.orm import Session
+    from app.db.models import Job,MatchResult
+    from app.services import matching
+    job=client.post('/api/jobs',json={'url':'https://example.org/new-grad-version','company':'Fixture','title':'Software Engineer, New Grad','location':'London','description':'Python required.','notes':'Owner note'}).json()
+    history=client.get(f"/api/jobs/{job['id']}/events").json()
+    with Session(client.app.state.engine) as session:
+        data=matching.inputs(session,session.get(Job,job['id']))
+        data['version']='preference-v5-immigration-neutral-terms'
+        session.add(MatchResult(job_id=job['id'],score=0,breakdown=[],inputs_hash=matching.fingerprint(data),feedback='good'))
+        session.commit()
+    assert client.get(f"/api/jobs/{job['id']}/match").json()['stale'] is True
+    assert client.get('/api/matches').json()[job['id']]=={'state':'stale','score':None}
+    assert client.get('/api/matches/feedback').json()['stale']==1
+    client.post('/api/tasks/match',json={'job_id':job['id']});run_once(client.app.state.engine,client.app.state.settings)
+    current=client.get(f"/api/jobs/{job['id']}/match").json()
+    assert current['stale'] is False and current['feedback'] is None
+    graduate=next(row for row in current['breakdown'] if row['criterion']=='graduate')
+    assert graduate['points']==graduate['maximum'] and 'new-grad' in graduate['explanation']
+    assert client.get(f"/api/jobs/{job['id']}/events").json()==history
+    saved=client.get(f"/api/jobs/{job['id']}").json()
+    assert saved['notes']=='Owner note' and saved['sponsorship']=='UNVERIFIED'

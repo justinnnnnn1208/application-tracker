@@ -371,3 +371,7 @@ Unsupported provider selectors stop with a configuration error, never silently c
 ### Focused model diagnosis (23 November 2026)
 
 Allow an explicit reviewed-case selection in the public model checker. Non-selected cases remain NOT TESTED; full metrics unknown and Phase2 unaccepted. A focused case pass is not full-suite success. Technology candidates must be named role-specific tools/platforms, excluding general abilities and company/product marketing. Semantic instruction changes do not relax source/quote/schema constraints or change frozen review labels.
+
+### Explicit New Grad titles (23 November 2026)
+
+Recognise explicit New Grad/New-Grad titles as graduate role-level signals. Senior/manager titles still take precedence; internships remain Unverified even when their title includes Graduate/New Grad. This is role classification, not personal eligibility. Score version changes invalidate prior scores for recalculation, preserving job fields/application events and retaining stale feedback as such. Fresh real control labels and the first failed prediction remain recorded; no positive exact-date or multi-ATS claim follows from this fix.

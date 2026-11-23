@@ -11,7 +11,7 @@ from app.db.models import Fact, JobRequirements, MatchResult, Preferences, Profi
 from app.services.requirements import validated as validated_requirements
 from app.services.errors import NeedsInput
 
-VERSION = "preference-v5-immigration-neutral-terms"
+VERSION = "preference-v6-explicit-new-grad"
 WEIGHTS = {"role": 20, "graduate": 25, "location": 20, "skills": 20, "experience": 10, "start_date": 5}
 SKILLS = ("python", "java", "javascript", "typescript", "c++", "c#", "rust", "golang", "sql", "react", "linux", "docker", "kubernetes", "terraform", "pytorch", "tensorflow", "aws", "azure", "git")
 
@@ -35,10 +35,10 @@ def graduate_level(title, description):
     # Explicit role level, not eligibility of any individual or boilerplate benefits.
     if re.search(r"\b(senior|staff|lead|manager|director|principal|head)\b", title, re.I):
         return "NO"
-    if re.search(r"\b(graduate|junior)\b", title, re.I):
-        return "YES"
     if re.search(r"\bintern(?:ship)?\b", title, re.I):
         return "UNVERIFIED"
+    if re.search(r"\b(?:graduate|junior|new[\s-]+grad)\b", title, re.I):
+        return "YES"
     if re.search(r"\b[3-9](?:\s*[-–]\s*\d+)?\+?\s+years\b.{0,45}\bexperience\b", description, re.I):
         return "NO"
     return "UNVERIFIED"
@@ -88,7 +88,7 @@ def calculate(data):
     hits = [term for term in roles if contains(title, term)]
     add("role", bool(hits), "Title matches: " + ", ".join(hits) if hits else "No configured role term found in the title; review manually.")
     level = graduate_level(title, text)
-    add("graduate", level == "YES", {"YES": "Explicit graduate/junior title.", "NO": "Senior/leadership title or an explicit 3+ years experience requirement.", "UNVERIFIED": "Graduate level is not established; no personal eligibility inferred."}[level])
+    add("graduate", level == "YES", {"YES": "Explicit graduate/junior/new-grad title.", "NO": "Senior/leadership title or an explicit 3+ years experience requirement.", "UNVERIFIED": "Graduate level is not established; no personal eligibility inferred."}[level])
     targets = [item.strip() for item in re.split(r"[,;\n]", data["locations"]) if item.strip()]
     uk = bool(re.search(r"\b(UK|United Kingdom|England|Scotland|Wales|Northern Ireland|London|Manchester|Leeds|Bristol|Cambridge|Cardiff|Edinburgh|Glasgow|Belfast)\b", job["location"], re.I))
     preferred = [target for target in targets if contains(job["location"], target)]

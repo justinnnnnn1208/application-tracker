@@ -146,7 +146,7 @@ def main():
                 page.get_by_role("button", name="Good match", exact=True).click()
                 expect(page.get_by_text("Rating saved: good.", exact=False)).to_be_visible()
                 page.get_by_text("Why this score?", exact=True).click()
-                expect(page.get_by_text("Explicit graduate/junior title.", exact=True)).to_be_visible()
+                expect(page.get_by_text("Explicit graduate/junior/new-grad title.", exact=True)).to_be_visible()
                 page.get_by_label("Update status").select_option("SHORTLISTED")
                 expect(page.get_by_text("Discovered to Shortlisted", exact=True)).to_be_visible()
                 page.get_by_role("button", name="Edit details").click()

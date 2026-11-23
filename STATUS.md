@@ -8,6 +8,10 @@ Reviewed: 23 November 2026 (Europe/London); active session authorised until 06:0
 
 Fresh baseline406 API tests pass. Owner’s actual revised-prompt qwen2.5:7b run: Graphcore PASSED, Canonical FAILED term_not_in_quote at skills.4.value;1/2 valid,7 NOT TESTED. No full-set metrics/acceptance. Canonical expects an empty technology list, so its attempted fifth skill also indicates over-extraction, with actual values unknown. Focused-case diagnostic verified:413 API tests pass, including native synthetic CLI partial-run/exit/privacy checks. Selected pass stays NOT TESTED overall; all eight excluded cases remain untested. No phase progression or network change. General model instructions/schema descriptions now distinguish named role tools from soft skills/company product background, with a fictional positive/negative contrast and no case-specific blacklist. Validation constraints unchanged;413 tests, production browser and40-page regression pass. Actual quality awaits the focused Mac run.
 
+## New real controls / role recognition
+
+Four new genuine controls were labelled before first prediction. The initial source/field parsing passed, but explicit Deliveroo New Grad was Unverified:3/4 role accuracy,0/1 known-positive accuracy. Initial report retained. New Grad recognition and internship precedence fix this; latest44-page regression matches fields/roles, still Greenhouse only,12 known deadlines/3 shared-template exact start days/34 known role labels. No Phase2 acceptance. Score v6 makes previous scores stale for recalculation and preserves history/Notes. Full419 API tests and production browser pass; its initial old explanation-string assertion was updated to match the delivered explanation.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |
@@ -19,7 +23,7 @@ Fresh baseline406 API tests pass. Owner’s actual revised-prompt qwen2.5:7b run
 | Local requirements | Explicit per-job source-only native Ollama task, schema/quote grounding, bounded context/output/retries and stale/concurrent-source protection. Notes/profile/facts/CV/legal inputs excluded. Current terms feed deterministic overlap; otherwise labelled finite-keyword fallback. No real quality pass. |
 | Local-model guard | Both local paths enforce loopback/no shell proxy/no redirects; before source text inspect `/api/show` with model name only. Refuse cloud tags, advertised remote aliases and missing/malformed metadata. Explicit hosted provider unchanged; no hosted fallback. Official Ollama source contract reviewed; tests include real synthetic loopback HTTP. |
 | Sponsorship and register | Default Unverified. Owner-reviewed role quote/source/current context required for a manual finding; changed inputs invalidate it. Provenance is not semantic policy judgement. Dated official-asset CSV upload/exact name lookup remains a separate signal, never a score or role confirmation. Actual full official register verification pending. |
-| Backups and updates | Backup-verifying `scripts/dev.py --migrate`, schema guard, restore to new destination, corrupt/unsupported archive guards, URI-safe exact SQLite filenames. Migration head eb81a592c387; score preference-v5-immigration-neutral-terms. No new dependencies/private configuration changes. |
+| Backups and updates | Backup-verifying `scripts/dev.py --migrate`, schema guard, restore to new destination, corrupt/unsupported archive guards, URI-safe exact SQLite filenames. Migration head eb81a592c387; score preference-v6-explicit-new-grad. No new dependencies/private configuration changes. |
 
 ## Phase 1 acceptance record
 
@@ -54,7 +58,7 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 
 ## Real-page and model evidence
 
-Original 30/35/38 manifests and historical failures stay frozen. Latest **manifest-nov21.json: 40 genuine excerpts/seven employer labels, all Greenhouse**. Current combined field/role regression has zero extraction failures/false YES and matches basic labels. Only **12 known deadlines, 3 exact start days (same Marshall Wace template), 33 role-level YES/NO labels**. Null matches and literal In-Office/Hybrid headers do not prove positive dates or geographic extraction. Automatic sponsorship abstains: 4 YES/14 NO labels, zero known-policy accuracy; zero false YES is not evidence-assessment quality. phase_2_accepted=false.
+Original 30/35/38/40 manifests and historical failures stay frozen. Latest **manifest-nov23.json: 44 genuine excerpts/nine employer labels, all Greenhouse**. Current combined field/role regression has zero extraction failures/false YES and matches basic labels. Only **12 known deadlines, 3 exact start days (same Marshall Wace template), 34 role-level YES/NO labels**. Null matches and literal In-Office/Hybrid headers do not prove positive dates or geographic extraction. Automatic sponsorship abstains: 4 YES/14 NO labels, zero known-policy accuracy; zero false YES is not evidence-assessment quality. phase_2_accepted=false.
 
 Two new Cloudflare pages initially failed source extraction; preserve reports/nov21-initial-heldout.json. An incorrect internship YES annotation was corrected to the established Unverified rubric after the source failure/code inspection; original labels retained, corrected reviewed-nov21.json/provenance/review explain it. These are consumed regressions, not fresh held-out role acceptance. Databricks/Samsara redirects were refused; no extra hosts or substitute proxies.
 

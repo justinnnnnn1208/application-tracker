@@ -1,0 +1,76 @@
+{
+  "cases": [
+    {
+      "id": "deliveroo-8398982",
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8398982",
+      "html": "pages/deliveroo-8398982.html",
+      "sha256": "c99f78672f8904e445d8029f0354f3d195f1ada53452ab8db101ce90bb92ec3e",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Deliveroo",
+        "title": "Software Engineering Summer Internship 2027 (London)",
+        "location": "London, United Kingdom - Deliveroo",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "capstoneinvestmentadvisors-8867730002",
+      "url": "https://job-boards.greenhouse.io/capstoneinvestmentadvisors/jobs/8867730002",
+      "html": "pages/capstoneinvestmentadvisors-8867730002.html",
+      "sha256": "8d700b346731032387543fda375911419f9a874c7df7bb72bf28c557dc5c8d51",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Capstone Investment Advisors",
+        "title": "Summer 2027 - Risk Tech Internship",
+        "location": "London, New York",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "deliveroo-8202627",
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627",
+      "html": "pages/deliveroo-8202627.html",
+      "sha256": "aae85f83e8a604a5f129e1c8667041365bcd4eb816032b8782f1add37a084163",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Deliveroo",
+        "title": "Software Engineer, New Grad",
+        "location": "London, United Kingdom - Deliveroo",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    },
+    {
+      "id": "point72-8885733002",
+      "url": "https://job-boards.greenhouse.io/point72/jobs/8885733002",
+      "html": "pages/point72-8885733002.html",
+      "sha256": "4f5a84312342cb00fb2d9c6c7224382e72ab9d11f2088cfce8cfd9b4becbfbcb",
+      "captured_on": "2026-11-23",
+      "reviewed_on": "2026-11-23",
+      "labels": {
+        "company": "Point72",
+        "title": "2027 Summer Internship \u2013 Software Engineer",
+        "location": "New York, NY",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "UNVERIFIED",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    }
+  ]
+}

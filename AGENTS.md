@@ -95,8 +95,8 @@ tests/, fixtures/    unit tests, saved job pages and form HTML
 # tests:  cd apps/api && uv run pytest
 # browser: cd apps/api && uv run --group browser python ../../scripts/smoke_browser.py
 #          Build apps/web first. Uses disposable data and loopback test services.
-# eval:   cd apps/api && uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest-nov21.json --role-classification
-#         40 real reviewed Greenhouse excerpts exist; initial failures/annotation correction are retained. Reports are regression evidence, not full Phase 2 acceptance.
+# eval:   cd apps/api && uv run --frozen python -m app.services.evaluation --manifest ../../fixtures/eval/manifest-nov23.json --role-classification
+#         44 real reviewed Greenhouse excerpts exist; initial source/role failures and annotation correction are retained. Reports are regression evidence, not full Phase 2 acceptance.
 ```
 
 ## Definition of done for any change
