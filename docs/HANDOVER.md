@@ -1,6 +1,6 @@
 # Closed handover — 23 November 2026
 
-**Owner input pending:** focused Canonical Qwen result; Find a Job public API documentation or a decision on manual/pasted-link support. Do not assume either answer. These block remaining acceptance/scope decisions; they do not authorise a network change or Phase 3.
+**Owner input pending:** bounded three-attempt Canonical Qwen result; Find a Job public API documentation or a decision on manual/pasted-link support. Do not assume either answer. These block remaining acceptance/scope decisions; they do not authorise a network change or Phase 3.
 
 ## Session and boundaries
 
@@ -10,11 +10,15 @@
 - Branch **dev/phase-1**. Started clean atbbb6578 (406 tests). Latest application code **2b713ae008857952185c11b3b6ee93b63d3bb14b**; evidence/docs1049d80 and condensed handover c55f112 pushed, remote SHA verified. This closing documentation update must also be pushed/verified before the final response. New commits use owner author/committer justinnnnnn1208. No dependency/lock/schema migration changes; head eb81a592c387.
 - No unfinished application edits. Closing documentation only; final worktree/remote verification required after committing it. Do not reapply completed work. Keep code/structure minimal and preserve owner data.
 
-## Owner's actual model evidence
+## Latest owner follow-up — 10:03 London
+
+Owner follow-up at 10:03 London after pulling a87413f: focused qwen2.5:7b Canonical check FAILED after 27.06s. Completed 1/9, schema/grounding-valid 0/1, eight intentionally not selected. Reason quote_not_in_source at experience.5.quote (sixth experience quote); source/returned quote not supplied. Mac report .local/requirements-check-407ddde79a5d4c99a37b4019678e02a8.json. No conclusion about skill-list correctness, term recall, empty-case accuracy or overall quality. Next measure the same case with the existing normal maximum of three attempts via --check-model-full --case canonical-7661586. Do not run all nine or change prompt/validator/model before reviewing this bounded result. This is an evidence/documentation follow-up, not a resumed overnight build; no application code/configuration change or new quality pass.
+
+## Owner's earlier actual model evidence
 
 After pullingbbb6578, qwen2.5:7b passed Graphcore but failed Canonical with term_not_in_quote at skills.4.value:1/2 valid,7 NOT TESTED. Mac report `.local/requirements-check-b5deb7428563435aacc08db111a645c6.json`. Unknown returned values; do not invent them. Canonical's frozen review expects no named role technologies, so at least five attempted skills also indicates semantic over-extraction.
 
-General prompt/schema descriptions now distinguish role technologies from soft skills/company-product background, using a fictional contrast, with unchanged validation constraints. A fresh actual focused result is pending. Do not change the prompt again without diagnosing that result or reuse the old Graphcore pass across prompts. Cloud has no real Ollama; synthetic HTTP is not model quality. Earlier3B: 1/9 and first 7B: 0/1 failures remain in STATUS.md.
+General prompt/schema descriptions now distinguish role technologies from soft skills/company-product background, using a fictional contrast, with unchanged validation constraints. The later focused result is recorded above; its sixth experience quote still failed source grounding. Do not change the prompt again without diagnosing that result or reuse the old Graphcore pass across prompts. Cloud has no real Ollama; synthetic HTTP is not model quality. Earlier3B: 1/9 and first 7B: 0/1 failures remain in STATUS.md.
 
 ## Completed this session
 
@@ -67,10 +71,10 @@ From the Mac project root, keep Ollama open and run:
 
 ```sh
 git pull --ff-only origin dev/phase-1
-LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --case canonical-7661586
+LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model-full --case canonical-7661586
 ```
 
-Paste the Canonical result/failure fields, not credentials. A selected PASSED plus overall NOT TESTED is expected because8 other cases are deliberately skipped. If it passes, request a new full9 run. No new download needed; avoid bare Ollama's cloud chat. Normal app: `python3 scripts/dev.py`, open http://127.0.0.1:3000. No new dependencies or migration this session.
+This checks only Canonical with up to three validation attempts (the app’s existing bound). Paste its final result/failure fields, not credentials. A selected PASSED plus overall NOT TESTED is expected because8 other cases are deliberately skipped. If it passes, request a new full9 run. No new download needed; avoid bare Ollama's cloud chat. Normal app: `python3 scripts/dev.py`, open http://127.0.0.1:3000. No new dependencies or migration this session.
 
 Optional later public source check: `python3 scripts/dev.py --check-discovery lever --board palantir --employer Palantir` uses existing host approvals, no import/model/Google. Unapproved access stays NOT TESTED; do not change cloud settings. See SETUP.md. Do not request settled Sheet columns/copy configuration again.
 
