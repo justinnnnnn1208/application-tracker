@@ -32,6 +32,10 @@ Fresh disposable live check at08b2c4d: pasted Marshall Wace vacancy first, then 
 
 At08b2c4d, a clean tracked export passed pinned API install/438 tests under CPython3.13.5, pinned npm install/typecheck/production build, production browser and actual combined-launcher initialisation/start/stop/backup-verifying restart with a preserved disposable job. Linux only, not macOS. Default npm cache was outside writable roots; writable /tmp cache fixed installation without changing locks or disabling integrity. No owner config/data used. Report nov23-python313-clean-install.json.
 
+## Geographic body locations
+
+A work-mode-only header previously hid explicit geographic body sections. Greenhouse page/board intake now uses only labelled Available Locations paragraphs/immediate lists when the header is empty or a recognised work mode. Concrete headers, conflicts and existing owner values stay unchanged. Three Cloudflare labels refined in a separate post-inspection geographic manifest, preserving old sources/labels/reports: old literal target45/48, new geographic target48/48. Consumed regression, not new held-out evidence. Full449 API tests, three additional real-page queue→location-score/history tests and production browser pass. No automatic owner-data repair or inferred location/visa policy.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |
@@ -78,7 +82,7 @@ Native macOS notification delivery remains untested. These accepted deferrals ar
 
 ## Real-page and model evidence
 
-Original 30/35/38/40 manifests and historical failures stay frozen. Latest **manifest-nov23b.json: 48 genuine excerpts/12 employer labels, all Greenhouse**. Current combined field/role regression has zero extraction failures/false YES and matches basic labels. Only **12 known deadlines, 3 exact start days (same Marshall Wace template), 35 role-level YES/NO labels**. Null matches and literal In-Office/Hybrid headers do not prove positive dates or geographic extraction. Automatic sponsorship abstains: 4 YES/15 NO labels, zero known-policy accuracy; zero false YES is not evidence-assessment quality. phase_2_accepted=false.
+Original 30/35/38/40 manifests and historical failures stay frozen. Latest **manifest-nov23-geographic.json: 48 genuine excerpts/12 employer labels, all Greenhouse**. Current combined field/role regression has zero extraction failures/false YES and matches basic labels. Only **12 known deadlines, 3 exact start days (same Marshall Wace template), 35 role-level YES/NO labels**. Null matches and literal In-Office/Hybrid headers do not prove positive dates or geographic extraction. Automatic sponsorship abstains: 4 YES/15 NO labels, zero known-policy accuracy; zero false YES is not evidence-assessment quality. phase_2_accepted=false.
 
 Two new Cloudflare pages initially failed source extraction; preserve reports/nov21-initial-heldout.json. An incorrect internship YES annotation was corrected to the established Unverified rubric after the source failure/code inspection; original labels retained, corrected reviewed-nov21.json/provenance/review explain it. These are consumed regressions, not fresh held-out role acceptance. Databricks/Samsara redirects were refused; no extra hosts or substitute proxies.
 

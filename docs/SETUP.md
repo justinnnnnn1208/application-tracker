@@ -352,3 +352,7 @@ Only that public case reaches the model. All nine reviewed rows remain in the re
 ## Refresh extraction after rule updates
 
 Saved requirements are tied to the vacancy and extraction instructions/schema/options/input limit. Older cache entries remain stored but show “out of date” and do not supply matching terms. Use Extract requirements locally after the chosen model passes its checks, then recalculate the preference match. Source edits still invalidate cached terms. Job fields, Notes, facts and application events are retained; no migration/new dependency is needed for this rule-version change. Public model reports include an extraction signature for comparing runs.
+
+### Work-mode-only source locations
+
+New Greenhouse page/board extractions can use an explicit Available Locations body paragraph/list when the header is only Hybrid/In-Office/Remote or empty. This does not infer a city from a company footer or replace a concrete header. Existing owner-edited locations are preserved; old nonempty source values are not automatically rewritten. Ordinary enrichment of blank/Notes-derived fields still applies. Review/edit any old work-mode-only value in Jobs if necessary. No migration or reimport is needed for existing history.

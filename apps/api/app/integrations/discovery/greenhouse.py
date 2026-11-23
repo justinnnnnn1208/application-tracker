@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 
 from app.schemas import JobData
 from app.services.errors import NeedsInput
-from app.services.extraction import plain_html, labelled_date, parse_date
+from app.services.extraction import plain_html, labelled_date, parse_date, greenhouse_location
 from app.services.fetching import fetch_page
 from app.services.identity import ats_identity
 
@@ -55,7 +55,7 @@ def read_board(board):
             text = " ".join(description.split())
             jobs.append(JobData(url=row["absolute_url"], title=plain_html(row["title"]),
                 company=plain_html(row.get("company_name")) or "Employer not provided",
-                location=location.get("name", "") if isinstance(location, dict) else "",
+                location=greenhouse_location(location.get("name", "") if isinstance(location, dict) else "", html.unescape(content)),
                 description=description, deadline=parse_date(row.get("application_deadline")) or labelled_date(text, r"Applications? deadline"),
                 start_date=labelled_date(text, r"Start date")))
         except (ValueError, KeyError, TypeError, AttributeError):

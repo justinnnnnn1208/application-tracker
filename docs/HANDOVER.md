@@ -30,6 +30,10 @@ Role/parser step pushed as08b2c4d, remote SHA verified. Fresh live disposable AP
 
 Tracked-file export at08b2c4d: pinned API install and438 tests passed under CPython3.13.5; pinned npm install/typecheck/production build and full production browser passed. Actual root init → --migrate combined launcher → proxy job create → Control+C child cleanup → second --migrate backup verification/restart preserves job → clean stop passed. No owner secrets/data used. Initial npm default-cache failure fixed by writable /tmp cache, no lock/integrity changes. Report nov23-python313-clean-install.json. This is Linux/Python compatibility, not Mac operational/notification proof. No further application edits after08b2c4d; public live/install evidence and status notes ready to push. Owner model/FindJob replies still pending;06:00 cutoff unchanged.
 
+## Geographic location checkpoint
+
+Live/fresh-install evidence pushed as145afcf, remote SHA verified. Work-mode-only headers were real scoring inputs, not geography. Greenhouse page/board intake now uses only explicit Available Locations paragraph/immediate list when header empty/work mode, not general city mentions. Concrete headers, conflicting sections and existing owner edits preserved; no migration/automatic old-field rewrite. Three Cloudflare labels refined in separate post-inspection geographic-review-nov23.json/manifest-nov23-geographic.json, with original source bytes/manifests/reports retained. Old literal labels45/48, new geographic labels48/48; consumed annotation refinement, not held-out proof.449 full API tests, three extra real-page API/worker score/history checks (London20pts, Lisbon0), production browser and geographic48-page regression passed. No new deps/schema/model/Google/network/forms. Ready to push this checked step; focused owner model and FindJob answers still pending; continue until06:00 today.
+
 ## Prior closed checkpoint (retained context)
 
 # Night-shift handover — 21 November 2026

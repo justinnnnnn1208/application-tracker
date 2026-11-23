@@ -122,6 +122,9 @@ class GreenhouseParser(HTMLParser):
         self.title = []
         self.location = []
         self.description = []
+        self.body_blocks = []
+        self.body_block = None
+        self.body_text = []
         self.og_url = None
         self.og_title = None
         self.employers = []
@@ -152,8 +155,13 @@ class GreenhouseParser(HTMLParser):
                     self.capture, self.capture_depth = field, self.depth
         if self.capture and tag in {"p", "li", "br", "div", "h2", "h3"}:
             getattr(self, self.capture).append("\n")
+        if self.capture == "description" and self.body_block is None and tag in {"p", "li", "h1", "h2", "h3", "h4"}:
+            self.body_block, self.body_text = tag, []
 
     def handle_endtag(self, tag):
+        if self.body_block == tag:
+            self.body_blocks.append((tag, " ".join("".join(self.body_text).split())))
+            self.body_block, self.body_text = None, []
         if tag in {"script", "style", "noscript"}:
             self.ignored = max(0, self.ignored - 1)
         if tag == "title":
@@ -177,6 +185,28 @@ class GreenhouseParser(HTMLParser):
             self.heading.append(value)
         if self.capture:
             getattr(self, self.capture).append(value)
+        if self.body_block:
+            self.body_text.append(value)
+
+    def resolved_location(self, header):
+        mode = re.sub(r"[\s_\-\u2010-\u2015]+", " ", header.casefold()).strip()
+        if mode not in {"", "hybrid", "remote", "in office", "on site", "onsite"}:
+            return header
+        candidates = set()
+        for index, (_, text) in enumerate(self.body_blocks):
+            label = re.fullmatch(r"Available Locations?(?:\s*:\s*(.*))?", text, re.I)
+            if not label:
+                continue
+            values = [label[1]] if label[1] else []
+            if not values:
+                for tag, value in self.body_blocks[index + 1:]:
+                    if tag != "li" or not value:
+                        break
+                    values.append(value)
+            value = "; ".join(values)
+            if value and len(value) <= 300:
+                candidates.add(value)
+        return next(iter(candidates)) if len(candidates) == 1 else header
 
     def job(self, url):
         titles = set(" ".join(value.split()) for value in self.titles)
@@ -197,9 +227,15 @@ class GreenhouseParser(HTMLParser):
         description = "\n".join(line.strip() for line in "".join(self.description).splitlines() if line.strip())
         text = " ".join(description.split())
         return JobData(url=url, title=title, company=employer,
-                       location=" ".join("".join(self.location).split()),
+                       location=self.resolved_location(" ".join("".join(self.location).split())),
                        description=description, deadline=labelled_date(text, r"Applications? deadline"),
                        start_date=labelled_date(text, r"Start date"))
+
+
+def greenhouse_location(header, content):
+    parser = GreenhouseParser()
+    parser.feed('<div class="job__description">' + content + '</div>')
+    return parser.resolved_location(header)
 
 
 def extract_job(url: str, html: str, provider=None) -> JobData:

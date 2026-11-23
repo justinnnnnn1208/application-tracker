@@ -274,3 +274,44 @@ def test_distinct_greenhouse_headings_outside_description_still_require_review()
     html = '<title>Job Application for Engineer at Fixture</title><meta property="og:url" content="https://job-boards.greenhouse.io/fixture/jobs/7"><h1>Engineer</h1><h1>Another vacancy</h1><div class="job__description">Python required.</div>'
     with pytest.raises(NeedsInput):
         extract_job('https://job-boards.greenhouse.io/fixture/jobs/7', html)
+
+
+@pytest.mark.parametrize(('header','body','expected'), [
+    ('In-Office', '<p><strong>Available Locations: London, UK</strong></p>', 'London, UK'),
+    ('Hybrid', '<p><strong>Available Locations:&nbsp;</strong>Lisbon, Portugal</p>', 'Lisbon, Portugal'),
+    ('In-Office', '<p>Available Locations</p><ul><li>London, UK</li><li>Lisbon, Portugal</li></ul><p>Available Terms</p><ul><li>Summer 2027</li></ul>', 'London, UK; Lisbon, Portugal'),
+    ('London', '<p>Available Locations: Lisbon, Portugal</p>', 'London'),
+    ('Hybrid', '<p>Our London office is lovely.</p>', 'Hybrid'),
+    ('Hybrid', '<p>Available Locations team supports London.</p>', 'Hybrid'),
+    ('Hybrid', '<p>Available Locations</p><h2>About the role</h2><ul><li>Python required</li></ul>', 'Hybrid'),
+    ('Hybrid', '<p>Available Locations</p><p>About the role</p><ul><li>Python required</li></ul>', 'Hybrid'),
+    ('Hybrid', '<p>Available Locations: London, UK</p><p>Available Locations: New York, US</p>', 'Hybrid'),
+])
+def test_work_mode_uses_only_explicit_vacancy_location_section(header, body, expected):
+    html = '<title>Job Application for Engineer at Fixture</title><meta property="og:url" content="https://job-boards.greenhouse.io/fixture/jobs/8"><h1>Engineer</h1><div class="job__location">'+header+'</div><div class="job__description">'+body+'</div>'
+    assert extract_job('https://job-boards.greenhouse.io/fixture/jobs/8', html).location == expected
+
+
+@pytest.mark.parametrize(('posting','location','points'), [
+    ('8245211','London, UK',20),
+    ('8328914','London, UK',20),
+    ('8143649','Lisbon, Portugal',0),
+])
+def test_real_work_mode_pages_feed_geography_into_preference_score(client, monkeypatch, posting, location, points):
+    from app.worker import tasks
+    monkeypatch.setattr(tasks, 'configured_provider', lambda:None)
+    source=f'https://job-boards.greenhouse.io/cloudflare/jobs/{posting}'
+    page=(Path(__file__).resolve().parents[3]/f'fixtures/eval/pages/cloudflare-{posting}.html').read_text()
+    queued=client.post('/api/tasks/extract',json={'url':source,'page_html':page}).json()
+    assert run_once(client.app.state.engine,client.app.state.settings)
+    finished=next(row for row in client.get('/api/tasks').json() if row['id']==queued['id'])
+    assert finished['status']=='SUCCEEDED'
+    job=client.get('/api/jobs/'+finished['result']['job_id']).json()
+    assert job['location']==location and job['sponsorship']=='UNVERIFIED'
+    history=client.get(f"/api/jobs/{job['id']}/events").json()
+    assert client.post('/api/tasks/match',json={'job_id':job['id']}).status_code==202
+    assert run_once(client.app.state.engine,client.app.state.settings)
+    result=client.get(f"/api/jobs/{job['id']}/match").json()
+    criterion=next(row for row in result['breakdown'] if row['criterion']=='location')
+    assert criterion['points']==points
+    assert client.get(f"/api/jobs/{job['id']}/events").json()==history

@@ -1,0 +1,28 @@
+{
+  "reviewed_at": "2026-11-23T04:12:58.566805+00:00",
+  "base_commit": "145afcfa6dc6b2e0814b3cc3b64db2ca546d4aa9",
+  "method": "Post-inspection geographic label review of three unchanged saved pages. Previous labels intentionally retained literal work-mode headers; new evaluation labels reflect explicit geographic body sections. Code inspection/fix occurred before this annotation update, so no held-out or independent-quality claim. Original manifests/HTML/reports unchanged.",
+  "changes": [
+    {
+      "id": "cloudflare-8245211",
+      "source_sha256": "7244583d5f2f2aa83c373f4c1d9a4a233193135b867255748253f937ef3df737",
+      "previous_literal_header_label": "In-Office",
+      "geographic_label": "London, UK",
+      "reason": "Explicit Available Locations paragraph/list in the unchanged saved vacancy description. Work mode alone is not geography."
+    },
+    {
+      "id": "cloudflare-8143649",
+      "source_sha256": "0d6fbba494770e90afdc401e6d76b47c1c510ceb06f635fa881e93c46a37b74c",
+      "previous_literal_header_label": "Hybrid",
+      "geographic_label": "Lisbon, Portugal",
+      "reason": "Explicit Available Locations paragraph/list in the unchanged saved vacancy description. Work mode alone is not geography."
+    },
+    {
+      "id": "cloudflare-8328914",
+      "source_sha256": "5308d1424df8b77a7dba9782d2ab23b7cebf36ad0fecb844e4d9e470563ac623",
+      "previous_literal_header_label": "In-Office",
+      "geographic_label": "London, UK",
+      "reason": "Explicit Available Locations paragraph/list in the unchanged saved vacancy description. Work mode alone is not geography."
+    }
+  ]
+}

@@ -88,3 +88,27 @@ def test_greenhouse_keeps_publisher_custom_links_without_trusting_query_id(monke
     payload['jobs'][0]['absolute_url']='https://job-boards.eu.greenhouse.io/fixture/jobs/1'
     jobs,warnings=greenhouse.read_board('fixture')
     assert warnings==0 and ats_identity(jobs[0].url)=='greenhouse-eu:fixture:1'
+
+
+def test_greenhouse_board_and_page_share_explicit_geographic_location(monkeypatch):
+    payload = board_payload()
+    payload['jobs'][0]['location'] = {'name': 'Hybrid'}
+    payload['jobs'][0]['content'] = '&lt;p&gt;Available Locations: London, UK&lt;/p&gt;&lt;p&gt;Python required.&lt;/p&gt;'
+    monkeypatch.setattr(greenhouse, 'fetch_page', lambda _: json.dumps(payload))
+    jobs, warnings = greenhouse.read_board('fixture')
+    assert warnings == 0 and jobs[0].location == 'London, UK'
+
+
+def test_location_fallback_never_overwrites_existing_owner_location(client, monkeypatch):
+    job = client.post('/api/jobs', json={'url':'https://job-boards.greenhouse.io/fixture/jobs/1','company':'Fixture Company','title':'Graduate Engineer','location':'Owner location','notes':'Owner note'}).json()
+    history = client.get(f"/api/jobs/{job['id']}/events").json()
+    payload = board_payload()
+    payload['jobs'][0]['location'] = {'name':'Hybrid'}
+    payload['jobs'][0]['content'] = '<p>Available Locations: London, UK</p><p>Python required.</p>'
+    monkeypatch.setattr(greenhouse, 'fetch_page', lambda _:json.dumps(payload))
+    source = client.post('/api/discovery',json={'board':'fixture','enabled':True}).json()
+    client.post('/api/tasks/discover',json={'source_id':source['id']})
+    assert run_once(client.app.state.engine,client.app.state.settings)
+    saved = client.get(f"/api/jobs/{job['id']}").json()
+    assert saved['location']=='Owner location' and saved['notes']=='Owner note'
+    assert client.get(f"/api/jobs/{job['id']}/events").json()==history
