@@ -72,6 +72,7 @@ def load_cases(path):
 
 
 FIELDS = ("company", "title", "location", "deadline", "start_date", "graduate", "sponsorship")
+TARGET_FIELDS = ("deadline", "location", "graduate", "start_date")
 
 
 def normal(value):
@@ -112,9 +113,20 @@ def evaluate(cases, predict=baseline):
         if wrong:
             mismatches.append({"id": case.id, "fields": wrong})
     total = len(cases)
+    accuracy = {field: correct[field] / total if total else None for field in FIELDS}
+    known_accuracy = {field: correct_known[field] / known[field] if known[field] else None for field in FIELDS}
+    targets = {}
+    for field in TARGET_FIELDS:
+        # Null/unknown matches must not hide a failure on the known labels.
+        # These are development checks, not evidence of representative coverage.
+        measured = [value for value in (accuracy[field], known_accuracy[field]) if value is not None]
+        state = "FAILED" if any(value < 0.9 for value in measured) else "NOT TESTED" if not known[field] else "PASSED"
+        targets[field] = {"state": state, "threshold": 0.9, "accuracy": accuracy[field],
+                          "known_labels": known[field], "known_accuracy": known_accuracy[field]}
+    field_checks = False if any(row["state"] == "FAILED" for row in targets.values()) else None if any(row["state"] == "NOT TESTED" for row in targets.values()) else True
     return {"pages": total, "dataset_ready": total >= 30, "extraction_failures": errors,
-            "accuracy": {field: correct[field] / total if total else None for field in FIELDS},
-            "known_labels": known, "known_label_accuracy": {field: correct_known[field] / known[field] if known[field] else None for field in FIELDS},
+            "accuracy": accuracy, "known_labels": known, "known_label_accuracy": known_accuracy,
+            "field_targets": targets, "field_checks_passed": field_checks,
             "predicted_confirmed_yes": predicted_yes, "labelled_confirmed_yes": sum(case.labels.sponsorship == "CONFIRMED_YES" for case, _ in cases),
             "false_confirmed_yes": false_yes, "mismatches": mismatches,
             "phase_2_accepted": False,
@@ -144,7 +156,9 @@ def main():
         return 2
     print(json.dumps(report, indent=2))
     # Empty/small data is not a passing benchmark. Baseline reports never accept Phase 2.
-    return 2 if not report["dataset_ready"] else 1 if report["extraction_failures"] or report["false_confirmed_yes"] else 0
+    if report["extraction_failures"] or report["false_confirmed_yes"] or report["field_checks_passed"] is False:
+        return 1
+    return 2 if not report["dataset_ready"] or report["field_checks_passed"] is None else 0
 
 
 if __name__ == "__main__":

@@ -16,6 +16,10 @@ Four new genuine controls were labelled before first prediction. The initial sou
 
 Two regressions reproduced stale semantic output surviving a rule change. Cache keys now bind source and extractor signature; legacy rows retained but stale, and old terms are excluded from scores until refreshed. No schema migration or data deletion. Full421 API tests, strengthened cache/ranking preservation check, typecheck/build, production browser and44-page regression pass. Public model reports include the signature. Model quality remains unassessed beyond owner results above.
 
+## Field-check reporting
+
+The offline evaluator now explicitly checks each agreed ≥90% field target on both all labels and known labels. Failed known dates cannot hide behind null matches; no known labels means NOT TESTED, not a pass. CLI returns1 for failed checks and2 for otherwise untested/incomplete coverage. Full428 API tests pass, including seven new metric/CLI regressions. The44-page regression passes these development field checks; only3 same-template start dates and one ATS still prevent independent acceptance. Historical reports/labels remain frozen.
+
 ## Current delivery
 
 | Capability | Behaviour and evidence |

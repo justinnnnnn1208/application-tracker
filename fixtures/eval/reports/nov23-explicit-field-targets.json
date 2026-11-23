@@ -1,0 +1,181 @@
+{
+  "pages": 44,
+  "dataset_ready": true,
+  "extraction_failures": 0,
+  "accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": 1.0,
+    "start_date": 1.0,
+    "graduate": 1.0,
+    "sponsorship": 0.5909090909090909
+  },
+  "known_labels": {
+    "company": 44,
+    "title": 44,
+    "location": 44,
+    "deadline": 12,
+    "start_date": 3,
+    "graduate": 34,
+    "sponsorship": 18
+  },
+  "known_label_accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": 1.0,
+    "start_date": 1.0,
+    "graduate": 1.0,
+    "sponsorship": 0.0
+  },
+  "field_targets": {
+    "deadline": {
+      "state": "PASSED",
+      "threshold": 0.9,
+      "accuracy": 1.0,
+      "known_labels": 12,
+      "known_accuracy": 1.0
+    },
+    "location": {
+      "state": "PASSED",
+      "threshold": 0.9,
+      "accuracy": 1.0,
+      "known_labels": 44,
+      "known_accuracy": 1.0
+    },
+    "graduate": {
+      "state": "PASSED",
+      "threshold": 0.9,
+      "accuracy": 1.0,
+      "known_labels": 34,
+      "known_accuracy": 1.0
+    },
+    "start_date": {
+      "state": "PASSED",
+      "threshold": 0.9,
+      "accuracy": 1.0,
+      "known_labels": 3,
+      "known_accuracy": 1.0
+    }
+  },
+  "field_checks_passed": true,
+  "predicted_confirmed_yes": 0,
+  "labelled_confirmed_yes": 4,
+  "false_confirmed_yes": 0,
+  "mismatches": [
+    {
+      "id": "graphcore-8843258002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894042002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894145002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894149002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894177002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894310002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894323002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894348002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894364002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894376002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894377002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894466002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894574002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "graphcore-8894608002",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-5018066",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-6036797",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-6369658",
+      "fields": [
+        "sponsorship"
+      ]
+    },
+    {
+      "id": "monzo-6394676",
+      "fields": [
+        "sponsorship"
+      ]
+    }
+  ],
+  "phase_2_accepted": false,
+  "limits": [
+    "Field/role labels from the supplied predictor only; applicant eligibility and production-score accuracy are not assessed.",
+    "Real-page labels, representative coverage and owner-agreed thresholds require review."
+  ]
+}

@@ -14,6 +14,10 @@ Collected six genuine public pages via approved Greenhouse guards from actual pu
 
 Role step pushed as fd97e3d, remote SHA verified. Requirement-cache concern reproduced by two tests: source-only keys left old semantic output current. Now source+extractor signature (prompt/schema descriptions/constraints/options/input limit) binds cache; old source-only rows stay stored but stale, not used by matching. Report includes public signature; no app DB access added to checker. Source-content concurrent-edit guard unchanged. Full421 API tests plus strengthened cache-to-ranking/history test, typecheck/build, production browser and44-page regression pass. Updated stale notice after reading web AGENTS/installed guide. Tampered-cache test uses current key so validation is still exercised. No migration/dependency/data deletion. Push this checked step; owner focused Qwen and Find a Job answers pending. Continue until06:00 today, no Phase3/network changes.
 
+## Field-check reporting checkpoint
+
+Cache step pushed as e4cac864, remote SHA verified. Benchmark previously returned0 with sub-target fields; now explicit target states use both overall/known accuracy, missing known labels remain NOT TESTED, and CLI fails actual low fields. Seven new metric/CLI controls pass; full428 API tests pass. Fresh44-page development report reports/nov23-explicit-field-targets.json passes fields, no acceptance claim. No extractor/model/data labels changed. Direct approved Greenhouse detail APIs confirm the excluded Axon community and Blenheim/Fospha publisher names, so they do not resolve brand ambiguity; exclusions remain, no guessed identity. Focused owner model/FindJob replies still pending. Continue to06:00 today.
+
 ## Prior closed checkpoint (retained context)
 
 # Night-shift handover — 21 November 2026
