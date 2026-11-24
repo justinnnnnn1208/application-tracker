@@ -19,11 +19,14 @@ def main():
     mode.add_argument("--check-model-full", action="store_true", help="Full public model diagnostic run, including validation retries and later cases after failure")
     mode.add_argument('--check-discovery', choices=('greenhouse', 'lever', 'ashby', 'smartrecruiters', 'reed'), help='Read public source without importing or starting tracker services')
     parser.add_argument("--case", help="With a model check, diagnose just this reviewed case; other cases remain NOT TESTED")
+    parser.add_argument('--explain-failure', action='store_true', help='With a selected public model case, print/save its rejected entry for inspection')
     for name in ('board', 'employer', 'region', 'query'):
         parser.add_argument('--' + name, help='Public discovery check source setting')
     args = parser.parse_args()
     if args.case is not None and not (args.check_model or args.check_model_full):
         parser.error('--case requires --check-model or --check-model-full')
+    if args.explain_failure and (not args.case or not (args.check_model or args.check_model_full)):
+        parser.error('--explain-failure requires a model check and --case')
     if not args.check_discovery and any(getattr(args, name) is not None for name in ('board', 'employer', 'region', 'query')):
         parser.error('Source settings require --check-discovery')
     os.umask(0o077)
@@ -60,6 +63,8 @@ def main():
                        "--manifest", str(ROOT / "fixtures/eval/manifest-nov20.json"),
                        "--review", str(ROOT / "fixtures/eval/requirements-review.json"),
                        "--output", str(report)] + (["--fail-fast", "--single-attempt"] if args.check_model else []) + (["--case", args.case] if args.case is not None else [])
+            if args.explain_failure:
+                command.append('--explain-failure')
         public_environment.update({key: environment[key] for key in keys if key in environment})
         try:
             result = subprocess.run(command, cwd=ROOT / "apps/api", env=public_environment)

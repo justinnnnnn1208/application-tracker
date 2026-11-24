@@ -86,7 +86,7 @@ def public_text(job):
     return f'Title: {job.title}\nLocation: {job.location}\nVacancy description:\n{job.description}\nEligibility requirements:\n{job.eligibility_requirements}'
 
 
-def extract(text, *, client=None, attempts=3):
+def extract(text, *, client=None, attempts=3, on_grounding_failure=None):
     if type(attempts) is not int or not 1 <= attempts <= 3:
         raise ValueError('Validation attempts must be an integer from one to three')
     config = configuration()
@@ -117,7 +117,8 @@ def extract(text, *, client=None, attempts=3):
                     reason = 'output_limit' if payload.get('done_reason') == 'length' else 'incomplete_response'
                     fields = []
                     continue
-                data = RequirementsData.model_validate_json(payload['message']['content']).grounded(source)
+                data = RequirementsData.model_validate_json(payload['message']['content'])
+                data.grounded(source)
                 return data, model, len(source), len(text) > MAX_CHARS
             except ValidationError as error:
                 reason = 'schema_invalid'
@@ -132,6 +133,13 @@ def extract(text, *, client=None, attempts=3):
                           'requirement_term_not_in_quote': 'term_not_in_quote',
                           'requirement_duplicate_term': 'duplicate_term'}.get(str(error), 'response_shape')
                 fields = [error.field] if isinstance(error, RequirementGroundingError) else []
+                # Opt-in public benchmark inspection only. Normal app calls have
+                # no callback; rejected text never enters errors or retry prompts.
+                if on_grounding_failure and isinstance(error, RequirementGroundingError):
+                    category, index, _ = error.field.split('.', 2)
+                    term = getattr(data, category)[int(index)]
+                    on_grounding_failure({'field': error.field, 'reason': reason,
+                                          'value': term.value, 'quote': term.quote})
                 continue
             except (KeyError, TypeError, AttributeError):
                 reason, fields = 'response_shape', []

@@ -1,3 +1,15 @@
+# Active session — 24 November 2026
+
+**Cutoff: 05:00 Europe/London today, 24 November**, explicitly confirmed by owner. Phase 2 only; Phase 3 not started. Sheets read-only; no cloud network changes. Started clean at85ed199, fresh490 tests pass. No new overnight deadline inferred from yesterday.
+
+Owner ran the correct normal three-attempt focused Qwen command: Canonical FAILED after50.06s with quote_not_in_source at experience.5.quote;0/1 valid,8 not selected, full metrics unknown. Report on Mac: .local/requirements-check-33e3c0fbc61d427a9736b5f22a9034de.json. Actual rejected text unavailable. Do not ask for the same blind retry or claim skills/other cases passed. Owner asked whether Phase3 follows; answered Phase2 verification still incomplete, no Phase3 authorisation inferred.
+
+Current checked change: optional --explain-failure requires a selected case and bundled public manifest/review. Only one schema-bounded grounding-rejected entry is exposed after an actual final grounding failure. Default app/errors/reports stay redacted, schema-invalid fields not captured, earlier retry output withheld when final result changes/passes. JSON escape terminal controls; no raw rejected text in retry prompt. Source hash/review validation and isolated environment remain; no prompt/options/validator/cache version change.502 full API tests, production browser and48-page geographic regression pass. No real model quality pass. Ready to push, then give owner exact one-attempt public diagnostic command and request only the Rejected public entry line. Keep working within Phase2 until05:00.
+
+One genuine DoorDash8163709 Entry-Level role captured to ignored .local/research-nov24, not yet labelled/predicted; do not count it as evaluation evidence. No other unfinished edits/pre-existing owner changes.
+
+## Prior closed session and earlier follow-up
+
 # Closed handover — 23 November 2026
 
 **Owner input pending:** bounded three-attempt Canonical Qwen result; Find a Job public API documentation or a decision on manual/pasted-link support. Do not assume either answer. These block remaining acceptance/scope decisions; they do not authorise a network change or Phase 3.

@@ -1,10 +1,16 @@
 # Current project status
 
-Reviewed: 23 November 2026 (Europe/London); session closed at 06:00.
+Reviewed: 24 November 2026 (Europe/London); active session authorised until 05:00 today.
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
 
-Independent work was completed and pushed before the waiting interval. Required owner model/source evidence did not arrive before the 06:00 cutoff; Phase 2 remains open. Closing audit passed: clean pushed state, frozen baselines/locks preserved, owner authorship, source checksums valid and no private/generated delivery paths. No Phase 3 progression.
+Previous 23 November session: independent work was completed and pushed before the waiting interval. Required owner model/source evidence did not arrive before the 06:00 cutoff; Phase 2 remains open. Closing audit passed: clean pushed state, frozen baselines/locks preserved, owner authorship, source checksums valid and no private/generated delivery paths. No Phase 3 progression.
+
+## 24 November active work
+
+Owner authorised Phase 2 until 05:00 London today; yesterday’s 06:00 cutoff does not carry forward. Started clean at85ed199; fresh490-test baseline passed. Owner’s normal three-attempt Canonical probe still FAILED after50.06s, quote_not_in_source at experience.5.quote,0/1 schema/grounding-valid,8 not selected. Mac report .local/requirements-check-33e3c0fbc61d427a9736b5f22a9034de.json. Rejected quote itself unknown; no semantic-quality or skill-list conclusion.
+
+An explicit --explain-failure flag now permits one bounded rejected entry from a selected, hash-checked bundled public benchmark case. Normal app/errors/reports stay redacted; malformed schema bodies remain excluded, earlier retry details are discarded on success/different final failure, terminal controls JSON-escaped, rejected text never enters retry prompts. No prompt/options/validator/score/accepted-source change.502 full API tests, production browser and48-page geographic regression pass. Real Qwen improvement remains NOT TESTED. No dependencies/schema migration/Google/network settings changes. One additional real DoorDash Entry-Level control is captured only in ignored research, not yet labelled/predicted or counted as quality evidence.
 
 ## 10:03 focused Mac result
 

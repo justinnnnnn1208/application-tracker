@@ -396,3 +396,32 @@ def test_source_only_legacy_requirement_cache_needs_fresh_extraction(client,monk
         session.add(JobRequirements(job_id=job['id'],payload=output(),inputs_hash=snapshot(row),model='fixture-old-prompt',source_chars=100,truncated=False));session.commit()
     data=client.get(f"/api/jobs/{job['id']}/requirements").json()
     assert data['state']=='stale' and data['data'] is None
+
+
+def test_opt_in_grounding_detail_captures_one_bounded_entry_without_retry_feedback(monkeypatch):
+    configure(monkeypatch)
+    source=' '.join(f'Item {i} required.' for i in range(6))
+    terms=[{'value':f'Item {i}','quote':f'Item {i} required.'} for i in range(6)]
+    terms[5]['quote']='Item 5 wording changed by synthetic model.'
+    captured=[];calls=[]
+    def handle(request):
+        body=json.loads(request.content);calls.append(body)
+        return httpx.Response(200,json={'done':True,'message':{'content':json.dumps({'experience':terms})}})
+    with httpx.Client(transport=model_transport(handle)) as client:
+        with pytest.raises(requirements.InvalidRequirementsOutput) as error:
+            requirements.extract(source,client=client,attempts=2,on_grounding_failure=captured.append)
+    assert len(captured)==len(calls)==2
+    assert captured[-1]=={'field':'experience.5.quote:quote_not_in_source','reason':'quote_not_in_source','value':'Item 5','quote':terms[5]['quote']}
+    assert terms[5]['quote'] not in str(error.value)
+    assert all(terms[5]['quote'] not in json.dumps(call['messages']) for call in calls)
+
+
+def test_opt_in_callback_still_excludes_schema_invalid_response_bodies(monkeypatch):
+    configure(monkeypatch)
+    captured=[]
+    payload={'skills':[], 'unexpected_private_field':'SYNTHETIC_PRIVATE_MARKER'}
+    def handle(request):return httpx.Response(200,json={'done':True,'message':{'content':json.dumps(payload)}})
+    with httpx.Client(transport=model_transport(handle)) as client:
+        with pytest.raises(requirements.InvalidRequirementsOutput) as error:
+            requirements.extract('Public text',client=client,attempts=1,on_grounding_failure=captured.append)
+    assert captured==[] and 'SYNTHETIC_PRIVATE_MARKER' not in str(error.value)

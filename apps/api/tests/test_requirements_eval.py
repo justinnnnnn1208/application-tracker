@@ -153,7 +153,8 @@ def test_unknown_target_case_fails_before_model_calls():
 
 
 @pytest.mark.parametrize('valid',[True,False])
-def test_targeted_native_cli_never_turns_one_case_into_a_full_pass(tmp_path,valid):
+@pytest.mark.parametrize('explain',[False,True])
+def test_targeted_native_cli_never_turns_one_case_into_a_full_pass(tmp_path,valid,explain):
     import json,os,subprocess,sys
     from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
     from threading import Thread
@@ -168,17 +169,30 @@ def test_targeted_native_cli_never_turns_one_case_into_a_full_pass(tmp_path,vali
             else:
                 assert self.path=='/api/chat' and 'Sales Development Representative' in body['messages'][-1]['content']
                 skills=[] if valid else [{'value':'Ubuntu','quote':'Ubuntu is the fastest growing Linux distribution'}]
-                payload={'done':True,'message':{'content':json.dumps({'skills':skills})}}
+                data={'skills':skills}
+                if explain and not valid:
+                    import re
+                    words=list(dict.fromkeys(word.casefold() for word in re.findall(r'\b[A-Za-z]{4,}\b',body['messages'][-1]['content'])))[:5]
+                    data={'skills':[], 'experience':[{'value':word,'quote':word} for word in words]+[{'value':'syntheticpublicmismatch','quote':'Synthetic public mismatch \u001b[31m'}]}
+                payload={'done':True,'message':{'content':json.dumps(data)}}
             raw=json.dumps(payload).encode();self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(raw)));self.end_headers();self.wfile.write(raw)
     server=ThreadingHTTPServer(('127.0.0.1',0),Handler);thread=Thread(target=server.serve_forever,daemon=True);thread.start()
     report_path=tmp_path/'public.json'
     try:
         env={'PATH':os.environ['PATH'],'LLM_PROVIDER':'ollama','LLM_MODEL':'synthetic-case-fixture','LLM_BASE_URL':f'http://127.0.0.1:{server.server_port}/v1'}
-        result=subprocess.run([sys.executable,'-m','app.services.requirements_eval','--manifest',str(ROOT/'fixtures/eval/manifest-nov21.json'),'--review',str(ROOT/'fixtures/eval/requirements-review.json'),'--output',str(report_path),'--case','canonical-7661586','--fail-fast','--single-attempt'],env=env,capture_output=True,text=True,timeout=15)
+        result=subprocess.run([sys.executable,'-m','app.services.requirements_eval','--manifest',str(ROOT/('fixtures/eval/manifest-nov20.json' if explain else 'fixtures/eval/manifest-nov21.json')),'--review',str(ROOT/'fixtures/eval/requirements-review.json'),'--output',str(report_path),'--case','canonical-7661586','--fail-fast','--single-attempt']+(['--explain-failure'] if explain else []),env=env,capture_output=True,text=True,timeout=15)
         report=json.loads(report_path.read_text())
         assert result.returncode==(2 if valid else 1)
         assert report['completed_cases']==1 and report['not_tested']==8 and report['phase_2_accepted'] is False
         assert report['results'][1]['checks_passed'] is valid
+        selected=report['results'][1]
+        if explain and not valid:
+            assert selected['rejected_public_entry']['field']=='experience.5.quote:quote_not_in_source'
+            assert 'Rejected public entry (untrusted model text):' in result.stdout
+            assert '\x1b' not in result.stdout and '\\u001b' in result.stdout
+        else:
+            assert 'rejected_public_entry' not in selected
+            assert 'Rejected public entry' not in result.stdout
         assert report['results'][1]['elapsed_seconds'] >= 0
         assert 'canonical-7661586: CHECKING local setup and public extraction' in result.stdout
         assert 'Check elapsed (setup + extraction): canonical-7661586' in result.stdout
@@ -201,3 +215,32 @@ def test_progress_announces_selected_case_before_slow_model_work():
     assert result['elapsed_seconds']>=0
     assert all('elapsed_seconds' not in row for row in report['results'] if row['id']!='canonical-7661586')
     assert report['not_tested']==8 and report['phase_2_accepted'] is False
+
+
+@pytest.mark.parametrize('case',[None,'canonical-7661586'])
+def test_failure_explanation_refuses_nonbundled_inputs_before_configuration_or_model(tmp_path,monkeypatch,case):
+    from app.services import requirements_eval as runner
+    monkeypatch.setattr(runner.requirements,'configuration',lambda:pytest.fail('Do not reach model setup for unsupported private/custom inputs'))
+    args=['requirements_eval','--manifest',str(tmp_path/'private.json'),'--review',str(tmp_path/'private-review.json'),'--output',str(tmp_path/'out.json'),'--explain-failure']
+    if case:args+=['--case',case]
+    monkeypatch.setattr('sys.argv',args)
+    with pytest.raises(SystemExit) as error:runner.main()
+    assert error.value.code==2
+
+
+@pytest.mark.parametrize('final',['validated','output_limit'])
+def test_explanation_does_not_publish_an_earlier_retry_when_final_result_changes(tmp_path,monkeypatch,capsys,final):
+    import json
+    from app.services import requirements_eval as runner
+    monkeypatch.setattr(runner.requirements,'configuration',lambda:('http://127.0.0.1:11434/api/chat','synthetic'))
+    def extract(text,**kwargs):
+        kwargs['on_grounding_failure']({'field':'experience.0.quote:quote_not_in_source','reason':'quote_not_in_source','value':'Earlier entry','quote':'Earlier rejected synthetic marker'})
+        if final=='output_limit':raise runner.requirements.InvalidRequirementsOutput('output_limit',3)
+        return RequirementsData(),'synthetic',len(text),False
+    monkeypatch.setattr(runner.requirements,'extract',extract)
+    output=tmp_path/'report.json'
+    monkeypatch.setattr('sys.argv',['requirements_eval','--manifest',str(ROOT/'fixtures/eval/manifest-nov20.json'),'--review',str(ROOT/'fixtures/eval/requirements-review.json'),'--output',str(output),'--case','canonical-7661586','--explain-failure'])
+    assert runner.main()==(2 if final=='validated' else 1)
+    report=json.loads(output.read_text())
+    assert all('rejected_public_entry' not in row for row in report['results'])
+    assert 'Earlier rejected synthetic marker' not in output.read_text()+capsys.readouterr().out

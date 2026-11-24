@@ -155,7 +155,11 @@ def main():
     parser.add_argument('--fail-fast', action='store_true', help='Stop model calls after the first failed limited check; skipped cases remain NOT TESTED')
     parser.add_argument('--single-attempt', action='store_true', help='One model response per case, without schema/grounding retries')
     parser.add_argument('--case', help='Diagnose one reviewed case; all other cases remain NOT TESTED')
+    parser.add_argument('--explain-failure', action='store_true', help='Opt in to printing/saving one rejected public entry; requires a bundled reviewed case')
     args = parser.parse_args()
+    bundled = Path(__file__).resolve().parents[4] / 'fixtures/eval'
+    if args.explain_failure and (not args.case or args.manifest.resolve() != bundled / 'manifest-nov20.json' or args.review.resolve() != bundled / 'requirements-review.json'):
+        parser.error('--explain-failure requires --case and the bundled public manifest/review')
     if not requirements.configuration():
         print('NOT TESTED: configure a local Ollama model first. No remote calls or application database access attempted.')
         return 2
@@ -165,10 +169,18 @@ def main():
         cases = load_cases(args.manifest)
         review = load_review(args.review, cases)
         print(f"Checking {len(review.cases)} public cases; {'stopping at first failure' if args.fail_fast else 'full run'}; {'one response' if args.single_attempt else 'up to three validation attempts'} per case.", flush=True)
-        predict = (lambda text: requirements.extract(text, attempts=1)) if args.single_attempt else None
+        detail = {}
+        if args.explain_failure:
+            predict = lambda text: requirements.extract(text, attempts=1 if args.single_attempt else 3, on_grounding_failure=detail.update)
+        else:
+            predict = (lambda text: requirements.extract(text, attempts=1)) if args.single_attempt else None
         report = evaluate(cases, review, predict=predict, fail_fast=args.fail_fast, case_id=args.case,
                           progress=lambda id, state: print(f'{id}: {state}', flush=True))
         report['attempts_per_case'] = 1 if args.single_attempt else 3
+        if detail:
+            selected = next(row for row in report['results'] if row['id'] == args.case)
+            if selected.get('error_code') == detail['reason']:
+                selected['rejected_public_entry'] = detail
         args.output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         with args.output.open('x', encoding='utf-8') as file:
             file.write(json.dumps(report, indent=2) + '\n')
@@ -192,6 +204,8 @@ def main():
                 print(f"Missing skills: {', '.join(row['missing_skills'] or []) or 'none'}; forbidden terms: {', '.join(row['forbidden_skills'] or []) or 'none'}.")
             if row.get('validation_fields'):
                 print('Validation fields/types: ' + ', '.join(row['validation_fields']))
+            if row.get('rejected_public_entry'):
+                print('Rejected public entry (untrusted model text): ' + json.dumps(row['rejected_public_entry'], ensure_ascii=True))
     if report['unavailable_reason']:
         print(f"NOT TESTED [{report['unavailable_reason']}]: {report['setup_hint']}")
         print('No semantic-quality pass/fail conclusion; fix local setup and request another check.')

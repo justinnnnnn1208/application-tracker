@@ -164,3 +164,20 @@ def test_source_flags_cannot_accidentally_start_or_migrate_tracker(tmp_path,monk
     monkeypatch.setattr(module.subprocess,'run',lambda *_args,**_kwargs:pytest.fail('No subprocess for invalid mode flags'))
     with pytest.raises(SystemExit) as error:module.main()
     assert error.value.code==2
+
+
+def test_public_failure_explanation_is_explicit_selected_case_flag(tmp_path,monkeypatch):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py','--check-model','--case','canonical-7661586','--explain-failure'])
+    calls=[]
+    monkeypatch.setattr(module.subprocess,'run',lambda command,**kwargs:(calls.append(command) or SimpleNamespace(returncode=1)))
+    assert module.main()==1 and '--explain-failure' in calls[0]
+
+
+@pytest.mark.parametrize('mode',[[],['--check-model'],['--check-discovery','greenhouse']])
+def test_failure_explanation_cannot_launch_without_selected_model_case(tmp_path,monkeypatch,mode):
+    module=launcher(tmp_path,monkeypatch)
+    monkeypatch.setattr(module.sys,'argv',['scripts/dev.py',*mode,'--explain-failure'])
+    monkeypatch.setattr(module.subprocess,'run',lambda *_args,**_kwargs:pytest.fail('No subprocess for invalid diagnostic flags'))
+    with pytest.raises(SystemExit) as error:module.main()
+    assert error.value.code==2

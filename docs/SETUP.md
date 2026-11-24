@@ -374,3 +374,13 @@ This exercises the existing public adapter and writes a new private `.local/disc
 Options match existing source settings: `--board` and public `--employer` for Lever/Ashby/SmartRecruiters; `--region eu` only for Lever. Greenhouse uses `--board` and optional employer. Reed uses `--query` instead of board/employer and needs its existing private REED_API_KEY. Only that selected check receives the key; tracker/Google/model credentials and database settings are excluded. Public proxy/TLS settings are retained for permitted network access. Host requirements remain boards-api.greenhouse.io, api.lever.co/api.eu.lever.co, api.ashbyhq.com, api.smartrecruiters.com or www.reed.co.uk respectively. Unapproved hosts remain blocked; no approval is granted by this command.
 
 The report includes counts/skips, up to20 public metadata samples and description lengths/hashes, not full descriptions or Notes. COMPLETED means an adapter returned postings, not semantic accuracy or Phase2 acceptance. An empty board stays NOT TESTED. SmartRecruiters/Reed still read only the first20 details; other ATS retain bounded full-board behavior. Control+C cancels without starting the app or importing anything. Paste the final summary when ready; no .env, keys or credentials.
+
+### Inspect a persistent public-case grounding failure
+
+After a single attempt and the normal three-attempt check both fail, an explicit public-case diagnostic can show the one rejected entry:
+
+```sh
+LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --case canonical-7661586 --explain-failure
+```
+
+Pull the latest branch first. This is one response for Canonical only. The opt-in flag prints a `Rejected public entry (untrusted model text)` JSON line and saves it in the new ignored private report. Share that line for diagnosis; no .env or credentials. It contains at most one schema-bounded value/quote from the selected public fixture. Normal application calls/reports remain redacted; private/custom manifests and missing case selection are refused before model setup. Hash-bound source/review checks still apply. Terminal control characters are escaped, and rejected text is never fed back as instructions. A failure still fails; a focused pass is not full acceptance. No prompt/model download/configuration change.
