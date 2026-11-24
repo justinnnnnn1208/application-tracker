@@ -170,3 +170,22 @@ def test_discovery_migration_preserves_existing_greenhouse_source(tmp_path, monk
         assert connection.execute(text("SELECT board FROM discovery_sources WHERE id='owner'")).scalar() == 'owner-board'
     command.upgrade(config, 'head')
     engine.dispose()
+
+
+@pytest.mark.parametrize('blank',['',' \n\t '])
+def test_blank_plain_fields_keep_available_html_vacancy_and_deadline(monkeypatch,blank):
+    data=payload();row=data[0]
+    row.update(descriptionPlain=blank,description='<p>Synthetic HTML role: Python required.</p><script>do_not_execute()</script>',additionalPlain=blank,additional='<p>Application deadline: December 30th 2026</p>',lists=[])
+    monkeypatch.setattr(lever,'fetch_page',lambda _:json.dumps(data))
+    jobs,invalid=lever.read_board('fixture','Fixture Employer')
+    assert invalid==0 and len(jobs)==1
+    assert 'Synthetic HTML role: Python required.' in jobs[0].description
+    assert jobs[0].deadline.isoformat()=='2026-12-30'
+    assert 'do_not_execute' not in jobs[0].description
+
+
+def test_nonempty_plain_fields_remain_preferred_over_conflicting_html(monkeypatch):
+    data=payload();data[0].update(descriptionPlain='Synthetic plain body.',description='<p>Different HTML body.</p>',additionalPlain='Synthetic plain closing.',additional='<p>Different HTML closing.</p>',lists=[])
+    monkeypatch.setattr(lever,'fetch_page',lambda _:json.dumps(data))
+    jobs,invalid=lever.read_board('fixture','Fixture Employer')
+    assert invalid==0 and jobs[0].description=='Synthetic plain body.\nSynthetic plain closing.'

@@ -34,7 +34,7 @@ def posting(row, board, employer, region):
     if any(not isinstance(place, str) for place in places):
         raise ValueError('Invalid location')
     description = row.get('descriptionPlain')
-    if not isinstance(description, str):
+    if not isinstance(description, str) or not description.strip():
         description = plain_html(html.unescape(row.get('description') or ''))
     sections = [description]
     lists = row.get('lists') or []
@@ -45,7 +45,7 @@ def posting(row, board, employer, region):
             raise ValueError('Invalid list section')
         sections.extend([plain_html(section.get('text')), plain_html(html.unescape(section.get('content') or ''))])
     closing = row.get('additionalPlain')
-    sections.append(closing if isinstance(closing, str) else plain_html(html.unescape(row.get('additional') or '')))
+    sections.append(closing if isinstance(closing, str) and closing.strip() else plain_html(html.unescape(row.get('additional') or '')))
     description = '\n'.join(section for section in sections if section)
     text = ' '.join(description.split())
     return JobData(url=url, title=plain_html(row['text']), company=employer,

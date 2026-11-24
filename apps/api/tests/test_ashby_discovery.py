@@ -73,3 +73,20 @@ def test_html_fallback_excludes_scripts_and_does_not_infer_remote_uk(monkeypatch
     jobs,_=ashby.read_board('fixture','Fixture Employer')
     assert jobs[0].description=='Python required.' and jobs[0].location=='Worldwide'
     assert jobs[0].deadline is None and jobs[0].start_date is None
+
+
+@pytest.mark.parametrize('blank',['',' \n\t '])
+def test_blank_plain_description_keeps_available_html_source(monkeypatch,blank):
+    data=payload();data['jobs'][0].update(descriptionPlain=blank,descriptionHtml='<p>Synthetic HTML role: Python required. Start date: September 6th 2027.</p><script>do_not_execute()</script>')
+    monkeypatch.setattr(ashby,'fetch_page',lambda _:json.dumps(data))
+    jobs,skipped=ashby.read_board('fixture','Fixture Employer')
+    assert skipped==1 and len(jobs)==1
+    assert jobs[0].description=='Synthetic HTML role: Python required. Start date: September 6th 2027.'
+    assert jobs[0].start_date.isoformat()=='2027-09-06'
+
+
+def test_nonempty_plain_description_remains_preferred_over_html(monkeypatch):
+    data=payload();data['jobs'][0].update(descriptionPlain='Synthetic plain body.',descriptionHtml='<p>Different HTML body.</p>')
+    monkeypatch.setattr(ashby,'fetch_page',lambda _:json.dumps(data))
+    jobs,skipped=ashby.read_board('fixture','Fixture Employer')
+    assert skipped==1 and jobs[0].description=='Synthetic plain body.'

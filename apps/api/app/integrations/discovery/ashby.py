@@ -33,7 +33,7 @@ def read_board(board, employer):
             if parts.scheme != 'https' or parts.hostname != 'jobs.ashbyhq.com' or len(parts.path.strip('/').split('/')) != 2 or ats_identity(url) != f"ashby:{board}:{row['id'].lower()}":
                 raise ValueError('Off-board or mismatched posting URL')
             description = row.get('descriptionPlain')
-            if not isinstance(description, str):
+            if not isinstance(description, str) or not description.strip():
                 description = plain_html(html.unescape(row.get('descriptionHtml') or ''))
             location = row.get('location') or row.get('locationName') or ''
             if not isinstance(location, str):
