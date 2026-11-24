@@ -220,12 +220,12 @@ def test_explicit_new_grad_titles_and_internship_precedence(title,expected):
     assert graduate_level(title,'')==expected
 
 
-@pytest.mark.parametrize("old_version", ["preference-v5-immigration-neutral-terms", "preference-v6-explicit-new-grad"])
-def test_old_scoring_version_stays_unranked_until_recalculated_without_history_loss(client, old_version):
+@pytest.mark.parametrize("old_version,title", [("preference-v5-immigration-neutral-terms", "Software Engineer, New Grad"), ("preference-v6-explicit-new-grad", "Software Engineer, New Grad"), ("preference-v7-explicit-early-career", "Software Engineer I, Entry-Level")])
+def test_old_scoring_version_stays_unranked_until_recalculated_without_history_loss(client, old_version, title):
     from sqlalchemy.orm import Session
     from app.db.models import Job,MatchResult
     from app.services import matching
-    job=client.post('/api/jobs',json={'url':'https://example.org/new-grad-version','company':'Fixture','title':'Software Engineer, New Grad','location':'London','description':'Python required.','notes':'Owner note'}).json()
+    job=client.post('/api/jobs',json={'url':'https://example.org/new-grad-version','company':'Fixture','title':title,'location':'London','description':'Python required.','notes':'Owner note'}).json()
     history=client.get(f"/api/jobs/{job['id']}/events").json()
     with Session(client.app.state.engine) as session:
         data=matching.inputs(session,session.get(Job,job['id']))
@@ -239,7 +239,7 @@ def test_old_scoring_version_stays_unranked_until_recalculated_without_history_l
     current=client.get(f"/api/jobs/{job['id']}/match").json()
     assert current['stale'] is False and current['feedback'] is None
     graduate=next(row for row in current['breakdown'] if row['criterion']=='graduate')
-    assert graduate['points']==graduate['maximum'] and 'new-grad' in graduate['explanation']
+    assert graduate['points']==graduate['maximum'] and 'early-career' in graduate['explanation']
     assert client.get(f"/api/jobs/{job['id']}/events").json()==history
     saved=client.get(f"/api/jobs/{job['id']}").json()
     assert saved['notes']=='Owner note' and saved['sponsorship']=='UNVERIFIED'
@@ -314,4 +314,39 @@ def test_real_work_mode_pages_feed_geography_into_preference_score(client, monke
     result=client.get(f"/api/jobs/{job['id']}/match").json()
     criterion=next(row for row in result['breakdown'] if row['criterion']=='location')
     assert criterion['points']==points
+    assert client.get(f"/api/jobs/{job['id']}/events").json()==history
+
+
+@pytest.mark.parametrize(('title','expected'), [
+    ('Software Engineer I, Entry-Level', 'YES'),
+    ('Software Engineer, Entry Level', 'YES'),
+    ('Senior Entry-Level Programme Manager', 'NO'),
+    ('Entry-Level Software Engineering Intern', 'UNVERIFIED'),
+    ('Software Engineer', 'UNVERIFIED'),
+])
+def test_explicit_entry_level_titles_use_role_wording_not_benefits(title,expected):
+    assert graduate_level(title,'We offer entry-level training benefits to all employees.')==expected
+
+
+def test_real_entry_level_intake_and_repeat_preserve_history_and_foreign_location(client,monkeypatch):
+    from app.worker import tasks
+    monkeypatch.setattr(tasks,'configured_provider',lambda:None)
+    monkeypatch.setattr(tasks,'fetch_page',lambda *_:pytest.fail('Saved fixture only'))
+    source='https://job-boards.greenhouse.io/doordashusa/jobs/8163709'
+    page=(Path(__file__).resolve().parents[3]/'fixtures/eval/pages/doordashusa-8163709.html').read_text()
+    for repeat in [False,True]:
+        task=client.post('/api/tasks/extract',json={'url':source,'page_html':page}).json()
+        assert run_once(client.app.state.engine,client.app.state.settings)
+        finished=next(row for row in client.get('/api/tasks').json() if row['id']==task['id'])
+        assert finished['status']=='SUCCEEDED' and finished['result']['created'] is (not repeat)
+        job=client.get('/api/jobs/'+finished['result']['job_id']).json()
+        assert job['company']=='DoorDash USA' and job['deadline'] is None and job['start_date'] is None
+        assert job['sponsorship']=='UNVERIFIED' and job['status']=='DISCOVERED'
+        if not repeat:history=client.get(f"/api/jobs/{job['id']}/events").json()
+    assert len(client.get('/api/jobs').json())==1
+    client.post('/api/tasks/match',json={'job_id':job['id']})
+    assert run_once(client.app.state.engine,client.app.state.settings)
+    result=client.get(f"/api/jobs/{job['id']}/match").json()
+    assert next(row['points'] for row in result['breakdown'] if row['criterion']=='graduate')==25
+    assert next(row['points'] for row in result['breakdown'] if row['criterion']=='location')==0
     assert client.get(f"/api/jobs/{job['id']}/events").json()==history

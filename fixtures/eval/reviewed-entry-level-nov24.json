@@ -1,0 +1,22 @@
+{
+  "cases": [
+    {
+      "id": "doordashusa-8163709",
+      "url": "https://job-boards.greenhouse.io/doordashusa/jobs/8163709",
+      "html": "pages/doordashusa-8163709.html",
+      "sha256": "8500b898b2b6adacd9d7424168d9779e53bc6bc15c671728e7cd9fa1a15c21a6",
+      "captured_on": "2026-11-24",
+      "reviewed_on": "2026-11-24",
+      "labels": {
+        "company": "DoorDash USA",
+        "title": "Software Engineer I, Entry-Level (Graduation Date: Fall 2026-Summer 2027) - US",
+        "location": "Los Angeles, CA; New York, NY; San Francisco, CA; Sunnyvale, CA; Seattle, WA",
+        "deadline": null,
+        "start_date": null,
+        "graduate": "YES",
+        "sponsorship": "UNVERIFIED",
+        "sponsorship_quote": ""
+      }
+    }
+  ]
+}

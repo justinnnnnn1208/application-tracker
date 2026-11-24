@@ -1,0 +1,21 @@
+{
+  "labels_frozen_at": "2026-11-24T01:58:04.713364+00:00",
+  "predictor_base_commit": "64987737147d60d2be7c358528d124f81cfe6ef9",
+  "method": "Targeted development control deliberately sought after inspecting missing Entry-Level title support. Original public link from pinned SimplifyJobs list in provenance-nov23.json, actual current approved Greenhouse fetch with unchanged robots/rate/size/redirect guards. Original metadata/header/description excerpted, forms/scripts/buttons/inputs/SVG removed. Label frozen before first prediction; not blinded/independent held-out validation.",
+  "postings": [
+    {
+      "url": "https://job-boards.greenhouse.io/doordashusa/jobs/8163709",
+      "captured_at": "2026-11-24T01:45:57.120096+00:00",
+      "raw_sha256": "36d481b6ccccab07e49c934784a8ca8f6d965c22f394a75f04aa8f8f13120a2f",
+      "discovery": "SimplifyJobs/New-Grad-Positions pinned reference in provenance-nov23.json; actual approved current Greenhouse link, not a mirror of provider data.",
+      "excerpt_sha256": "8500b898b2b6adacd9d7424168d9779e53bc6bc15c671728e7cd9fa1a15c21a6"
+    }
+  ],
+  "limits": [
+    "US role, not a UK recommendation or personal eligibility judgement.",
+    "Explicit Entry-Level title and graduate cohort are role-level evidence. Internship prerequisites do not make the role an internship.",
+    "Graduation window is not a job start date; benefit/hour quantities are not deadlines.",
+    "No role-specific sponsorship statement; same ATS, no new exact date positives.",
+    "Only one targeted new role-level positive; do not present it as broad accuracy or Phase2 acceptance."
+  ]
+}

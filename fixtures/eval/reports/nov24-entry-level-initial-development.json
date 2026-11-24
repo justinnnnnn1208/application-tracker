@@ -1,0 +1,79 @@
+{
+  "pages": 1,
+  "dataset_ready": false,
+  "extraction_failures": 0,
+  "accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": 1.0,
+    "start_date": 1.0,
+    "graduate": 0.0,
+    "sponsorship": 1.0
+  },
+  "known_labels": {
+    "company": 1,
+    "title": 1,
+    "location": 1,
+    "deadline": 0,
+    "start_date": 0,
+    "graduate": 1,
+    "sponsorship": 0
+  },
+  "known_label_accuracy": {
+    "company": 1.0,
+    "title": 1.0,
+    "location": 1.0,
+    "deadline": null,
+    "start_date": null,
+    "graduate": 0.0,
+    "sponsorship": null
+  },
+  "field_targets": {
+    "deadline": {
+      "state": "NOT TESTED",
+      "threshold": 0.9,
+      "accuracy": 1.0,
+      "known_labels": 0,
+      "known_accuracy": null
+    },
+    "location": {
+      "state": "PASSED",
+      "threshold": 0.9,
+      "accuracy": 1.0,
+      "known_labels": 1,
+      "known_accuracy": 1.0
+    },
+    "graduate": {
+      "state": "FAILED",
+      "threshold": 0.9,
+      "accuracy": 0.0,
+      "known_labels": 1,
+      "known_accuracy": 0.0
+    },
+    "start_date": {
+      "state": "NOT TESTED",
+      "threshold": 0.9,
+      "accuracy": 1.0,
+      "known_labels": 0,
+      "known_accuracy": null
+    }
+  },
+  "field_checks_passed": false,
+  "predicted_confirmed_yes": 0,
+  "labelled_confirmed_yes": 0,
+  "false_confirmed_yes": 0,
+  "mismatches": [
+    {
+      "id": "doordashusa-8163709",
+      "fields": [
+        "graduate"
+      ]
+    }
+  ],
+  "phase_2_accepted": false,
+  "limits": [
+    "Field/role labels from the supplied predictor only; applicant eligibility and production-score accuracy are not assessed.",
+    "Real-page labels, representative coverage and owner-agreed thresholds require review."
+  ]
+}
