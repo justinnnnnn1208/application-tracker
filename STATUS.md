@@ -1,10 +1,16 @@
 # Current project status
 
-Reviewed: 25 November 2026 (Europe/London); Phase 2 resumed, today’s stopping time pending.
+Reviewed: 25 November 2026 (Europe/London); Phase 2 authorised until05:00 today.
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
 
 Previous 23 November session: independent work was completed and pushed before the waiting interval. Required owner model/source evidence did not arrive before the 06:00 cutoff; Phase 2 remains open. Closing audit passed: clean pushed state, frozen baselines/locks preserved, owner authorship, source checksums valid and no private/generated delivery paths. No Phase 3 progression.
+
+## 25 November actual diagnosis and instruction change
+
+Cutoff explicitly confirmed:05:00 Europe/London on25 November. Owner supplied the opt-in real qwen2.5:7b Canonical failure:24.32s,0/1 valid,8 unselected,experience.5.quote:quote_not_in_source. Rejected value and quote were both “Persistence and perseverance”; the saved public source has “Persistence & perseverance” separated by whitespace. Mac report .local/requirements-check-bc93f5fc8d5241308a4a3a89477e01d1.json. This proves symbol rewriting, not truncation. It also demonstrates a personal attribute being categorised as prior experience; source-grounding alone would not reject that category error if copied literally.
+
+Minimal general instruction/schema-description update: retain source symbols, define education as requested academic qualifications/subjects/attainment and experience as requested prior work/projects, excluding duties/attributes/interests/benefits/compensation. No employer-specific blacklist, count cap, benchmark-label change or &/and validator equivalence. Schema constraints/options/input bound verified unchanged apart from descriptions; existing signature correctly changes so old requirements remain retained/stale until refreshed. Actual revised-model quality remains NOT TESTED; do not reuse old passes. Regression explicitly rejects rewritten and while allowing literal & with whitespace normalisation, without claiming category semantics are validated. Verification:101 focused tests and520 full API tests passed on Linux/Python3.12; production browser passed with disposable data.48-page consumed geographic regression retains field targets/zero falseYES but phase_2_accepted=false (all Greenhouse,12 known deadlines,3 same-template known start dates; automatic sponsorship abstains). No actual Ollama generation in cloud.
 
 ## 25 November diagnostic reporting
 

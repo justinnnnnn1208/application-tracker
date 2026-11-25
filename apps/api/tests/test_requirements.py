@@ -54,6 +54,28 @@ def test_native_local_provider_is_structured_bounded_and_source_only(monkeypatch
     assert len(calls) == 1
 
 
+@pytest.mark.parametrize('quote,accepted', [
+    ('Persistence and perseverance', False),
+    ('Persistence & perseverance', True),
+    ('Persistence\n&\nperseverance', True),
+])
+def test_literal_symbol_copying_is_not_silently_repaired(monkeypatch,quote,accepted):
+    configure(monkeypatch)
+    source='Persistence\n&\nperseverance'
+    def handle(request):
+        payload={'experience':[{'value':quote,'quote':quote}]}
+        return httpx.Response(200,json={'done':True,'message':{'content':json.dumps(payload)}})
+    with httpx.Client(transport=model_transport(handle)) as client:
+        if accepted:
+            data,*_=requirements.extract(source,client=client,attempts=1)
+            assert data.experience[0].quote==quote
+        else:
+            with pytest.raises(requirements.InvalidRequirementsOutput) as error:
+                requirements.extract(source,client=client,attempts=1)
+            assert error.value.reason=='quote_not_in_source'
+    # Grounding proves copying, not the correctness of the model's category.
+
+
 @pytest.mark.parametrize('base',['https://model.example.org/v1','http://192.168.1.2:11434/v1','http://localhost.evil/v1','http://user:password@127.0.0.1/v1','http://[bad','file:///tmp/model','http://127.0.0.1:bad/v1'])
 def test_remote_or_malformed_model_configuration_cannot_send_inputs(monkeypatch,base):
     configure(monkeypatch);monkeypatch.setenv('LLM_BASE_URL',base)

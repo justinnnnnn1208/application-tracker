@@ -1,5 +1,11 @@
 # Active session — 25 November 2026
 
+## 25 November actual diagnosis and instruction change
+
+Cutoff explicitly confirmed:05:00 Europe/London on25 November. Owner supplied the opt-in real qwen2.5:7b Canonical failure:24.32s,0/1 valid,8 unselected,experience.5.quote:quote_not_in_source. Rejected value and quote were both “Persistence and perseverance”; the saved public source has “Persistence & perseverance” separated by whitespace. Mac report .local/requirements-check-bc93f5fc8d5241308a4a3a89477e01d1.json. This proves symbol rewriting, not truncation. It also demonstrates a personal attribute being categorised as prior experience; source-grounding alone would not reject that category error if copied literally.
+
+Minimal general instruction/schema-description update: retain source symbols, define education as requested academic qualifications/subjects/attainment and experience as requested prior work/projects, excluding duties/attributes/interests/benefits/compensation. No employer-specific blacklist, count cap, benchmark-label change or &/and validator equivalence. Schema constraints/options/input bound verified unchanged apart from descriptions; existing signature correctly changes so old requirements remain retained/stale until refreshed. Actual revised-model quality remains NOT TESTED; do not reuse old passes. Regression explicitly rejects rewritten and while allowing literal & with whitespace normalisation, without claiming category semantics are validated. Verification:101 focused tests and520 full API tests passed on Linux/Python3.12; production browser passed with disposable data.48-page consumed geographic regression retains field targets/zero falseYES but phase_2_accepted=false (all Greenhouse,12 known deadlines,3 same-template known start dates; automatic sponsorship abstains). No actual Ollama generation in cloud.
+
 ## 25 November diagnostic reporting
 
 Owner resumed Phase 2 today. Today’s stopping-time question is pending; do not carry forward the 24 November cutoff. Started clean at9c622d1. The actual Canonical rejected-entry diagnostic remains pending; no prompt/model/grounding change or new quality result.
@@ -8,8 +14,8 @@ The public model report now retains education and experience alongside skills on
 
 ### Resume / owner input
 
-1. Review the pending rejected public entry from the Mac diagnostic before changing the model prompt. From the Mac project root: `git pull --ff-only origin dev/phase-1`, then `LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --case canonical-7661586 --explain-failure`. Share the Rejected public entry line, no credentials. No new model download required.
-2. Confirm today’s stopping time; 24 November’s 05:00 instruction is historical. Remain in Phase 2; no Phase 3 permission inferred.
+1. Rejected entry is now diagnosed above. After the instruction change is pushed, request one focused Mac probe using the command below; if valid, inspect the report education/experience categories, then run all9 afresh. From the Mac project root: `git pull --ff-only origin dev/phase-1`, then `LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --case canonical-7661586 --explain-failure`. Share the Rejected public entry line, no credentials. No new model download required.
+2. Today’s05:00 cutoff is confirmed. Remain in Phase2; no Phase3 permission inferred.
 3. Independent multi-ATS/date verification and source-scope decisions remain outstanding below. Keep existing network settings and Sheets read-only.
 
 The Phase 1 acceptance table below remains the recorded evidence, not newly rerun live checks. Report checks passed as above. This completed scope is ready for commit/push; remote verification follows.

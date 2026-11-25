@@ -95,8 +95,8 @@ class RequirementGroundingError(ValueError):
 
 class RequirementsData(StrictModel):
     skills: list[RequirementTerm] = Field(default_factory=list, max_length=50, description='Named technology tools or platforms explicitly used or required for this role. Exclude general abilities, sales activities and company/product background. Empty when none are stated.')
-    education: list[RequirementTerm] = Field(default_factory=list, max_length=20)
-    experience: list[RequirementTerm] = Field(default_factory=list, max_length=20)
+    education: list[RequirementTerm] = Field(default_factory=list, max_length=20, description='Explicitly requested academic qualifications, subjects or attainment, copied literally without inferring degree names or levels. Empty when none are stated.')
+    experience: list[RequirementTerm] = Field(default_factory=list, max_length=20, description='Explicitly requested prior work or project experience, including preferred experience. Exclude future duties, personal attributes, interests, benefits and compensation. Empty when none are stated.')
 
     def grounded(self, text):
         source = ' '.join(text.split()).casefold()
