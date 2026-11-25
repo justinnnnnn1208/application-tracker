@@ -1,5 +1,9 @@
 # Active session — 25 November 2026
 
+## 25 November register CSV integrity
+
+Independent Phase2 verification reproduced two malformed short-row imports that incorrectly succeeded and replaced the previous register cache: missing mapped optional town, and missing trailing unmapped county. Reject missing cells (DictReader None values) before replacement, while retaining explicit empty optional cells and existing UTF-8/BOM/quoted-field support. Two API-worker regression failures reproduced before the one-condition fix;26 register tests now pass, including prior snapshot preservation and valid empty optional cells. Full523 API tests pass on Linux/Python3.12 with the existing Starlette/httpx warning.48-page geographic regression retains field targets, zero extraction failures/falseYES and phase_2_accepted=false. Browser was last run/passed for the preceding instruction change; not rerun for this parser-only change. Controlled fixtures only; actual full official register compatibility remains unverified. Sponsor licence remains informational, not a role confirmation or scoring input. No model/Sheets/network/UI/dependency/schema changes.
+
 ## 25 November actual diagnosis and instruction change
 
 Cutoff explicitly confirmed:05:00 Europe/London on25 November. Owner supplied the opt-in real qwen2.5:7b Canonical failure:24.32s,0/1 valid,8 unselected,experience.5.quote:quote_not_in_source. Rejected value and quote were both “Persistence and perseverance”; the saved public source has “Persistence & perseverance” separated by whitespace. Mac report .local/requirements-check-bc93f5fc8d5241308a4a3a89477e01d1.json. This proves symbol rewriting, not truncation. It also demonstrates a personal attribute being categorised as prior experience; source-grounding alone would not reject that category error if copied literally.
@@ -8,7 +12,7 @@ Minimal general instruction/schema-description update: retain source symbols, de
 
 ## 25 November diagnostic reporting
 
-Owner resumed Phase 2 today. Today’s stopping-time question is pending; do not carry forward the 24 November cutoff. Started clean at9c622d1. The actual Canonical rejected-entry diagnostic remains pending; no prompt/model/grounding change or new quality result.
+Earlier25 November checkpoint: resumed Phase2 clean at9c622d1 while cutoff/diagnostic answers were pending. Both answers subsequently arrived; see the actual diagnosis section above. No real quality pass has been obtained.
 
 The public model report now retains education and experience alongside skills only after the entire response passes schema and source grounding. This supports manual category diagnosis without another generation. Failed/unselected responses expose no accepted category lists. Separate opt-in rejected-entry safeguards are unchanged. Education/experience semantic accuracy remains unassessed, not a new acceptance metric. Checks:23 focused report tests and517 full API tests passed on Linux/Python3.12, with one existing Starlette/httpx warning. Negative control confirms that one ungrounded experience entry withholds every category, including otherwise grounded education; unselected rows stay NOT TESTED and full metrics unknown. No actual Ollama generation performed. No app/UI/schema/dependency/configuration/Google/network changes.
 
@@ -18,7 +22,7 @@ The public model report now retains education and experience alongside skills on
 2. Today’s05:00 cutoff is confirmed. Remain in Phase2; no Phase3 permission inferred.
 3. Independent multi-ATS/date verification and source-scope decisions remain outstanding below. Keep existing network settings and Sheets read-only.
 
-The Phase 1 acceptance table below remains the recorded evidence, not newly rerun live checks. Report checks passed as above. This completed scope is ready for commit/push; remote verification follows.
+The Phase 1 acceptance table below remains the recorded evidence, not newly rerun live checks. Report checks passed as above. Diagnostic reporting pushed asfbb6724 and instruction change ase05d5a6; both remote SHAs verified. Register fix passed the checks above and is ready for delivery. Remaining critical path: focused actual revised Qwen result, followed by fresh full9 if valid, and independent live-source/date evidence. No further model edits without observed results.
 
 ## Historical handover — 24 November
 

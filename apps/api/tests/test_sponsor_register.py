@@ -60,6 +60,8 @@ def test_case_whitespace_match_without_fuzzy_brand_or_suffix_guesses(client,comp
     'Organisation Name,Route,Town/City\nFixture,,Leeds\n',
     'Organisation Name,Route,Town/City\nFixture,Skilled Worker,Leeds,EXTRA\n',
     'Organisation Name,Route,Town/City\n"Unclosed,Skilled Worker,Leeds\n',
+    'Organisation Name,Route,Town/City\nFixture,Skilled Worker\n',
+    'Organisation Name,Route,Town/City,County\nFixture,Skilled Worker,Leeds\n',
 ])
 def test_invalid_csv_never_replaces_previous_snapshot(client,content):
     upload(client);run_once(client.app.state.engine,client.app.state.settings)
@@ -87,6 +89,15 @@ def test_csv_bom_unicode_quotes_and_row_limit():
     stream=io.TextIOWrapper(io.BytesIO(content.encode('utf-8')),encoding='utf-8-sig',newline='')
     rows,count=registry.parse(stream,metadata)
     assert count==1 and rows[0]['name']=='Fixture, Café Ltd'
+
+
+def test_complete_csv_rows_with_explicit_empty_optional_cells_remain_valid():
+    metadata=registry.RegisterImport.model_validate(META)
+    rows,count=registry.parse(io.StringIO(
+        'Organisation Name,Route,Town/City,County\nFixture,Skilled Worker,,\n'
+    ),metadata)
+    assert count==1 and rows[0]['name']=='Fixture' and rows[0]['towns']==[]
+    assert rows[0]['routes']==['Skilled Worker']
 
 
 def test_oversize_stream_cleans_partial_upload(client,monkeypatch):

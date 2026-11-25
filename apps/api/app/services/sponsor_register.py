@@ -65,7 +65,7 @@ def parse(file, config):
             raise ValueError('Invalid or unmapped headers')
         for row in reader:
             rows_read += 1
-            if rows_read > MAX_ROWS or None in row:
+            if rows_read > MAX_ROWS or None in row or any(value is None for value in row.values()):
                 raise ValueError('Oversized or malformed row')
             name, route = (row.get(config.organisation_header) or '').strip(), (row.get(config.route_header) or '').strip()
             town = (row.get(config.town_header) or '').strip() if config.town_header else ''
