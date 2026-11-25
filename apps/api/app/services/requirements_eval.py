@@ -106,7 +106,7 @@ def evaluate(cases, review, predict=None, progress=None, *, fail_fast=False, cas
             forbidden_count += len(forbidden)
             result.update(state='validated', model=model, source_chars=chars, truncated=truncated,
                           checks_passed=not missing and not forbidden and (not item.empty_skills or not values),
-                          skills=data.model_dump()['skills'], missing_skills=missing, forbidden_skills=forbidden,
+                          **data.model_dump(), missing_skills=missing, forbidden_skills=forbidden,
                           expected_empty=item.empty_skills, empty_correct=not values if item.empty_skills else None)
         except requirements.LocalModelUnavailable as error:
             unavailable = error.reason

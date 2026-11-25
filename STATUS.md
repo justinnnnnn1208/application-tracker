@@ -1,10 +1,16 @@
 # Current project status
 
-Reviewed: 24 November 2026 (Europe/London); active session authorised until 05:00 today.
+Reviewed: 25 November 2026 (Europe/London); Phase 2 resumed, today’s stopping time pending.
 
 **Phase 2: roughly 90% implementation; acceptance incomplete.** This estimate is not a completion certificate or time forecast. Phase 1 was accepted for progression with the deferrals below. Phase 3 is not authorised. Sheets stays read-only; no managed network settings/publication changes.
 
 Previous 23 November session: independent work was completed and pushed before the waiting interval. Required owner model/source evidence did not arrive before the 06:00 cutoff; Phase 2 remains open. Closing audit passed: clean pushed state, frozen baselines/locks preserved, owner authorship, source checksums valid and no private/generated delivery paths. No Phase 3 progression.
+
+## 25 November diagnostic reporting
+
+Owner resumed Phase 2 today. Today’s stopping-time question is pending; do not carry forward the 24 November cutoff. Started clean at9c622d1. The actual Canonical rejected-entry diagnostic remains pending; no prompt/model/grounding change or new quality result.
+
+The public model report now retains education and experience alongside skills only after the entire response passes schema and source grounding. This supports manual category diagnosis without another generation. Failed/unselected responses expose no accepted category lists. Separate opt-in rejected-entry safeguards are unchanged. Education/experience semantic accuracy remains unassessed, not a new acceptance metric. Checks:23 focused report tests and517 full API tests passed on Linux/Python3.12, with one existing Starlette/httpx warning. Negative control confirms that one ungrounded experience entry withholds every category, including otherwise grounded education; unselected rows stay NOT TESTED and full metrics unknown. No actual Ollama generation performed. No app/UI/schema/dependency/configuration/Google/network changes.
 
 ## 24 November active work
 

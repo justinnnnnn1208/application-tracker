@@ -42,6 +42,30 @@ def test_ungrounded_model_output_stays_in_failure_denominator():
     assert result['minimum_term_recall']==0 and result['empty_case_accuracy']==0
 
 
+@pytest.mark.parametrize('grounded', [True, False])
+def test_public_report_retains_all_categories_only_after_whole_response_grounding(grounded):
+    cases=load_cases(ROOT/'fixtures/eval/manifest-expanded.json')
+    review=load_review(ROOT/'fixtures/eval/requirements-review.json',cases)
+    phrase='Excellent academic results at school and university'
+    def predict(text):
+        return RequirementsData.model_validate({
+            'education':[{'value':phrase,'quote':phrase}],
+            'experience':[] if grounded else [{'value':'InventedPrivateMarker','quote':'InventedPrivateMarker'}],
+        }),'fixture',len(text),False
+    report=evaluate(cases,review,predict=predict,case_id='canonical-7661586')
+    selected=next(row for row in report['results'] if row['id']=='canonical-7661586')
+    if grounded:
+        assert selected['education']==[{'value':phrase,'quote':phrase}]
+        assert selected['experience']==[] and selected['skills']==[]
+    else:
+        assert selected['state']=='failed'
+        assert all(category not in selected for category in ('skills','education','experience'))
+        assert 'InventedPrivateMarker' not in str(report)
+    assert all('education' not in row and 'experience' not in row
+               for row in report['results'] if row['id']!='canonical-7661586')
+    assert report['phase_2_accepted'] is False and report['minimum_term_recall'] is None
+
+
 def test_duplicate_or_non_source_review_labels_are_rejected():
     from app.services.requirements_eval import Review
     with pytest.raises(ValueError):

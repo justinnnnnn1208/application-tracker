@@ -1,3 +1,21 @@
+# Active session — 25 November 2026
+
+## 25 November diagnostic reporting
+
+Owner resumed Phase 2 today. Today’s stopping-time question is pending; do not carry forward the 24 November cutoff. Started clean at9c622d1. The actual Canonical rejected-entry diagnostic remains pending; no prompt/model/grounding change or new quality result.
+
+The public model report now retains education and experience alongside skills only after the entire response passes schema and source grounding. This supports manual category diagnosis without another generation. Failed/unselected responses expose no accepted category lists. Separate opt-in rejected-entry safeguards are unchanged. Education/experience semantic accuracy remains unassessed, not a new acceptance metric. Checks:23 focused report tests and517 full API tests passed on Linux/Python3.12, with one existing Starlette/httpx warning. Negative control confirms that one ungrounded experience entry withholds every category, including otherwise grounded education; unselected rows stay NOT TESTED and full metrics unknown. No actual Ollama generation performed. No app/UI/schema/dependency/configuration/Google/network changes.
+
+### Resume / owner input
+
+1. Review the pending rejected public entry from the Mac diagnostic before changing the model prompt. From the Mac project root: `git pull --ff-only origin dev/phase-1`, then `LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:7b python3 scripts/dev.py --check-model --case canonical-7661586 --explain-failure`. Share the Rejected public entry line, no credentials. No new model download required.
+2. Confirm today’s stopping time; 24 November’s 05:00 instruction is historical. Remain in Phase 2; no Phase 3 permission inferred.
+3. Independent multi-ATS/date verification and source-scope decisions remain outstanding below. Keep existing network settings and Sheets read-only.
+
+The Phase 1 acceptance table below remains the recorded evidence, not newly rerun live checks. Report checks passed as above. This completed scope is ready for commit/push; remote verification follows.
+
+## Historical handover — 24 November
+
 # Active session — 24 November 2026
 
 **Cutoff: 05:00 Europe/London today, 24 November**, explicitly confirmed by owner. Phase 2 only; Phase 3 not started. Sheets read-only; no cloud network changes. Started clean at85ed199, fresh490 tests pass. No new overnight deadline inferred from yesterday.
